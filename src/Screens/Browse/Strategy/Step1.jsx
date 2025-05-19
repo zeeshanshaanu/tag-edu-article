@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { Tooltip } from "antd";
+import { Button, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { StrategyFtn } from "../../../Store/StrategySlice/StrategySlice";
 import {
   ArrowLeftBlack,
   ArrowRight,
-  Heart,
-  BlackUsers,
+  UploadIcon,
+  ChangeItemIcon,
+  DeleteIcon,
 } from "../../../assets/svgs/index";
+import CameraImage from "../../../assets/Images/CameraImage.png";
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 const Step1 = () => {
@@ -24,9 +26,61 @@ const Step1 = () => {
     TimeRegistrationFee: "",
     MinimumInvestmentAmount: "",
     MinimumInvestmentPeriod: "",
+    image: "",
   };
   const dispatch = useDispatch();
   const [formvalue, setformvalue] = useState(initialValue);
+  const [UploadImageError, setUploadImageError] = useState({
+    SizeError: false,
+    FormatError: false,
+  });
+
+  const [selectedFile, setSelectedFile] = useState({
+    file: "",
+    filepreview: null,
+  });
+
+  const handleImageChange = (event) => {
+    const file = event?.target?.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/png"];
+    const maxSize = 3 * 1024 * 1024; // 3MB
+
+    // Initialize error state
+    let sizeError = false;
+    let formatError = false;
+
+    if (!allowedTypes.includes(file.type)) {
+      formatError = true;
+    }
+
+    if (file.size > maxSize) {
+      sizeError = true;
+    }
+
+    if (formatError || sizeError) {
+      setUploadImageError({
+        SizeError: sizeError,
+        FormatError: formatError,
+      });
+      setSelectedFile(null); // Clear previous file if invalid
+      return;
+    }
+
+    // Clear errors and set valid image
+    setUploadImageError({
+      SizeError: false,
+      FormatError: false,
+    });
+
+    const previewURL = URL.createObjectURL(file);
+    setSelectedFile({
+      file,
+      filepreview: previewURL,
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted:", formvalue);
@@ -36,8 +90,97 @@ const Step1 = () => {
     <div>
       <div className="bg_white rounded-[12px] p-5 ">
         <h1 className="black text-[20px] font-[700]">Strategy Configuration</h1>
+        <div className="flex gap-5 my-5">
+          <div className="my-auto">
+            {selectedFile?.filepreview ? (
+              <img
+                src={selectedFile?.filepreview}
+                alt="Selected"
+                className="w-[80px] h-[80px] rounded-full border-[2px] border-dashed border-[#E8E8E8]
+                 flex justify-center items-center bg_lightgray5 object-cover"
+              />
+            ) : (
+              <div
+                className="w-[80px] h-[80px] rounded-full border-[2px] border-dashed border-[#E8E8E8]
+                 flex justify-center items-center bg_lightgray5"
+              >
+                <img src={CameraImage} alt="CameraImage" />
+              </div>
+            )}
+          </div>
+          <div className="my-auto">
+            <input
+              id="upload-img"
+              type="file"
+              // accept=".jpg,.jpeg,.png"
+              onChange={handleImageChange}
+              hidden
+            />
+
+            {/* Upload Button + Info */}
+            <div className="flex gap-2">
+              {/* Upload Button */}
+              <div className="flex gap-2">
+                <div className="w-[100px] my-auto ">
+                  <label htmlFor="upload-img">
+                    <div className="cursor-pointer border border-[1.5px] border-[#E8E8E8] rounded-[8px] px-[15px] py-[7px] flex gap-2 items-center justify-center">
+                      <img
+                        src={
+                          selectedFile?.filepreview
+                            ? ChangeItemIcon
+                            : UploadIcon
+                        }
+                        alt={
+                          selectedFile?.filepreview
+                            ? ChangeItemIcon
+                            : UploadIcon
+                        }
+                        className="w-[16px] h-[16px]"
+                      />
+                      <span className="text-sm font-medium text-[#333]">
+                        {selectedFile?.filepreview ? "Change" : "Upload"}
+                      </span>
+                    </div>
+                  </label>
+                </div>
+                {selectedFile?.filepreview && (
+                  <div
+                    onClick={() => setSelectedFile(null)}
+                    className="my-auto"
+                  >
+                    <div className="cursor-pointer border border-[1.5px] border-[#E8E8E8] rounded-[8px] px-[15px] py-[7px] flex gap-2 items-center justify-center">
+                      <img
+                        src={DeleteIcon}
+                        alt="DeleteIcon"
+                        className="w-[16px] h-[16px]"
+                      />
+                      <span className="text-sm font-medium text-[#333]">
+                        Delete
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="my-auto">
+                <p
+                  className={`text-[12px] font-medium leading-[20px] 
+                  ${UploadImageError.FormatError ? "text-red-600" : "gray"}`}
+                >
+                  Formats Supported: *.jpg, *.png.
+                </p>
+                <p
+                  className={`text-[12px] font-medium leading-[20px] 
+                  ${UploadImageError.SizeError ? "text-red-600" : "gray"}`}
+                >
+                  Max size: 3 MB
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <form onSubmit={handleSubmit}>
-          <div className="my-5">Image Upload...</div>
           <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-[15px]">
             {/* StrategyName */}
             <div className="lg:col-span-2">

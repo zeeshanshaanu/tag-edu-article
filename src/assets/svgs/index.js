@@ -27,6 +27,9 @@ import Leaf from "./Leaf.svg";
 import Star from "./Star.svg";
 import ArrowLeftBlack from "./ArrowLeftBlack.svg";
 import BlackTick from "./BlackTick.svg";
+import UploadIcon from "./UploadIcon.svg";
+import DeleteIcon from "./DeleteIcon.svg";
+import ChangeItemIcon from "./ChangeItemIcon.svg";
 
 // import more as needed
 
@@ -59,4 +62,7 @@ export {
   //
   ArrowLeftBlack,
   BlackTick,
+  UploadIcon,
+  ChangeItemIcon,
+  DeleteIcon,
 };

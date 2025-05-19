@@ -4,12 +4,6 @@ import {
   ArrowRight,
   Heart,
   BlackUsers,
-  Trophy,
-  TrendDown,
-  Fire,
-  Clock,
-  Leaf,
-  Star,
 } from "../../assets/svgs/index";
 import ProfileImage from "../../assets/Images/ProfileImage.png";
 const TradingCards = () => {
