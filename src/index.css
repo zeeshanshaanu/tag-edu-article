@@ -36,6 +36,48 @@ body {
   background-color: black !important;
 }
 
+.custom-progress .ant-progress-bg {
+  height: 12px !important;
+}
+.bg_image {
+  background-image: url("./assets/svgs/Followers/CTA.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 160px;
+}
+.StratgDetailBGImage {
+  background-image: url("./assets/svgs/Followers/StratgDetailBGImage.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  color: white;
+}
+:where(.css-dev-only-do-not-override-1m2bkf9).ant-modal .ant-modal-content {
+  padding: 10px !important;
+}
+
+/* In your CSS file or style tag */
+.custom-slider .ant-slider-track {
+  background-color: black !important;
+}
+
+.custom-slider .ant-slider-handle::after {
+  background-color: black !important;
+}
+
+/* ........................................................................ */
+/* ........................................................................ */
+/* ........................................................................ */
+/* ........................................................................ */
+/* ........................................................................ */
+/* ........................................................................ */
+/* ........................................................................ */
+/* ........................................................................ */
 .white {
   color: #ffffff;
 }
@@ -59,6 +101,12 @@ body {
 }
 .lightgreen {
   color: #cafd5d80;
+}
+.lightgreen2 {
+  color: #7fd400;
+}
+.bg_lightgreen2 {
+  background-color: #7fd400;
 }
 
 .bg_lightgreen {
@@ -87,4 +135,10 @@ body {
 }
 .bg_lightgray5 {
   background-color: #f4f4f4;
+}
+.orange {
+  color: #ffa033;
+}
+.bg_orange {
+  background-color: #ffa033;
 }
