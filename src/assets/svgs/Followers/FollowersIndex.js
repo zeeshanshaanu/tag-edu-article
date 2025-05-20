@@ -16,6 +16,13 @@ import BlackTicIcon from "./BlackTicIcon.svg";
 import Star from "./Star.svg";
 import Coin from "./Coin.svg";
 import ShareNetwork from "./ShareNetwork.svg";
+import ShareBlackIcon from "./ShareBlackIcon.svg";
+import CoinBlack from "./CoinBlack.svg";
+import X from "./X.svg";
+import Withdrow from "./Withdrow.svg";
+import Check from "./Check.svg";
+import GearSix from "./GearSix.svg";
+import RecruiterStrucute from "./RecruiterStrucute.svg";
 
 // import more as needed
 
@@ -37,4 +44,11 @@ export {
   Star,
   Coin,
   ShareNetwork,
+  ShareBlackIcon,
+  CoinBlack,
+  Withdrow,
+  Check,
+  X,
+  GearSix,
+  RecruiterStrucute,
 };

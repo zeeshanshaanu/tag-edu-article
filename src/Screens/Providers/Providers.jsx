@@ -1,30 +1,28 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
 import { Breadcrumb } from "antd";
 import { Users } from "../../assets/svgs";
-// import FollowersHubheader from "./FollowersHubheader";
 import {
+  CoinBlack,
+  ShareBlackIcon,
   Strategies,
   ChartLineUp,
   FollowerColoredDB,
-  DespositWallet,
-  TotalBlce,
   TotalPnl,
   TotalRoi,
   UnrealizedPnL,
   UserGuide,
 } from "../../assets/svgs/Followers/FollowersIndex";
-import FollowersDashboard from "./FollowersDashboard";
-import FollowersStrategies from "./FollowersStrategies";
-import FollowersTrade from "./FollowersTrade";
-import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
+import ProviderDashboard from "./ProvidersDashboard/ProvidersDashboard";
+import ProvidersDetails from "./ProvidersDetails/ProvidersDetails";
+import ProviderWallet from "./ProviderWallet/ProviderWallet";
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
-const Followers = () => {
+const Providers = () => {
   const [FollowerTabs, setFollowerTabs] = useState("Dashboard");
 
   return (
     <div className="p-5">
-      {/* Breadcurm and Tabs */}
       <div className="flex justify-between gap-4 w-full">
         <div className="my-auto">
           <Breadcrumb
@@ -34,7 +32,7 @@ const Followers = () => {
                   <span className="flex gap-1">
                     <img src={Users} alt="Users" />
                     <span className=" gray font-[500] text-[14px] my-auto">
-                      Followers
+                      Providers
                     </span>
                   </span>
                 ),
@@ -51,12 +49,12 @@ const Followers = () => {
         </div>
         {/* Tabs */}
         <HeaderTabs />
-      </div>
+      </div>{" "}
       {/* Followers Hub header */}
       <div className="my-5">
         <div className=" bg_primaryGreen p-[25px] rounded-[12px]">
           <div className="flex justify-between gap-5">
-            <h1 className="text-[40px] font-[700] black">Follower Hub</h1>
+            <h1 className="text-[40px] font-[700] black">Provider Hub</h1>
             <div className="my-auto">
               <h1
                 className="text-[14px] font-[700] cursor-pointer border border-[2px] bg_white border-[#E8E8E8]
@@ -73,14 +71,14 @@ const Followers = () => {
               <div className="flex gap-x-[16px]">
                 <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
-                    src={TotalBlce}
-                    alt="TotalBlce"
+                    src={CoinBlack}
+                    alt="CoinBlack"
                     className="item-center mt-3 w-[24px] h-[24px]"
                   />
                 </div>
                 <div className="lightgray my-auto">
                   <p className="lightgray text-[14px] font-[500]">
-                    Total Balance{" "}
+                    Total AUM - All Details
                   </p>
                   <p className="white text-[20px] font-[700]">99,434 USD</p>
                 </div>
@@ -124,7 +122,7 @@ const Followers = () => {
                 </div>
                 <div className="lightgray my-auto">
                   <p className="lightgray text-[14px] font-[500]">
-                    Unrealized PnL
+                    Total Profit Share Earned
                   </p>
                   <p className="white text-[20px] font-[700]">-4,343 USD</p>
                 </div>
@@ -135,8 +133,8 @@ const Followers = () => {
                   className="text-[14px] font-[700] cursor-pointer border border-[2px] bg_white border-[#E8E8E8]
              rounded-[8px] px-[15px] py-[7px] flex gap-2"
                 >
-                  <img src={DespositWallet} alt="DespositWallet" className="" />{" "}
-                  Deposit
+                  <img src={ShareBlackIcon} alt="DespositWallet" className="" />{" "}
+                  Share{" "}
                 </h1>
               </div>
             </div>
@@ -144,7 +142,7 @@ const Followers = () => {
         </div>{" "}
       </div>
       {/* FollowersTabs */}
-      <div className="my-5">
+      <div className="my-5 flex justify-between gap-2">
         <div className="rounded-[8px]">
           {/* Tabs */}
           <div className="flex gap-[10px]">
@@ -185,65 +183,73 @@ const Followers = () => {
               className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[13px] font-[500] 
                  hover:bg-[#F9F9F9] transition-colors duration-200 
                   ${
-                    FollowerTabs === "Strategies"
+                    FollowerTabs === "Details"
                       ? "bg_white font-[700]"
                       : "bg_lightgray2"
                   }
                `}
-              onClick={() => setFollowerTabs("Strategies")}
+              onClick={() => setFollowerTabs("Details")}
             >
-              {FollowerTabs === "Strategies" ? (
+              {FollowerTabs === "Details" ? (
                 <img src={Strategies} alt="Strategies" />
               ) : (
                 <img src={Strategies} alt="Strategies" />
               )}
               <span
                 className={`text-[14px] my-auto ${
-                  FollowerTabs === "Strategies" ? "black" : "gray"
+                  FollowerTabs === "Details" ? "black" : "gray"
                 }`}
               >
-                Strategies
+                Details
               </span>
             </div>
             {/*  */}
             <div
               className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[13px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-                FollowerTabs === "Trades"
+                FollowerTabs === "ProviderWallet"
                   ? "bg_white font-[700]"
                   : "bg_lightgray2"
               }`}
-              onClick={() => setFollowerTabs("Trades")}
+              onClick={() => setFollowerTabs("ProviderWallet")}
             >
               {" "}
-              {FollowerTabs === "Trades" ? (
+              {FollowerTabs === "ProviderWallet" ? (
                 <img src={ChartLineUp} alt="ChartLineUp" />
               ) : (
                 <img src={ChartLineUp} alt="ChartLineUp" />
               )}
               <span
                 className={`text-[14px] my-auto ${
-                  FollowerTabs === "Trades" ? "black" : "gray"
+                  FollowerTabs === "ProviderWallet" ? "black" : "gray"
                 }`}
               >
-                Trades
+                Provider Wallet
               </span>
             </div>
           </div>
         </div>
+        <div className="my-auto">
+          <button
+            className="text-[14px] font-[700] cursor-pointer border border-[2px] bg_white border-[#E8E8E8]
+             rounded-[8px] px-[15px] py-[7px] flex gap-2"
+          >
+            <img src={UserGuide} alt="UserGuide" className="" />
+            Create
+          </button>
+        </div>
       </div>
-
       {/* {} */}
-      <div className=" bg_white p-[20px]">
+      <div className="">
         {FollowerTabs === "Dashboard" ? (
-          <FollowersDashboard />
-        ) : FollowerTabs === "Strategies" ? (
-          <FollowersStrategies />
+          <ProviderDashboard />
+        ) : FollowerTabs === "Details" ? (
+          <ProvidersDetails />
         ) : (
-          <FollowersTrade />
+          <ProviderWallet />
         )}
       </div>
     </div>
   );
 };
 
-export default Followers;
+export default Providers;
