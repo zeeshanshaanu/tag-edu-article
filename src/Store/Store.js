@@ -1,14 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
 import { persistReducer, persistStore } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 import InvestmentReducer from "./InverstmentSlice/InvestmentSlice";
 import StrategyReducer from "./StrategySlice/StrategySlice";
-import storage from "redux-persist/lib/storage";
+import HeadAndBreadCrumbReducer from "./HeaderAndBreadCrumbSlice/HeadAndBcSlice";
 
 // Combine reducers
 const rootReducer = combineReducers({
   Strategy: StrategyReducer,
   Investment: InvestmentReducer,
+  HeadAndBreadCrumb: HeadAndBreadCrumbReducer,
 });
 // Persist configuration
 const persistConfig = {

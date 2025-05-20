@@ -47,15 +47,14 @@ body {
   width: 100%;
   height: 160px;
 }
-.StratgDetailBGImage {
-  background-image: url("./assets/svgs/Followers/StratgDetailBGImage.png");
+.HeaderGreenBGimage {
+  background-image: url("./assets/Images/HeaderGreenBGimage.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   width: 100%;
   height: 100%;
   border-radius: 12px;
-  color: white;
 }
 :where(.css-dev-only-do-not-override-1m2bkf9).ant-modal .ant-modal-content {
   padding: 10px !important;
@@ -96,12 +95,17 @@ body {
 .bg_primaryGreen {
   background-color: #cafd5d;
 }
+
 .green {
   color: #60a100;
 }
 .lightgreen {
   color: #cafd5d80;
 }
+.lightgreenBoxShahdow {
+  box-shadow: 0px 2px 30px 3px #cafd5d80;
+}
+
 .lightgreen2 {
   color: #7fd400;
 }

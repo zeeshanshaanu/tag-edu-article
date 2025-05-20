@@ -16,6 +16,7 @@ import {
 import ProviderDashboard from "./ProvidersDashboard/ProvidersDashboard";
 import ProvidersDetails from "./ProvidersDetails/ProvidersDetails";
 import ProviderWallet from "./ProviderWallet/ProviderWallet";
+import HeaderTabAndBreadCrumb from "../../components/HeaderTabs/HeaderTabAndBreadCrumb";
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 const Providers = () => {
@@ -23,33 +24,8 @@ const Providers = () => {
 
   return (
     <div className="p-5">
-      <div className="flex justify-between gap-4 w-full">
-        <div className="my-auto">
-          <Breadcrumb
-            items={[
-              {
-                title: (
-                  <span className="flex gap-1">
-                    <img src={Users} alt="Users" />
-                    <span className=" gray font-[500] text-[14px] my-auto">
-                      Providers
-                    </span>
-                  </span>
-                ),
-              },
-              {
-                title: (
-                  <span className="black font-[700] text-[14px]">
-                    Dashboard
-                  </span>
-                ),
-              },
-            ]}
-          />
-        </div>
-        {/* Tabs */}
-        <HeaderTabs />
-      </div>{" "}
+         <HeaderTabAndBreadCrumb />
+
       {/* Followers Hub header */}
       <div className="my-5">
         <div className=" bg_primaryGreen p-[25px] rounded-[12px]">

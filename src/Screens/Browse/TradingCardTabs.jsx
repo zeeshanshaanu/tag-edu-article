@@ -20,7 +20,7 @@ const TradingCardTabs = () => {
       {/* Tabs */}
       <div className="flex gap-[10px]">
         <div
-          className={`cursor-pointer flex rounded-[8px] px-[16px] py-[13px] font-[500] 
+          className={`cursor-pointer flex rounded-[8px] px-[16px] py-[10px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 ${
               showBG === "toproi" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
@@ -51,7 +51,7 @@ const TradingCardTabs = () => {
         </div>
         {/*  */}
         <div
-          className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[13px] font-[500] 
+          className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 
              ${
                showBG === "lowestdrawdown"
@@ -76,7 +76,7 @@ const TradingCardTabs = () => {
         </div>
         {/*  */}
         <div
-          className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[13px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+          className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
             showBG === "mostpopular" ? "bg_white font-[700]" : "bg_lightgray2"
           }`}
           onClick={() => setshowBG("mostpopular")}
@@ -97,7 +97,7 @@ const TradingCardTabs = () => {
         </div>
         {/*  */}
         <div
-          className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[13px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+          className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
             showBG === "oldest" ? "bg_white font-[700]" : "bg_lightgray2"
           }`}
           onClick={() => setshowBG("oldest")}
@@ -117,7 +117,7 @@ const TradingCardTabs = () => {
         </div>
         {/*  */}
         <div
-          className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[13px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+          className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
             showBG === "newest" ? "bg_white font-[700]" : "bg_lightgray2"
           }`}
           onClick={() => setshowBG("newest")}
@@ -137,7 +137,7 @@ const TradingCardTabs = () => {
         </div>
         {/*  */}
         <div
-          className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[13px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+          className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
             showBG === "featured" ? "bg_white font-[700]" : "bg_lightgray2"
           }`}
           onClick={() => setshowBG("featured")}
@@ -157,7 +157,7 @@ const TradingCardTabs = () => {
         </div>
         {/*  */}
         <div
-          className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[13px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+          className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
             showBG === "alltraders" ? "bg_white font-[700]" : "bg_lightgray2"
           }`}
           onClick={() => setshowBG("alltraders")}
@@ -176,7 +176,7 @@ const TradingCardTabs = () => {
           </span>
         </div>
       </div>
-      <div className="mt-1 bg_white p-[24px]">
+      <div className="mt-1 bg_white p-[20px] rounded-[12px]">
         <TradingCards />
       </div>
     </div>
