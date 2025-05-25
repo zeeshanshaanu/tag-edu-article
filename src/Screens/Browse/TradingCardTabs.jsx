@@ -18,7 +18,7 @@ const TradingCardTabs = () => {
   return (
     <div className="rounded-[8px]">
       {/* Tabs */}
-      <div className="flex gap-[10px]">
+      <div className="sm:flex gap-[8px] max-w-[100%] overflow-auto">
         <div
           className={`cursor-pointer flex rounded-[8px] px-[16px] py-[10px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 ${
@@ -46,7 +46,7 @@ const TradingCardTabs = () => {
               showBG === "toproi" ? "black" : "gray"
             }`}
           >
-            Top ROI
+            Top&nbsp;ROI
           </span>
         </div>
         {/*  */}
@@ -71,7 +71,7 @@ const TradingCardTabs = () => {
               showBG === "lowestdrawdown" ? "black" : "gray"
             }`}
           >
-            Lowest Drawdown
+            Lowest&nbsp;Drawdown
           </span>
         </div>
         {/*  */}
@@ -92,7 +92,7 @@ const TradingCardTabs = () => {
               showBG === "mostpopular" ? "black" : "gray"
             }`}
           >
-            Most popular
+            Most&nbsp;popular
           </span>
         </div>
         {/*  */}
@@ -172,7 +172,7 @@ const TradingCardTabs = () => {
               showBG === "alltraders" ? "black" : "gray"
             }`}
           >
-            All Traders
+            All&nbsp;Traders
           </span>
         </div>
       </div>

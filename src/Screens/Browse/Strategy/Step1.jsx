@@ -181,7 +181,7 @@ const Step1 = () => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 gap-[15px]">
+          <div className="mt-4 grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 gap-[10px]">
             {/* StrategyName */}
             <div className="lg:col-span-2">
               <label htmlFor="" className="text-[12px] font-[700] black">
@@ -532,27 +532,23 @@ const Step1 = () => {
         <hr className="mt-5" style={{ color: "#E8E8E8" }} />
         <div className="mt-5 flex justify-between gap-4">
           <div className="my-auto">
-            <div className="my-auto">
-              <button
-                onClick={() => dispatch(StrategyFtn("Step0"))}
-                className="cursor-pointer border border-[1.5px] border-[#E8E8E8] rounded-[8px] px-[15px] py-[7px] flex gap-2"
-              >
-                <img src={ArrowLeftBlack} alt="ArrowRight" className="" /> Back
-              </button>
-            </div>
+            <button
+              onClick={() => dispatch(StrategyFtn("Step0"))}
+              className="cursor-pointer border border-[1.5px] border-[#E8E8E8] rounded-[8px] px-[15px] py-[7px] flex gap-2"
+            >
+              <img src={ArrowLeftBlack} alt="ArrowRight" className="" /> Back
+            </button>
           </div>
           <div className="my-auto">
             {/* 1 */}
-            <div className="flex gap-3 mt-3">
-              <div className="flex gap-2">
-                <h1 className="text-[16px] black font-[700] bg_lightgray5 rounded-full py-[4px] px-[12px] flex justify-center">
-                  1
-                </h1>
-                <div className="my-auto border lightgray3 w-[30px]"></div>
-                <h1 className="text-[16px] lightgray font-[700] bg_lightgray5 rounded-full py-[4px] px-[12px] flex justify-center">
-                  2
-                </h1>
-              </div>
+            <div className="flex gap-2">
+              <h1 className="text-[16px] black font-[700] bg_lightgray5 rounded-full py-[4px] px-[12px] flex justify-center">
+                1
+              </h1>
+              <div className="my-auto border lightgray3 w-[30px]"></div>
+              <h1 className="text-[16px] lightgray font-[700] bg_lightgray5 rounded-full py-[4px] px-[12px] flex justify-center">
+                2
+              </h1>
             </div>
           </div>
           <div className="my-auto">

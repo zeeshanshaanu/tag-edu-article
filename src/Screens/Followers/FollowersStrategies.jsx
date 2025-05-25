@@ -17,7 +17,7 @@ const Followersinactive = () => {
           {/* Tabs */}
           <div className="inline-flex gap-[5px] bg_lightgray5 p-1 rounded-[8px]">
             <div
-              className={`cursor-pointer flex rounded-[8px] px-[16px] py-[7px] font-[500] 
+              className={`cursor-pointer flex rounded-[8px] px-[12px] py-[7px] font-[500] 
                          hover:bg-[#F9F9F9] transition-colors duration-200 ${
                            Strategies === "active"
                              ? "bg_white font-[700]"
@@ -35,7 +35,7 @@ const Followersinactive = () => {
             </div>
             {/*  */}
             <div
-              className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] 
+              className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[12px] py-[7px] font-[500] 
                          hover:bg-[#F9F9F9] transition-colors duration-200 
                           ${
                             Strategies === "inactive"
@@ -55,7 +55,7 @@ const Followersinactive = () => {
             </div>
             {/*  */}
             <div
-              className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+              className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[12px] py-[7px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
                 Strategies === "favorites"
                   ? "bg_white font-[700]"
                   : "bg_lightgray2"

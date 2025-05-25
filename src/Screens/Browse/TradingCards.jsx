@@ -100,9 +100,9 @@ const TradingCards = () => {
           <input
             type="text"
             placeholder="Search"
-            className=" w-[280px] border border-[1.5px] border-[#E8E8E8] rounded-[8px] outline-none pl-[15px] pr-[45px] py-[7px]"
+            className="w-[180px] sm:w-[280px] border border-[1.5px] border-[#E8E8E8] rounded-[8px] outline-none pl-[15px] pr-[45px] py-[7px]"
           />
-          <div className="absolute bg_black top-[4px] left-[243px] w-[32px] h-[32px] rounded-[6px] flex justify-center">
+          <div className="absolute bg_black top-[4px] sm:left-[243px] left-[143px] w-[32px] h-[32px] rounded-[6px] flex justify-center">
             <img
               src={MagnifyingGlassWhite}
               alt="MagnifyingGlass"
@@ -112,12 +112,12 @@ const TradingCards = () => {
         </div>
         <div className="my-auto">
           <h1 className="cursor-pointer border border-[1.5px] border-[#E8E8E8] rounded-[8px] px-[15px] py-[7px] flex gap-2">
-            View all <img src={ArrowRight} alt="ArrowRight" className="" />{" "}
+            View&nbsp;all <img src={ArrowRight} alt="ArrowRight" className="" />{" "}
           </h1>
         </div>
       </div>
       {/* CARDS */}
-      <div className="Cards mt-5 grid grid-cols-1 lg:grid-cols-4 gap-[15px]">
+      <div className="Cards mt-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[15px]">
         {cardsData?.length > 0 ? (
           cardsData?.map((items, index) => {
             return (
@@ -130,7 +130,7 @@ const TradingCards = () => {
                   mixBlendMode: "multiply",
                   zIndex: 1,
                 }}
-                className="rounded-[8px] p-[13px] gradient-border "
+                className="rounded-[8px] p-[13px] gradient-border"
               >
                 <div className="flex justify-between gap-4">
                   <div className="flex gap-[12px] my-auto">
@@ -226,6 +226,27 @@ const TradingCards = () => {
         ) : (
           <span className="text-center p-10 grid grid-cols-1">No Trads</span>
         )}
+      </div>
+      {/*  */}
+      <div className="mt-5 MasterTradeBgImage p-5 sm:flex justify-between gap-5">
+        <div className="my-auto">
+          <h1 className="white text-[24px] lg:text-[32px] font-[700]">
+            Become A{" "}
+            <span className="primaryGreen text-[24px] lg:text-[32px] font-[700] mt-1 tracking-wide">
+              Master Trader
+            </span>
+          </h1>
+          <p className="white text-[16px]  mt-2">
+            Let others copy your trades and earn additional income with Tag Copy
+            Trading
+          </p>
+        </div>
+        <div className="lg:my-auto mt-5">
+          <button className="black cursor-pointer bg_primaryGreen rounded-[8px] font-[500] px-[15px] py-[6px] flex justify-center gap-1 my-auto">
+            Join&nbsp;as&nbsp;a&nbsp;trader
+            <img src={ArrowRight} alt="ArrowRight" className="" />{" "}
+          </button>
+        </div>
       </div>
     </div>
   );

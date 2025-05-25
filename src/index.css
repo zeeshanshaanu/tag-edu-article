@@ -45,7 +45,7 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   width: 100%;
-  height: 160px;
+  /* height: 160px; */
 }
 .HeaderGreenBGimage {
   background-image: url("./assets/Images/HeaderGreenBGimage.png");
@@ -54,6 +54,15 @@ body {
   background-repeat: no-repeat;
   width: 100%;
   height: 100%;
+  border-radius: 12px;
+}
+.MasterTradeBgImage {
+  background-image: url("./assets/Images/CTA_BG_Banner.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  min-height: 150px;
   border-radius: 12px;
 }
 :where(.css-dev-only-do-not-override-1m2bkf9).ant-modal .ant-modal-content {

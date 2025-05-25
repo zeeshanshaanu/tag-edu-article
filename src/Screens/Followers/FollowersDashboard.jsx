@@ -57,8 +57,8 @@ const data = [
 const FollowersDashboard = () => {
   return (
     <div>
-      <div className="flex justify-between gap-5 mb-5">
-        <div className="flex gap-3 my-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-3">
+        <div className="flex gap-2 my-auto ">
           <div className="my-auto">
             <select
               required
@@ -76,6 +76,7 @@ const FollowersDashboard = () => {
               <option value={24}>22 Strategies</option>
             </select>
           </div>
+
           <div className="my-auto">
             <select
               required
@@ -98,22 +99,22 @@ const FollowersDashboard = () => {
           </div>
         </div>
 
-        <div className="my-auto flex gap-10">
-          <div className="lightgray my-auto border-r-[1px] pr-10 border-[#E8E8E8]">
-            <p className="gray text-[12px] font-[500]">Total Balance </p>
+        <div className="my-auto grid grid-cols-2 lg:grid-cols-4 gap-5 flex">
+          <div className="lightgray my-auto">
+            <p className="gray text-[12px] font-[500]">Investment </p>
             <p className="black text-[14px] font-[700]">99,434 USD</p>
           </div>
-          <div className="lightgray my-auto border-r-[1px] pr-10 border-[#E8E8E8]">
-            <p className="gray text-[12px] font-[500]">Total Balance </p>
+          <div className="lightgray my-auto">
+            <p className="gray text-[12px] font-[500]">Total&nbsp;Equity</p>
             <p className="black text-[14px] font-[700]">99,434 USD</p>
           </div>
-          <div className="lightgray my-auto border-r-[1px] pr-10 border-[#E8E8E8]">
-            <p className="gray text-[12px] font-[500]">Total Balance </p>
-            <p className="black text-[14px] font-[700]">99,434 USD</p>
+          <div className="lightgray my-auto">
+            <p className="gray text-[12px] font-[500]">ROI </p>
+            <p className="black text-[14px] font-[700]">+47% </p>
           </div>
           <div className="lightgray">
-            <p className="gray text-[12px] font-[500]">Total Balance </p>
-            <p className="black text-[14px] font-[700]">99,434 USD</p>
+            <p className="gray text-[12px] font-[500]">PnL</p>
+            <p className="black text-[14px] font-[700]">+99,434 USD</p>
           </div>
         </div>
       </div>

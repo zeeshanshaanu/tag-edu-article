@@ -6,7 +6,7 @@ import HeaderTabAndBreadCrumb from "../../components/HeaderTabs/HeaderTabAndBrea
 // ///////////////////////   *****************   ///////////////////////
 const Browse = () => {
   return (
-    <div className="p-5">
+    <div className="p-3">
       <HeaderTabAndBreadCrumb />
       {/* Browse Pro Traders */}
       <div className="my-4 HeaderGreenBGimage p-[20px] rounded-[12px]">

@@ -97,17 +97,17 @@ const FollowersTrade = () => {
       {/* Table */}
       <div className="my-5 overflow-x-auto">
         <table className="min-w-full bg-white">
-          <thead className="bg_lightgray5 text-left text-[12px] font-[700] gray">
-            <tr className=" border-[1px] border-[#f4f4f4]">
-              <th className="border-none p-3">Strategy</th>
-              <th className="p-3">Instrument</th>
-              <th className="p-3">Type</th>
-              <th className="p-3">Size</th>
-              <th className="p-3">Entry Price</th>
-              <th className="p-3">Exit Price</th>
-              <th className="p-3">Entry Time</th>
-              <th className="p-3">Exit Time</th>
-              <th className="p-3">PnL</th>
+          <thead className="bg_lightgray5 text-left text-[12px] font-[500] gray">
+            <tr className="">
+              <th className="py-2 px-[15px]">Strategy</th>
+              <th className="py-2 px-[15px]">Instrument</th>
+              <th className="py-2 px-[15px]">Type</th>
+              <th className="py-2 px-[15px]">Size</th>
+              <th className="py-2 px-[15px]">Entry&nbsp;Price</th>
+              <th className="py-2 px-[15px]">Exit&nbsp;Price</th>
+              <th className="py-2 px-[15px]">Entry&nbsp;Time</th>
+              <th className="py-2 px-[15px]">Exit&nbsp;Time</th>
+              <th className="py-2 px-[15px]">PnL</th>
             </tr>
           </thead>
           <tbody>
@@ -115,26 +115,29 @@ const FollowersTrade = () => {
               strategies.map((item, index) => (
                 <tr
                   key={index}
-                  className="text-[14px] font-[700] black border-t border-[#E8E8E8]"
+                  className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
                 >
-                  <td className="p-3">
-                    <div className="flex gap-2">
+                  <td className="py-2 pr-[15px]">
+                    <div
+                      onClick={() => navigate("/Followers-Strategy-Detail")}
+                      className="flex gap-2 cursor-pointer hover:text-blue-400"
+                    >
                       <img
                         src={ProfileImage}
                         alt="Strategy Icon"
                         className="w-[24px] h-[24px] rounded-full object-cover"
                       />
-                      <p className="">{item.strategy}</p>
+                      <p className="my-auto">{item.strategy}</p>
                     </div>
                   </td>
-                  <td className="p-3">{item.Instrument}</td>
-                  <td className="p-3">{item.Type}</td>
-                  <td className="p-3">{item.Size}</td>
-                  <td className="p-3">{item.EntryPrice}</td>
-                  <td className="p-3">{item.ExitPrice}</td>
-                  <td className="p-3">{item.EntryTime}</td>
-                  <td className="p-3">{item.ExitTime}</td>
-                  <td className="p-3 green">{item.pnl}</td>
+                  <td className="py-2 px-[15px]">{item.Instrument}</td>
+                  <td className="py-2 px-[15px]">{item.Type}</td>
+                  <td className="py-2 px-[15px]">{item.Size}</td>
+                  <td className="py-2 px-[15px]">{item.EntryPrice}</td>
+                  <td className="py-2 px-[15px]">{item.ExitPrice}</td>
+                  <td className="py-2 px-[15px]">{item.EntryTime}</td>
+                  <td className="py-2 px-[15px]">{item.ExitTime}</td>
+                  <td className="py-2 px-[15px] green">{item.pnl}</td>
                 </tr>
               ))
             ) : (

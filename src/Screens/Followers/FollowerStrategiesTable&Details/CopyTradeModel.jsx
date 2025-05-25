@@ -28,9 +28,9 @@ const CopyTradeModel = () => {
         onCancel={() => dispatch(OpenModelFtn(false))}
       >
         <div>
-          <div className="grid grid-cols-1 lg:grid-cols-10 lg:grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 lg:grid-cols-10 md:grid-cols-10 gap-2">
             {/* // ///////////////////////   *****************   /////////////////////// */}
-            <div className="col-span-4 bg_black rounded-[12px] p-4">
+            <div className="lg:col-span-4 md:col-span-4 bg_black rounded-[12px] p-4">
               <center>
                 <img
                   style={{
@@ -44,7 +44,7 @@ const CopyTradeModel = () => {
                   Anjuta
                 </h1>
               </center>
-              <div className="my-4 flex gap-[15px]">
+              <div className="my-4 flex justify-center gap-[15px]">
                 <div
                   style={{
                     boxShadow: "0px 1px 10px 2px #CAFD5D80",
@@ -119,8 +119,7 @@ const CopyTradeModel = () => {
               </div>
             </div>
             {/* // ///////////////////////   *****************   /////////////////////// */}
-
-            <div className="col-span-6 p-4">
+            <div className="lg:col-span-6 md:col-span-6 col-span-5 p-4">
               <h1 className="black text-[20px] font-[700]">Copy Strategy</h1>
               {/*  */}
               <div className="mt-4">

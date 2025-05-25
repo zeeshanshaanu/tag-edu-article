@@ -70,12 +70,12 @@ const HeaderTabAndBreadCrumb = () => {
   });
   return (
     <div>
-      <div className="lg:flex justify-between gap-4 w-full">
+      <div className="sm:flex justify-between gap-4 w-full">
         <div className="my-auto">
           <Breadcrumb items={items} />
         </div>
         {/* Tabs */}
-        <div className="mt-3 lg:mt-0 bg_white rounded-[8px] p-[3px] flex gap-1">
+        <div className="mt-3 lg:mt-0 md:mt-0 bg_white rounded-[8px] p-[3px] sm:flex gap-1">
           <div
             className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
               breadcrumbData?.[0]?.label === "Browse" &&

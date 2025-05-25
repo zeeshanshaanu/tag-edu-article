@@ -29,6 +29,7 @@ import { useDispatch } from "react-redux";
 import { OpenModelFtn } from "../../../Store/StrategySlice/StrategySlice";
 import axios from "axios";
 import CopyTradeModel from "./CopyTradeModel";
+import HeaderTabAndBreadCrumb from "../../../components/HeaderTabs/HeaderTabAndBreadCrumb";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
@@ -136,43 +137,12 @@ const StrategiesDetailView = () => {
 
     fetchData();
   }, []);
+
   return (
-    <div className="p-5">
-      <div className="flex justify-between gap-4 w-full ">
-        <div className="my-auto">
-          <Breadcrumb
-            items={[
-              {
-                title: (
-                  <span className="flex gap-1">
-                    <img src={Users} alt="Users" />
-                    <span className=" gray font-[500] text-[14px] my-auto">
-                      Followers
-                    </span>
-                  </span>
-                ),
-              },
-              {
-                title: (
-                  <span className="gray font-[500] text-[14px]">
-                    Strategies
-                  </span>
-                ),
-              },
-              {
-                title: (
-                  <span className="black font-[700] text-[14px]">Anjuta</span>
-                ),
-              },
-            ]}
-          />
-        </div>
-        <div className="my-auto">
-          <HeaderTabs />
-        </div>
-      </div>
+    <div className="p-3">
+      <HeaderTabAndBreadCrumb />
       {/* Followers Hub header */}
-      <div className="my-5">
+      <div className="my-2">
         <div className="bg_white p-[15px] rounded-[12px]">
           <div className="flex justify-between gap-5">
             {/*  */}
@@ -206,7 +176,7 @@ const StrategiesDetailView = () => {
           </div>
           {/*  */}
           <div className="my-auto bg_black rounded-[12px] border-[2.5px] border-[#666666] p-[15px] mt-5">
-            <div className="grid grid:cols-1 lg:grid-cols-5 md:grid-cols-3 gap-2">
+            <div className="grid grid:cols-1 lg:grid-cols-5 md:grid-cols-3 gap-3">
               <div className="w-full my-auto flex justify-start">
                 <div className="lightgray my-auto leading-6">
                   <p className="white text-[16px] font-[500] flex gap-1 ">
@@ -221,8 +191,8 @@ const StrategiesDetailView = () => {
                 </div>
               </div>
               {/* Followers */}
-              <div className="flex gap-x-[16px] flex justify-end ">
-                <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+              <div className="flex gap-x-[16px] flex lg:justify-end ">
+                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={TotalBlce}
                     alt="TotalBlce"
@@ -235,8 +205,8 @@ const StrategiesDetailView = () => {
                 </div>
               </div>
               {/* Trading Days  */}
-              <div className="flex gap-x-[16px] flex justify-end">
-                <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+              <div className="flex gap-x-[16px] flex lg:justify-end">
+                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={TotalRoi}
                     alt="TotalRoi"
@@ -251,8 +221,8 @@ const StrategiesDetailView = () => {
                 </div>
               </div>
               {/* Performance Fee  */}
-              <div className="flex gap-x-[16px] flex justify-end">
-                <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+              <div className="flex gap-x-[16px] flex lg:justify-end">
+                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={TotalPnl}
                     alt="TotalPnl"
@@ -267,8 +237,8 @@ const StrategiesDetailView = () => {
                 </div>
               </div>
               {/*Min Investment  */}
-              <div className="flex gap-x-[16px] flex justify-end">
-                <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+              <div className="flex gap-x-[16px] flex lg:justify-end">
+                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={UnrealizedPnL}
                     alt="UnrealizedPnL"
@@ -287,10 +257,10 @@ const StrategiesDetailView = () => {
         </div>{" "}
       </div>
       {/*  */}
-      <div className="my-5">
+      <div className="my-4">
         <div className="grid grid:cols-1 lg:grid-cols-8 md:grid-cols-3 gap-4">
           {/* // ///////////////////////   *****************   /////////////////////// */}
-          <div className="col-span-2 ">
+          <div className="col-span-8 md:col-span-8 lg:col-span-2">
             <div className="bg_white rounded-[8px] p-4">
               <div className="flex justify-between gap-5">
                 <div className="my-auto">
@@ -432,7 +402,7 @@ const StrategiesDetailView = () => {
             {/*  */}
             <div className="mt-[10px] bg_image p-5 rounded-[12px]">
               <div className="text-center white ">
-                <h1 className="white text-[20px] font-[700]">
+                <h1 className="white text-[20px]  font-[700]">
                   Promote <span className="primaryGreen "> This Strategy</span>
                 </h1>
                 <p className="white text-[14px] font-[500] mt-1 tracking-wide">
@@ -448,13 +418,13 @@ const StrategiesDetailView = () => {
             </div>
           </div>
           {/* // ///////////////////////   *****************   /////////////////////// */}
-          <div className="bg_white rounded-[8px] col-span-6 p-5">
+          <div className="bg_white rounded-[8px] col-span-8 md:col-span-8 lg:col-span-6 p-4">
             <div className="flex justify-between gap-3 my-auto">
               {/* Tabs */}
-              <div className="inline-flex gap-[5px] bg_lightgray5 p-1 rounded-[8px]">
+              <div className="my-auto inline-flex gap-[5px] bg_lightgray5 p-1 rounded-[8px]">
                 {/*  */}
                 <div
-                  className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[5px] font-[500] 
+                  className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[12px] py-[5px] font-[500] 
                          hover:bg-[#F9F9F9] transition-colors duration-200 
                           ${
                             Strategies === "graph"
@@ -474,7 +444,7 @@ const StrategiesDetailView = () => {
                 </div>
                 {/*  */}
                 <div
-                  className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[5px] font-[500] 
+                  className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[12px] py-[5px] font-[500] 
                          hover:bg-[#F9F9F9] transition-colors duration-200 
                           ${
                             Strategies === "trades"
@@ -494,7 +464,7 @@ const StrategiesDetailView = () => {
                 </div>
                 {/*  */}
                 <div
-                  className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[5px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+                  className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[12px] py-[5px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
                     Strategies === "advanced"
                       ? "bg_white font-[700]"
                       : "bg_lightgray2"
@@ -514,7 +484,7 @@ const StrategiesDetailView = () => {
                 <select
                   required
                   placeholder="All Strategies"
-                  className="w-full mt-1 border border-[1px] border-[#E8E8E8] rounded-[8px] outline-none px-[10px] py-[8px]"
+                  className="w-full border border-[1px] border-[#E8E8E8] rounded-[8px] outline-none px-[10px] py-[7px]"
                   // value={formvalue.StrategyType}
                   // onChange={(e) =>
                   //   setformvalue({ ...formvalue, StrategyType: e.target.value })
@@ -531,7 +501,7 @@ const StrategiesDetailView = () => {
                 </select>
               </div>
             </div>
-            <div style={{ width: "100%", height: 450 }}>
+            <div style={{ width: "100%", height: 500 }}>
               <div className="my-5">
                 <div className="flex gap-6 items-center mt-4">
                   {/* Category 1 */}
@@ -565,7 +535,7 @@ const StrategiesDetailView = () => {
                     top: 10,
                     right: 0,
                     left: -20,
-                    bottom: 0,
+                    bottom: 50,
                   }}
                 >
                   <CartesianGrid
@@ -636,14 +606,14 @@ const StrategiesDetailView = () => {
         </div>
       </div>
       {/* Table */}
-      <div className="my-5 overflow-x-auto">
+      <div className="my-4 overflow-x-auto">
         <table className="min-w-full bg-white">
-          <thead className="bg_lightgray5 text-left text-[12px] font-[700] gray">
-            <tr className=" border-[1px] border-[#f4f4f4]">
-              <th className="p-3">Name</th>
-              <th className="p-3">ROI</th>
-              <th className="p-3">Age</th>
-              <th className="p-3">Max DD</th>
+          <thead className="bg_lightgray5 text-left text-[12px] font-[500] gray">
+            <tr className="">
+              <th className="py-2 px-[15px]">Name</th>
+              <th className="py-2 px-[15px]">ROI</th>
+              <th className="py-2 px-[15px]">Age</th>
+              <th className="py-2 px-[15px]">Max DD</th>
             </tr>
           </thead>
           <tbody>
@@ -653,19 +623,22 @@ const StrategiesDetailView = () => {
                   key={index}
                   className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
                 >
-                  <td className="p-3">
-                    <div className="flex gap-2">
+                  <td className="py-2 px-[15px]">
+                    <div
+                      onClick={() => navigate("/Followers-Strategy-Detail")}
+                      className="flex gap-2 cursor-pointer hover:text-blue-400"
+                    >
                       <img
                         src={ProfileImage}
                         alt="Strategy Icon"
                         className="w-[24px] h-[24px] rounded-full object-cover"
                       />
-                      <p className="">{item.name}</p>
+                      <p className="my-auto">{item.name}</p>
                     </div>
                   </td>
-                  <td className="p-3 green">{item.roi}</td>
-                  <td className="p-3">{item.age}</td>
-                  <td className="p-3">{item.max_dd}</td>
+                  <td className="py-2 px-[15px] green">{item.roi}</td>
+                  <td className="py-2 px-[15px]">{item.age}</td>
+                  <td className="py-2 px-[15px]">{item.max_dd}</td>
                 </tr>
               ))
             ) : (

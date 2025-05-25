@@ -44,15 +44,15 @@ const Step2 = () => {
       <div className="bg_white rounded-[12px] p-5 ">
         <h1 className="black text-[20px] font-[700]">Strategy Configuration</h1>
         <div>
-          <div className="flex gap-10">
-            <div className="my-5">
+          <div className="xl:w-3/4 grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 gap-3 my-5">
+            <div className="">
               <Switch
                 defaultChecked
                 onChange={onChange}
                 className="custom-green-switch"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">
-                Show AUM{" "}
+                Show&nbsp;AUM{" "}
                 <Tooltip
                   style={{ color: "black" }}
                   title=" This is your current MT5 account balance "
@@ -64,14 +64,14 @@ const Step2 = () => {
                 </Tooltip>
               </span>
             </div>
-            <div className="my-5">
+            <div className="">
               <Switch
                 defaultChecked
                 onChange={onChange}
                 className="custom-green-switch"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">
-                Show Open Trades{" "}
+                Show&nbsp;Open&nbsp;Trades{" "}
                 <Tooltip
                   style={{ color: "black" }}
                   title=" This is your current MT5 account balance "
@@ -83,7 +83,7 @@ const Step2 = () => {
                 </Tooltip>
               </span>
             </div>
-            <div className="my-5">
+            <div className="">
               <Switch
                 defaultChecked
                 onChange={onChange}
@@ -102,14 +102,14 @@ const Step2 = () => {
                 </Tooltip>
               </span>
             </div>
-            <div className="my-5">
+            <div className="">
               <Switch
                 defaultChecked
                 onChange={onChange}
                 className="custom-green-switch"
               />
               <span className="ml-3 text-sm font-medium text-gray-700">
-                Allow Recruiters{" "}
+                Allow&nbsp;Recruiters{" "}
                 <Tooltip
                   style={{ color: "black" }}
                   title=" This is your current MT5 account balance "
@@ -122,7 +122,8 @@ const Step2 = () => {
               </span>
             </div>
           </div>
-          <div className="mt-4 grid grid-cols-1 lg:grid-cols-6 gap-[15px]">
+          {/*  */}
+          <div className=" grid grid-cols-1 lg:grid-cols-6 md:grid-cols-2 gap-[15px]">
             {/* Follower Withdrawal Settings */}
             <div className="lg:col-span-2">
               <label htmlFor="" className="text-[12px] font-[700] black">
@@ -190,7 +191,7 @@ const Step2 = () => {
           </div>
           {/* // ///////////////////////   *****************   /////////////////////// */}
           {/* // ///////////////////////   *****************   /////////////////////// */}
-          <div className="mt-[20px] grid grid-cols-1 lg:grid-cols-6 gap-[15px]">
+          <div className="grid grid-cols-1 lg:grid-cols-6 gap-[15px]">
             {/* Follower Withdrawal Settings */}
             <div className="lg:col-span-2">
               <label htmlFor="" className="text-[12px] font-[700] black">
@@ -309,7 +310,7 @@ const Step2 = () => {
           </div>
           {/* // ///////////////////////   *****************   /////////////////////// */}
           {/* // ///////////////////////   *****************   /////////////////////// */}
-          <div className="mt-[20px] grid grid-cols-1 lg:grid-cols-6 gap-[15px]">
+          <div className="grid grid-cols-1 lg:grid-cols-6 gap-[15px]">
             <div className="lg:col-span-2"></div>
             {/* Level #5 */}
             <div className="">
@@ -394,7 +395,7 @@ const Step2 = () => {
           </div>
           {/* // ///////////////////////   *****************   /////////////////////// */}
           {/* // ///////////////////////   *****************   /////////////////////// */}
-          <div className="mt-[20px] grid grid-cols-1 lg:grid-cols-6 gap-[15px]">
+          <div className="grid grid-cols-1 lg:grid-cols-6 gap-[15px]">
             <div className="lg:col-span-2"></div>
             {/* Level #9 */}
             <div className="">
@@ -492,7 +493,11 @@ const Step2 = () => {
         >
           <div>
             <div className="flex justify-center my-5">
-              <img src={celebrationImage} alt="ArrowRight" className=" w-[60px] h-[60px]" />{" "}
+              <img
+                src={celebrationImage}
+                alt="ArrowRight"
+                className=" w-[60px] h-[60px]"
+              />{" "}
             </div>
             <h2 className="text-[40px] font-[700] text-center">
               Strategy Was Created!

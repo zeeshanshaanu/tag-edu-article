@@ -54,51 +54,52 @@ const FavoritesTable = () => {
 
     fetchData();
   }, []);
+
   return (
     <div>
       {/* Table */}
       <div className="my-5 overflow-x-auto">
         <table className="min-w-full bg-white">
-          <thead className="bg_lightgray5 text-left text-[12px] font-[700] gray">
-            <tr className=" border-[1px] border-[#f4f4f4]">
-              <th className="border-none p-3">Strategy</th>
-              <th className="p-3">AUM</th>
-              <th className="p-3">ROI</th>
-              <th className="p-3">Max DD</th>
-              <th className="p-3">Age</th>
-              <th className="p-3">Followers</th>
-              <th className="p-3">Action</th>
+
+          <thead className="bg_lightgray5 text-left text-[12px] font-[500] gray">
+            <tr className="">
+              <th className="py-2 px-[15px]">Strategy</th>
+              <th className="py-2 px-[15px]">AUM</th>
+              <th className="py-2 px-[15px]">ROI</th>
+              <th className="py-2 px-[15px]">Max&nbsp;DD</th>
+              <th className="py-2 px-[15px]">Age</th>
+              <th className="py-2 px-[15px]">Followers</th>
+              <th className="py-2 px-[15px]">Action</th>
             </tr>
           </thead>
+
           <tbody>
             {strategies?.length > 0 ? (
               strategies.map((item, index) => (
                 <tr
                   key={index}
-                  className="text-[14px] font-[700] black border-t border-[#E8E8E8]"
+                  className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
                 >
-                  <td className="p-2">
-                    <div className="flex gap-2">
+                  <td className="py-2 pr-[15px]">
+                    <div className="flex gap-2 cursor-pointer hover:text-blue-400">
                       <img
                         src={ProfileImage}
                         alt="Strategy Icon"
                         className="w-[24px] h-[24px] rounded-full object-cover"
                       />
-                      <p className="my-xxx">{item.strategy}</p>
+                      <p className="my-auto">{item.strategy}</p>
                     </div>
                   </td>
-
-                  <td className="p-2">{item.aum}</td>
-                  <td className="p-2 font-[500]">{item.roi}</td>
-                  <td className="p-3 green font-[500]">{item.max_dd}</td>
-                  <td className="p-2">{item.age}</td>
-
-                  <td className="p-2">{item.Followers}</td>
-                  <td className="p-2 flex flex-wrap gap-2 mt-[8px]">
-                    <div className="my-auto">
+                  <td className="py-2 px-[15px]">{item.aum}</td>
+                  <td className="py-2 px-[15px]">{item.roi}</td>
+                  <td className="py-2 px-[15px] green">{item.max_dd}</td>
+                  <td className="py-2 px-[15px]">{item.age}</td>
+                  <td className="py-2 px-[15px]">{item.Followers}</td>
+                  <td className="py-2 px-[15px] flex gap-2 mt-[8px]">
+                    <div className="cursor-pointer my-auto">
                       <img src={CopyImage} alt="CopyImage" className="" />
                     </div>
-                    <div className="my-auto">
+                    <div className="cursor-pointer my-auto">
                       <img
                         src={DeleteGrayIcon}
                         alt="DeleteGrayIcon"
@@ -116,6 +117,7 @@ const FavoritesTable = () => {
               </tr>
             )}
           </tbody>
+          
         </table>
       </div>
     </div>

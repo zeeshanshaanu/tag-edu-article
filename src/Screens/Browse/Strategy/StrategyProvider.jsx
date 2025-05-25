@@ -12,7 +12,7 @@ const StrategyProvider = () => {
   // console.log(StrategySteps);
 
   return (
-    <div className="p-5">
+    <div className="p-3">
       <div className="">
         <Breadcrumb
           items={[
@@ -38,10 +38,10 @@ const StrategyProvider = () => {
       </div>
 
       {/* Browse Pro Traders */}
-      <div className="my-5 bg_primaryGreen p-[35px]  rounded-[12px]">
+      <div className="my-4 HeaderGreenBGimage p-[20px] rounded-[12px]">
         <div className="flex justify-between gap-5">
           <div className="my-auto">
-            <h1 className="text-[40px] font-[700] black">
+            <h1 className="lg:text-[40px] text-[30px] font-[700] black">
               Become A Strategy Provider
             </h1>
             <p className="text-[16px] font-[500] black">
