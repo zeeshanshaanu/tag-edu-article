@@ -32,16 +32,16 @@ const Followers = () => {
       <div className="my-3">
         <div className=" HeaderGreenBGimage p-[20px] rounded-[12px]">
           <div className="flex justify-between gap-5">
-            <h1 className="g:text-[40px] text-[30px] font-[700] black">
+            <h1 className="lg:text-[40px] text-[30px] font-[700] black">
               Follower Hub
             </h1>
             <div className="my-auto">
-              <h1
+              <button
                 className="text-[14px] font-[700] cursor-pointer border border-[2px] bg_white border-[#E8E8E8]
-             rounded-[8px] px-[15px] py-[7px] flex gap-2"
+                          rounded-[8px] px-[15px] py-[7px] flex gap-2"
               >
                 <img src={UserGuide} alt="UserGuide" className="" /> User Guide
-              </h1>
+              </button>
             </div>
           </div>
           {/*  */}
@@ -49,7 +49,7 @@ const Followers = () => {
             <div className="grid grid:cols-2 lg:grid-cols-5 md:grid-cols-3 gap-3">
               {/* Total Balance */}
               <div className="flex gap-x-[15px] ">
-                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <div className="lightgreenBoxShahdow lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={TotalBlce}
                     alt="TotalBlce"
@@ -65,7 +65,7 @@ const Followers = () => {
               </div>
               {/* Total ROI  */}
               <div className="flex gap-x-[15px]">
-                <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={TotalRoi}
                     alt="TotalRoi"
@@ -79,7 +79,7 @@ const Followers = () => {
               </div>
               {/* Total PnL  */}
               <div className="flex gap-x-[15px]">
-                <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={TotalPnl}
                     alt="TotalPnl"
@@ -93,7 +93,7 @@ const Followers = () => {
               </div>
               {/*Unrealized PnL  */}
               <div className="flex gap-x-[15px]">
-                <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={UnrealizedPnL}
                     alt="UnrealizedPnL"

@@ -22,21 +22,23 @@ const Recruiters = () => {
   const [FollowerTabs, setFollowerTabs] = useState("Dashboard");
 
   return (
-    <div className="p-5">
+    <div className="p-3">
       <HeaderTabAndBreadCrumb />
 
       {/* Followers Hub header */}
-      <div className="my-5">
-        <div className=" bg_primaryGreen p-[25px] rounded-[12px]">
+      <div className="my-3">
+        <div className=" HeaderGreenBGimage p-[20px] rounded-[12px]">
           <div className="flex justify-between gap-5">
-            <h1 className="text-[40px] font-[700] black">Recruiter Hub</h1>
+            <h1 className="lg:text-[40px] text-[30px] font-[700] black">
+              Recruiter Hub
+            </h1>
             <div className="my-auto">
-              <h1
+              <button
                 className="text-[14px] font-[700] cursor-pointer border border-[2px] bg_white border-[#E8E8E8]
              rounded-[8px] px-[15px] py-[7px] flex gap-2"
               >
                 <img src={UserGuide} alt="UserGuide" className="" /> User Guide
-              </h1>
+              </button>
             </div>
           </div>
           {/*  */}
@@ -44,7 +46,7 @@ const Recruiters = () => {
             <div className="grid grid:cols-1 lg:grid-cols-5 md:grid-cols-3 gap-2">
               {/* Total Commissions */}
               <div className="flex gap-x-[16px]">
-                <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={CoinBlack}
                     alt="CoinBlack"
@@ -60,7 +62,7 @@ const Recruiters = () => {
               </div>
               {/* Deposits */}
               <div className="flex gap-x-[16px]">
-                <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={DespositWallet}
                     alt="DespositWallet"
@@ -74,7 +76,7 @@ const Recruiters = () => {
               </div>
               {/* Total PnL  */}
               <div className="flex gap-x-[16px]">
-                <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={RecruiterStrucute}
                     alt="RecruiterStrucute"
@@ -91,12 +93,12 @@ const Recruiters = () => {
         </div>{" "}
       </div>
       {/* FollowersTabs */}
-      <div className="my-5 flex justify-between gap-2">
+      <div className="my-1 flex justify-between gap-2">
         <div className="rounded-[8px]">
           {/* Tabs */}
           <div className="flex gap-[10px]">
             <div
-              className={`cursor-pointer flex rounded-[8px] px-[16px] py-[13px] font-[500] 
+              className={`cursor-pointer flex rounded-[8px] px-[16px] py-[10px] font-[500] 
                  hover:bg-[#F9F9F9] transition-colors duration-200 ${
                    FollowerTabs === "Dashboard"
                      ? "bg_white font-[700]"
@@ -129,7 +131,7 @@ const Recruiters = () => {
             </div>
             {/*  */}
             <div
-              className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[13px] font-[500] 
+              className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] 
                  hover:bg-[#F9F9F9] transition-colors duration-200 
                   ${
                     FollowerTabs === "RecruiterWallet"

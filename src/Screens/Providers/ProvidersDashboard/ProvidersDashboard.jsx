@@ -139,9 +139,9 @@ const ProviderDashboard = () => {
   }, []);
   return (
     <div>
-      <div className="bg-white p-[20px]">
+      <div className="bg-white p-[15px]">
         <div className="flex justify-between gap-5 mb-5">
-          <div className="flex gap-3 my-auto">
+          <div className="sm:flex gap-3 my-auto">
             <div className="my-auto">
               <select
                 required
@@ -181,22 +181,22 @@ const ProviderDashboard = () => {
             </div>
           </div>
 
-          <div className="my-auto flex gap-10">
-            <div className="lightgray my-auto border-r-[1px] pr-10 border-[#E8E8E8]">
-              <p className="gray text-[12px] font-[500]">Balance </p>
+          <div className="my-auto grid grid-cols-2 lg:grid-cols-4 gap-5 flex">
+            <div className="lightgray my-auto">
+              <p className="gray text-[12px] font-[500]">Investment </p>
               <p className="black text-[14px] font-[700]">99,434 USD</p>
             </div>
-            <div className="lightgray my-auto border-r-[1px] pr-10 border-[#E8E8E8]">
-              <p className="gray text-[12px] font-[500]">Total Balance </p>
+            <div className="lightgray my-auto">
+              <p className="gray text-[12px] font-[500]">Total&nbsp;Equity</p>
               <p className="black text-[14px] font-[700]">99,434 USD</p>
             </div>
-            <div className="lightgray my-auto border-r-[1px] pr-10 border-[#E8E8E8]">
-              <p className="gray text-[12px] font-[500]">Recruiter</p>
-              <p className="black text-[14px] font-[700]">%99</p>
+            <div className="lightgray my-auto">
+              <p className="gray text-[12px] font-[500]">ROI </p>
+              <p className="black text-[14px] font-[700]">+47% </p>
             </div>
             <div className="lightgray">
-              <p className="gray text-[12px] font-[500]">PnL </p>
-              <p className="black text-[14px] font-[700]">99,434 USD</p>
+              <p className="gray text-[12px] font-[500]">PnL</p>
+              <p className="black text-[14px] font-[700]">+99,434 USD</p>
             </div>
           </div>
         </div>
@@ -228,7 +228,7 @@ const ProviderDashboard = () => {
                 top: 10,
                 right: 0,
                 left: -20,
-                bottom: 0,
+                bottom: 30,
               }}
             >
               <CartesianGrid
@@ -291,9 +291,11 @@ const ProviderDashboard = () => {
         </div>
       </div>
       {/* Input fields */}
-      <div className="bg-white p-[20px] my-5 rounded-[8px]">
-        <div className="flex justify-between gap-5">
-          <h1 className="text-[20px] font-[700] black">Personal Fund</h1>
+      <div className="bg-white p-[15px] my-5 rounded-[8px]">
+        <div className="flex justify-between gap-2">
+          <h1 className="my-auto text-[20px] font-[700] black">
+            Personal Fund
+          </h1>
           <div className="my-auto flex gap-2">
             <h1
               onClick={() => dispatch(OpenModelFtn(true))}
@@ -314,11 +316,11 @@ const ProviderDashboard = () => {
           </div>
         </div>
         {/* Inputs */}
-        <div className="mt-4 grid grid:cols-1 lg:grid-cols-4 md:grid-cols-2 gap-4">
+        <div className="mt-4 grid grid:cols-1 xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 gap-2">
           {/* NameName */}
           <div className="relative">
             <label htmlFor="" className="text-[12px] font-[700] black">
-              Invite Followers Directly To Join Your Name
+              Invite Followers Directly To Join Your Strategy
             </label>
             <br />
             <input
@@ -353,7 +355,6 @@ const ProviderDashboard = () => {
               className="w-full mt-1 border border-[1px] border-[#E8E8E8] rounded-[8px] outline-none px-[15px] py-[8px]"
             />{" "}
           </div>
-
           {/* NameName */}
           <div className="">
             <label htmlFor="" className="text-[12px] font-[700] black">
@@ -391,21 +392,21 @@ const ProviderDashboard = () => {
         </div>
       </div>
       {/* table */}
-      <div className="bg-white p-[20px] my-5 rounded-[8px]">
+      <div className="bg-white p-[15px] my-3 rounded-[8px]">
         <div className=" overflow-x-auto">
           <h1 className="mb-4 text-[20] font-[700]">
             Pending Follower Requests
           </h1>
           <table className="min-w-full bg-white">
-            <thead className="bg_lightgray5 text-left text-[12px] font-[700] gray">
-              <tr className=" border-[1px] border-[#f4f4f4]">
-                <th className="border-none p-3">Name</th>
-                <th className="p-3">Balance</th>
-                <th className="p-3">Date Requested</th>
-                <th className="p-3">Recruiter</th>
-                <th className="p-3">PnL</th>
-                <th className="p-3">MT5 Account</th>
-                <th className="p-3">Action</th>
+            <thead className="border-[1px] border-[#f4f4f4] rounded-[12px] bg_lightgray5 text-left text-[12px] font-[700] gray">
+              <tr className="">
+                <th className="py-2 px-[15px]">Name</th>
+                <th className="py-2 px-[15px]">Balance</th>
+                <th className="py-2 px-[15px]">Date&nbsp;Requested</th>
+                <th className="py-2 px-[15px]">Recruiter</th>
+                <th className="py-2 px-[15px]">PnL</th>
+                <th className="py-2 px-[15px]">MT5&nbsp;Account</th>
+                <th className="py-2 px-[15px]">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -415,29 +416,29 @@ const ProviderDashboard = () => {
                     key={index}
                     className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
                   >
-                    <td className="p-2">
+                    <td className="py-2 pr-[15px]">
                       <div
                         onClick={() => navigate("/Followers-Name-Detail")}
-                        className="flex gap-2  cursor-pointer hover:text-blue-400"
+                        className="flex gap-2 cursor-pointer hover:text-blue-400"
                       >
                         <p className="my-xxx">{item.Name}</p>
                       </div>
                     </td>
-                    <td className="p-2">{item.Balance}</td>
-                    <td className="p-2">{item.Date_Requested}</td>
-                    <td className="p-2">{item.Recruiter}</td>
-                    <td className="p-3">{item.pnl}</td>
-                    <td className="p-2">{item.MT5_Account}</td>
-                    <td className="p-2 flex flex-wrap gap-2">
+                    <td className="py-2 px-[15px]">{item.Balance}</td>
+                    <td className="py-2 px-[15px]">{item.Date_Requested}</td>
+                    <td className="py-2 px-[15px]">{item.Recruiter}</td>
+                    <td className="py-2 px-[15px]">{item.pnl}</td>
+                    <td className="py-2 px-[15px]">{item.MT5_Account}</td>
+                    <td className="py-2 px-[15px] flex gap-2">
                       <button
-                        className="bg-white border cursor-pointer border-[#E8E8E8] 
+                        className="w-[105px] bg-white border cursor-pointer border-[#E8E8E8] 
                                 px-[12px] py-[5px] rounded-[8px] text-[14px] hover:bg-gray-100 flex gap-1"
                       >
                         <img src={Check} alt="Check" className="" />
                         Approve
                       </button>
                       <button
-                        className="bg-white border cursor-pointer border-[#E8E8E8] 
+                        className="w-[90px] bg-white border cursor-pointer border-[#E8E8E8] 
                                 px-[12px] py-[5px] rounded-[8px] text-[14px] hover:bg-gray-100 flex gap-1"
                       >
                         <img src={X} alt="X" className="" />

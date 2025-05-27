@@ -142,7 +142,7 @@ const FollowersDashboard = () => {
               top: 10,
               right: 0,
               left: -20,
-              bottom: 0,
+              bottom: 30,
             }}
           >
             <CartesianGrid strokeDasharray="0" stroke="#585858" opacity={0.2} />

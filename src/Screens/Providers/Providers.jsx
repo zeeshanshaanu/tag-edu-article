@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
-import { Breadcrumb } from "antd";
-import { Users } from "../../assets/svgs";
+
 import {
   CoinBlack,
   ShareBlackIcon,
@@ -23,29 +21,32 @@ const Providers = () => {
   const [FollowerTabs, setFollowerTabs] = useState("Dashboard");
 
   return (
-    <div className="p-5">
-         <HeaderTabAndBreadCrumb />
+    <div className="p-3">
+      <HeaderTabAndBreadCrumb />
 
       {/* Followers Hub header */}
       <div className="my-5">
-        <div className=" bg_primaryGreen p-[25px] rounded-[12px]">
+        <div className="HeaderGreenBGimage p-[20px] rounded-[12px]">
           <div className="flex justify-between gap-5">
-            <h1 className="text-[40px] font-[700] black">Provider Hub</h1>
+            <h1 className="g:text-[40px] text-[30px] font-[700] black">
+              Provider Hub
+            </h1>
             <div className="my-auto">
-              <h1
+              <button
                 className="text-[14px] font-[700] cursor-pointer border border-[2px] bg_white border-[#E8E8E8]
              rounded-[8px] px-[15px] py-[7px] flex gap-2"
               >
-                <img src={UserGuide} alt="UserGuide" className="" /> User Guide
-              </h1>
+                <img src={UserGuide} alt="UserGuide" className="" />
+                &nbsp;User&nbsp;Guide
+              </button>
             </div>
           </div>
           {/*  */}
           <div className="my-auto bg_black rounded-[12px] border-[2.5px] border-[#666666] p-[20px] mt-5">
-            <div className="grid grid:cols-1 lg:grid-cols-5 md:grid-cols-3 gap-2">
+            <div className="grid grid:cols-1 xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-3 gap-2">
               {/* Total Balance */}
               <div className="flex gap-x-[16px]">
-                <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={CoinBlack}
                     alt="CoinBlack"
@@ -54,14 +55,14 @@ const Providers = () => {
                 </div>
                 <div className="lightgray my-auto">
                   <p className="lightgray text-[14px] font-[500]">
-                    Total AUM - All Details
+                    Total&nbsp;AUM&nbsp;-&nbsp;All&nbsp;Details
                   </p>
                   <p className="white text-[20px] font-[700]">99,434 USD</p>
                 </div>
               </div>
               {/* Total ROI  */}
               <div className="flex gap-x-[16px]">
-                <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={TotalRoi}
                     alt="TotalRoi"
@@ -69,13 +70,15 @@ const Providers = () => {
                   />
                 </div>
                 <div className="lightgray my-auto">
-                  <p className="lightgray text-[14px] font-[500]">Total ROI </p>
+                  <p className="lightgray text-[14px] font-[500]">
+                    Total&nbsp;ROI{" "}
+                  </p>
                   <p className="white text-[20px] font-[700]">+18%</p>
                 </div>
               </div>
               {/* Total PnL  */}
               <div className="flex gap-x-[16px]">
-                <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={TotalPnl}
                     alt="TotalPnl"
@@ -83,13 +86,15 @@ const Providers = () => {
                   />
                 </div>
                 <div className="lightgray my-auto">
-                  <p className="lightgray text-[14px] font-[500]">Total PnL </p>
+                  <p className="lightgray text-[14px] font-[500]">
+                    Total&nbsp;PnL{" "}
+                  </p>
                   <p className="white text-[20px] font-[700]">+14,343 USD</p>
                 </div>
               </div>
               {/*Unrealized PnL  */}
               <div className="flex gap-x-[16px]">
-                <div className="bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
                   <img
                     src={UnrealizedPnL}
                     alt="UnrealizedPnL"
@@ -98,13 +103,13 @@ const Providers = () => {
                 </div>
                 <div className="lightgray my-auto">
                   <p className="lightgray text-[14px] font-[500]">
-                    Total Profit Share Earned
+                    Total&nbsp;Profit&nbsp;Share&nbsp;Earned
                   </p>
                   <p className="white text-[20px] font-[700]">-4,343 USD</p>
                 </div>
               </div>
 
-              <div className="w-full my-auto flex justify-end">
+              {/* <div className="w-full my-auto flex justify-end">
                 <h1
                   className="text-[14px] font-[700] cursor-pointer border border-[2px] bg_white border-[#E8E8E8]
              rounded-[8px] px-[15px] py-[7px] flex gap-2"
@@ -112,18 +117,27 @@ const Providers = () => {
                   <img src={ShareBlackIcon} alt="DespositWallet" className="" />{" "}
                   Share{" "}
                 </h1>
+              </div> */}
+              <div className=" my-auto lg:flex justify-end">
+                <button
+                  className="w-full lg:w-[100px] flex justify-center text-[14px] font-[700] cursor-pointer border border-[2px] bg_white border-[#E8E8E8]
+             rounded-[8px] px-[15px] py-[7px] flex gap-2"
+                >
+                  <img src={ShareBlackIcon} alt="ShareBlackIcon" className="" />{" "}
+                  Share
+                </button>
               </div>
             </div>
           </div>
         </div>{" "}
       </div>
       {/* FollowersTabs */}
-      <div className="my-5 flex justify-between gap-2">
+      <div className="my-1 sm:flex justify-between gap-2">
         <div className="rounded-[8px]">
           {/* Tabs */}
-          <div className="flex gap-[10px]">
+          <div className="flex gap-[8px]">
             <div
-              className={`cursor-pointer flex rounded-[8px] px-[16px] py-[13px] font-[500] 
+              className={`cursor-pointer flex rounded-[8px] px-[16px] py-[10px] font-[500] 
                  hover:bg-[#F9F9F9] transition-colors duration-200 ${
                    FollowerTabs === "Dashboard"
                      ? "bg_white font-[700]"
@@ -156,7 +170,7 @@ const Providers = () => {
             </div>
             {/*  */}
             <div
-              className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[13px] font-[500] 
+              className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] 
                  hover:bg-[#F9F9F9] transition-colors duration-200 
                   ${
                     FollowerTabs === "Details"
@@ -181,7 +195,7 @@ const Providers = () => {
             </div>
             {/*  */}
             <div
-              className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[13px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+              className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
                 FollowerTabs === "ProviderWallet"
                   ? "bg_white font-[700]"
                   : "bg_lightgray2"
@@ -204,9 +218,9 @@ const Providers = () => {
             </div>
           </div>
         </div>
-        <div className="my-auto">
+        <div className="my-auto mt-2 md:mt-0 lg:mt-0">
           <button
-            className="text-[14px] font-[700] cursor-pointer border border-[2px] bg_white border-[#E8E8E8]
+            className="w-full lg:w-[110px] flex justify-center text-center text-[14px] font-[700] cursor-pointer border border-[2px] bg_white border-[#E8E8E8]
              rounded-[8px] px-[15px] py-[7px] flex gap-2"
           >
             <img src={UserGuide} alt="UserGuide" className="" />

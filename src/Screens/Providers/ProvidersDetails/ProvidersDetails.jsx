@@ -82,20 +82,20 @@ const ProvidersDetails = () => {
   return (
     <div className="">
       {/* Table */}
-      <div className="mt-5 overflow-x-auto rounded-[12px] bg-white p-[20px]">
+      <div className="mt-1 overflow-x-auto rounded-[12px] bg-white p-[15px]">
         <h1 className="mb-4 text-[20] font-[700]">Performance</h1>
         <table className="min-w-full bg-white">
-          <thead className="bg_lightgray5 text-left text-[12px] font-[700] gray">
-            <tr className=" border-[1px] border-[#f4f4f4]">
-              <th className="border-none p-3">Strategy</th>
-              <th className="p-3">AUM</th>
-              <th className="p-3">Balance</th>
-              <th className="p-3">ROI</th>
-              <th className="p-3">PnL</th>
-              <th className="p-3">MT Account #</th>
-              <th className="p-3">Investors</th>
-              <th className="p-3">Profit Share Earned</th>
-              <th className="p-3">Action</th>
+          <thead className="border-[1px] border-[#f4f4f4] rounded-[12px] bg_lightgray5 text-left text-[12px] font-[700] gray">
+            <tr className="">
+              <th className="py-2 px-[15px]">Strategy</th>
+              <th className="py-2 px-[15px]">AUM</th>
+              <th className="py-2 px-[15px]">Balance</th>
+              <th className="py-2 px-[15px]">ROI</th>
+              <th className="py-2 px-[15px]">PnL</th>
+              <th className="py-2 px-[15px]">MT&nbsp;Account&nbsp;#</th>
+              <th className="py-2 px-[15px]">Investors</th>
+              <th className="py-2 px-[15px]">Profit&nbsp;Share&nbsp;Earned</th>
+              <th className="py-2 px-[15px]">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -105,31 +105,31 @@ const ProvidersDetails = () => {
                   key={index}
                   className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
                 >
-                  <td className="p-2">
+                  <td className="py-2 pr-[15px]">
                     <div
                       onClick={() => navigate("/Followers-Strategy-Detail")}
-                      className="flex gap-2  cursor-pointer hover:text-blue-400"
+                      className="flex gap-2 cursor-pointer hover:text-blue-400"
                     >
                       <img
                         src={ProfileImage}
                         alt="Strategy Icon"
                         className="w-[24px] h-[24px] rounded-full object-cover"
                       />
-                      <p className="my-xxx">{item.strategy}</p>
+                      <p className="my-auto">{item.strategy}</p>
                     </div>
                   </td>
-                  <td className="p-2">{item.invested}</td>
-                  <td className="p-2">{item.equity}</td>
-                  <td className="p-2 green">{item.roi}</td>
-                  <td className="p-3 green">{item.pnl}</td>
-                  <td className="p-2">{item.mtAccount}</td>
-                  <td className="p-2 flex items-center gap-1">
+                  <td className="py-2 px-[15px]">{item.invested}</td>
+                  <td className="py-2 px-[15px]">{item.equity}</td>
+                  <td className="py-2 px-[15px] green">{item.roi}</td>
+                  <td className="py-2 px-[15px] green">{item.pnl}</td>
+                  <td className="py-2 px-[15px]">{item.mtAccount}</td>
+                  <td className="py-2 px-[15px] flex  gap-1">
                     {item.multiplier}
                   </td>
                   <td className="p-2">{item.accountType}</td>
                   <td className="p-2 flex flex-wrap gap-2">
                     <button
-                      className="bg-white   cursor-pointer  
+                      className="bg-white cursor-pointer  
                            px-[12px] py-[5px] rounded-[8px] text-[14px]"
                     >
                       <img src={GearSix} alt="GearSix" className="" />
@@ -148,18 +148,17 @@ const ProvidersDetails = () => {
         </table>
       </div>
       {/* Table */}
-      <div className="mt-5 overflow-x-auto rounded-[12px] bg-white p-[20px]">
+      <div className="mt-4 overflow-x-auto rounded-[12px] bg-white p-[20px]">
         <h1 className="mb-4 text-[20] font-[500]">Recruiters</h1>
         <table className="min-w-full bg-white">
-          <thead className="bg_lightgray5 text-left text-[12px] font-[700] gray">
+          <thead className="border-[1px] border-[#f4f4f4] rounded-[12px] bg_lightgray5 text-left text-[12px] font-[700] gray">
             <tr className=" border-[1px] border-[#f4f4f4]">
               <th className="border-none p-3">Strategy</th>
-              <th className="p-3">Active Recruiters</th>
+              <th className="p-3">Active&nbsp;Recruiters</th>
               <th className="p-3">Deposits</th>
               <th className="p-3">Fee</th>
               <th className="p-3">PnL</th>
-              <th className="p-3">Commission Paid</th>
-
+              <th className="p-3">Commission&nbsp;Paid</th>
               <th className="p-3">Action</th>
             </tr>
           </thead>
@@ -170,27 +169,27 @@ const ProvidersDetails = () => {
                   key={index}
                   className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
                 >
-                  <td className="p-2">
+                  <td className="py-2 pr-[15px]">
                     <div
                       onClick={() => navigate("/Followers-Strategy-Detail")}
-                      className="flex gap-2  cursor-pointer hover:text-blue-400"
+                      className="flex gap-2 cursor-pointer hover:text-blue-400"
                     >
                       <img
                         src={ProfileImage}
                         alt="Strategy Icon"
                         className="w-[24px] h-[24px] rounded-full object-cover"
                       />
-                      <p className="my-xxx">{item.strategy}</p>
+                      <p className="my-auto">{item.strategy}</p>
                     </div>
                   </td>
-                  <td className="p-2">{item.invested}</td>
-                  <td className="p-2">{item.equity}</td>
-                  <td className="p-2 green">{item.roi}</td>
-                  <td className="p-3 green">{item.pnl}</td>
-                  <td className="p-2">{item.accountType}</td>
-                  <td className="p-2 flex flex-wrap gap-2">
+                  <td className="py-2 px-[15px]">{item.invested}</td>
+                  <td className="py-2 px-[15px]">{item.equity}</td>
+                  <td className="py-2 px-[15px] green">{item.roi}</td>
+                  <td className="py-2 px-[15px] green">{item.pnl}</td>
+                  <td className="py-2 px-[15px]">{item.accountType}</td>
+                  <td className="py-2 px-[15px] flex gap-2">
                     <button
-                      className="bg-white border cursor-pointer border-[#E8E8E8] flex gap-1
+                      className="w-[90px] bg-white border cursor-pointer border-[#E8E8E8] flex gap-1
                                           px-[12px] py-[5px] rounded-[8px] text-[14px] hover:bg-gray-100"
                     >
                       Details{" "}

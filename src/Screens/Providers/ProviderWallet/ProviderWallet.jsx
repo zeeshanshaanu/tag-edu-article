@@ -66,16 +66,16 @@ const ProviderWallet = () => {
   return (
     <div className="">
       {/* Table */}
-      <div className="mt-5 overflow-x-auto rounded-[12px] bg-white p-[20px]">
-        <h1 className="mb-4 text-[20] font-[700]">Transactions</h1>
+      <div className="mt-1 overflow-x-auto rounded-[12px] bg-white p-[20px]">
+        <h1 className="mb-4 text-[20] font-[500]">Transactions</h1>
         <table className="min-w-full bg-white">
-          <thead className="bg_lightgray5 text-left text-[12px] font-[700] gray">
-            <tr className="border-[1px] border-[#f4f4f4]">
-              <th className="p-3">Date</th>
-              <th className="p-3">Strategy</th>
-              <th className="p-3">Type</th>
-              <th className="p-3">Amount</th>
-              <th className="p-3">Details</th>
+          <thead className="border-[1px] border-[#f4f4f4] rounded-[12px] bg_lightgray5 text-left text-[12px] font-[700] gray">
+            <tr className="">
+              <th className="py-2 px-[15px]">Date</th>
+              <th className="py-2 px-[15px]">Strategy</th>
+              <th className="py-2 px-[15px]">Type</th>
+              <th className="py-2 px-[15px]">Amount</th>
+              <th className="py-2 px-[15px]">Details</th>
             </tr>
           </thead>
           <tbody>
@@ -85,20 +85,23 @@ const ProviderWallet = () => {
                   key={index}
                   className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
                 >
-                  <td className="p-2">{item.Date}</td>
-                  <td className="p-2">
-                    <div className="flex gap-1 cursor-pointer">
+                  <td className="py-2 pr-[15px]">{item.Date}</td>
+                  <td className="py-2 pr-[15px]">
+                    <div
+                      onClick={() => navigate("/Followers-Strategy-Detail")}
+                      className="flex gap-2 cursor-pointer hover:text-blue-400"
+                    >
                       <img
                         src={ProfileImage}
                         alt="Strategy Icon"
-                        className="w-[24px] h-[24px] my-auto rounded-full object-cover"
+                        className="w-[24px] h-[24px] rounded-full object-cover"
                       />
-                      <p className="p-2 my-auto">{item.strategy}</p>
+                      <p className="my-auto">{item.strategy}</p>
                     </div>
                   </td>
-                  <td className="p-2">{item.Type}</td>
-                  <td className="p-2 green">{item.Amount}</td>
-                  <td className="p-2">{item.Details}</td>
+                  <td className="py-2 px-[15px]">{item.Type}</td>
+                  <td className="py-2 px-[15px] green">{item.Amount}</td>
+                  <td className="py-2 px-[15px]">{item.Details}</td>
                 </tr>
               ))
             ) : (

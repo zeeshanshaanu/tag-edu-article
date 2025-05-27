@@ -123,7 +123,7 @@ const Step2 = () => {
             </div>
           </div>
           {/*  */}
-          <div className=" grid grid-cols-1 lg:grid-cols-6 md:grid-cols-2 gap-[15px]">
+          <div className=" grid grid-cols-1 lg:grid-cols-6 md:grid-cols-2 gap-[10px] mb-4">
             {/* Follower Withdrawal Settings */}
             <div className="lg:col-span-2">
               <label htmlFor="" className="text-[12px] font-[700] black">
@@ -191,7 +191,7 @@ const Step2 = () => {
           </div>
           {/* // ///////////////////////   *****************   /////////////////////// */}
           {/* // ///////////////////////   *****************   /////////////////////// */}
-          <div className="grid grid-cols-1 lg:grid-cols-6 gap-[15px]">
+          <div className="grid grid-cols-2 lg:grid-cols-6 md:grid-cols-4 gap-[10px]">
             {/* Follower Withdrawal Settings */}
             <div className="lg:col-span-2">
               <label htmlFor="" className="text-[12px] font-[700] black">
@@ -307,11 +307,7 @@ const Step2 = () => {
                 className="mt-1 border border-[1px] border-[#E8E8E8] rounded-[8px] outline-none px-[15px] w-full py-[8px]"
               />{" "}
             </div>
-          </div>
-          {/* // ///////////////////////   *****************   /////////////////////// */}
-          {/* // ///////////////////////   *****************   /////////////////////// */}
-          <div className="grid grid-cols-1 lg:grid-cols-6 gap-[15px]">
-            <div className="lg:col-span-2"></div>
+            <div className="hidden lg:block lg:col-span-2"></div>
             {/* Level #5 */}
             <div className="">
               <label htmlFor="" className="text-[12px] font-[700] black">
@@ -392,11 +388,7 @@ const Step2 = () => {
                 className="mt-1 border border-[1px] border-[#E8E8E8] rounded-[8px] outline-none px-[15px] w-full py-[8px]"
               />{" "}
             </div>
-          </div>
-          {/* // ///////////////////////   *****************   /////////////////////// */}
-          {/* // ///////////////////////   *****************   /////////////////////// */}
-          <div className="grid grid-cols-1 lg:grid-cols-6 gap-[15px]">
-            <div className="lg:col-span-2"></div>
+            <div className="hidden lg:block lg:col-span-2"></div>
             {/* Level #9 */}
             <div className="">
               <label htmlFor="" className="text-[12px] font-[700] black">
@@ -439,7 +431,7 @@ const Step2 = () => {
             </div>
           </div>
           <hr className="mt-5" style={{ color: "#E8E8E8" }} />
-          <div className="mt-5 flex justify-between gap-4">
+          <div className="mt-5 flex justify-between gap-2">
             <div className="my-auto">
               <div className="my-auto">
                 <button
@@ -453,7 +445,7 @@ const Step2 = () => {
             </div>
             <div className="my-auto">
               {/* 1 */}
-              <div className="flex gap-3 mt-3">
+              <div className="flex gap-2">
                 <div className="flex gap-2">
                   <h1 className="text-[16px] black font-[700] bg_primaryGreen rounded-full py-[4px] px-[8px] flex justify-center">
                     <img src={BlackTick} alt="ArrowRight" className="" />
@@ -472,9 +464,9 @@ const Step2 = () => {
                     isOpen: true,
                   })
                 }
-                className="black cursor-pointer bg_primaryGreen rounded-[8px] font-[500] px-[20px] py-[7px] flex gap-2"
+                className="black cursor-pointer bg_primaryGreen rounded-[8px] font-[500] px-[15px] py-[7px] flex gap-2"
               >
-                Create My Strategy
+                Create&nbsp;My&nbsp;Strategy
               </button>
             </div>
           </div>

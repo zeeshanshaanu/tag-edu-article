@@ -64,16 +64,16 @@ const RecruitersWallet = () => {
   return (
     <div>
       {/* table */}
-      <div className="bg-white p-[20px] my-5 rounded-[8px]">
+      <div className="bg-white p-[15px] my-1 rounded-[8px]">
         <div className=" overflow-x-auto">
           <table className="min-w-full bg-white">
-            <thead className="bg_lightgray5 text-left text-[12px] font-[700] gray">
-              <tr className=" border-[1px] border-[#f4f4f4]">
-                <th className="p-3">Date</th>
-                <th className="border-none p-3">Strategy</th>
-                <th className="p-3">Type</th>
-                <th className="p-3">Amount</th>
-                <th className="p-3">Details</th>
+            <thead className="border-[1px] border-[#f4f4f4] rounded-[12px] bg_lightgray5 text-left text-[12px] font-[700] gray">
+              <tr className="">
+                <th className="py-2 px-[15px]">Date</th>
+                <th className="py-2 px-[15px]">Strategy</th>
+                <th className="py-2 px-[15px]">Type</th>
+                <th className="py-2 px-[15px]">Amount</th>
+                <th className="py-2 px-[15px]">Details</th>
               </tr>
             </thead>
             <tbody>
@@ -83,8 +83,8 @@ const RecruitersWallet = () => {
                     key={index}
                     className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
                   >
-                    <td className="p-2">{item.Date_Requested}</td>
-                    <td className="p-2">
+                    <td className="py-2 px-[15px]">{item.Date_Requested}</td>
+                    <td className="py-2 px-[15px]">
                       <div
                         onClick={() => navigate("/Followers-Strategy-Detail")}
                         className="flex gap-2  cursor-pointer hover:text-blue-400"
@@ -94,12 +94,12 @@ const RecruitersWallet = () => {
                           alt="Strategy Icon"
                           className="w-[24px] h-[24px] rounded-full object-cover"
                         />
-                        <p className="my-xxx">{item.Name}</p>
+                        <p className="my-auto">{item.Name}</p>
                       </div>
                     </td>
-                    <td className="p-2">{item.Balance}</td>
-                    <td className="p-2 green">{item.Recruiter}</td>
-                    <td className="p-3">{item.pnl}</td>
+                    <td className="py-2 px-[15px]">{item.Balance}</td>
+                    <td className="py-2 px-[15px] green">{item.Recruiter}</td>
+                    <td className="py-2 px-[15px]">{item.pnl}</td>
                   </tr>
                 ))
               ) : (
