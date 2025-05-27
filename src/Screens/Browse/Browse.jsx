@@ -12,7 +12,7 @@ const Browse = () => {
       <div className="my-4 HeaderGreenBGimage p-[20px] rounded-[12px]">
         <div className="lg:flex justify-between gap-5">
           <div className="">
-            <h1 className="lg:text-[40px] text-[30px] font-[700] black">
+            <h1 className="satoshi_italic lg:text-[40px] text-[30px] font-[900] black">
               Browse Pro Traders
             </h1>
             <p className="lg:text-[16px] text-[14px] font-[500] black">

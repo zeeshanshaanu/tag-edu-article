@@ -554,7 +554,7 @@ const Step1 = () => {
           <div className="my-auto">
             <button
               onClick={() => dispatch(StrategyFtn("Step2"))}
-              className="black cursor-pointer bg_primaryGreen rounded-[8px] font-[500] px-[20px] py-[7px] flex gap-2"
+              className="black cursor-pointer bg_primaryGreen rounded-[8px] font-[700] px-[20px] py-[7px] flex gap-2"
             >
               Next
               <img src={ArrowRight} alt="ArrowRight" className="" />{" "}

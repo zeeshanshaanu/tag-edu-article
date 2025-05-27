@@ -11,6 +11,9 @@ module.exports = {
         primarygreen: "#CAFD5D",
         green: "#60A100",
       },
+      fontFamily: {
+        satoshi: ['"Satoshi Variable"', "sans-serif"],
+      },
     },
   },
   plugins: [],

@@ -154,7 +154,9 @@ const StrategiesDetailView = () => {
                   className="w-[48px] h-[48px] rounded-full object-cover"
                 />
               </div>
-              <h1 className="text-[30px] font-[700] black my-auto">Anjuta</h1>
+              <h1 className="satoshi_italic text-[30px] font-[900] black my-auto">
+                Anjuta
+              </h1>
             </div>
             {/*  */}
             <div className="my-auto flex gap-2">
@@ -402,7 +404,7 @@ const StrategiesDetailView = () => {
             {/*  */}
             <div className="mt-[10px] bg_image p-5 rounded-[12px]">
               <div className="text-center white ">
-                <h1 className="white text-[20px]  font-[700]">
+                <h1 className="satoshi_italic white text-[20px] font-[900]">
                   Promote <span className="primaryGreen "> This Strategy</span>
                 </h1>
                 <p className="white text-[14px] font-[500] mt-1 tracking-wide">
@@ -606,8 +608,9 @@ const StrategiesDetailView = () => {
         </div>
       </div>
       {/* Table */}
-      <div className="my-4 overflow-x-auto">
-        <table className="min-w-full bg-white">
+      <div className="my-4 overflow-x-auto bg-white p-4 rounded-[12px]">
+        <h1 className="text-[20px] font-[700]">More Strategies From This Trader</h1>
+        <table className="min-w-full my-4 ">
           <thead className="bg_lightgray5 text-left text-[12px] font-[500] gray">
             <tr className="">
               <th className="py-2 px-[15px]">Name</th>

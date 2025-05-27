@@ -134,7 +134,7 @@ const ProvidersTOS = () => {
           <div className="my-auto">
             <button
               onClick={() => dispatch(StrategyFtn("Step1"))}
-              className="black cursor-pointer bg_primaryGreen rounded-[8px] font-[500] px-[20px] py-[7px] flex gap-2"
+              className="black cursor-pointer bg_primaryGreen rounded-[8px] font-[700] px-[15px] py-[7px] flex gap-1"
             >
               Start Strategy Creation{" "}
               <img src={ArrowRight} alt="ArrowRight" className="" />{" "}

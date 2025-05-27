@@ -464,7 +464,7 @@ const Step2 = () => {
                     isOpen: true,
                   })
                 }
-                className="black cursor-pointer bg_primaryGreen rounded-[8px] font-[500] px-[15px] py-[7px] flex gap-2"
+                className="black cursor-pointer bg_primaryGreen rounded-[8px] font-[700] px-[15px] py-[7px] flex gap-2"
               >
                 Create&nbsp;My&nbsp;Strategy
               </button>
@@ -491,7 +491,7 @@ const Step2 = () => {
                 className=" w-[60px] h-[60px]"
               />{" "}
             </div>
-            <h2 className="text-[40px] font-[700] text-center">
+            <h2 className="satoshi_italic text-[40px] font-[900] text-center">
               Strategy Was Created!
             </h2>
             <p className="mt-2 gray text-[15px] font-[500] text-center">
@@ -502,7 +502,7 @@ const Step2 = () => {
           <center className="mt-5">
             <button
               onClick={() => setisCredentialsModel(false)}
-              className="w-[200px] black cursor-pointer bg_primaryGreen rounded-[8px] font-[500] py-[10px] flex justify-center"
+              className="w-[200px] black cursor-pointer bg_primaryGreen rounded-[8px] font-[700] py-[10px] flex justify-center"
             >
               To Strategy Page
               <img src={ArrowRight} alt="ArrowRight" className="" />{" "}

@@ -215,7 +215,7 @@ const TradingCards = () => {
                 </div>
                 {/* detail  button*/}
                 <div className="mt-[20px]">
-                  <h1 className="bg_white cursor-pointer text-center border border-[1.5px] border-[#E8E8E8] rounded-[8px] px-[15px] py-[7px] flex justify-center gap-2">
+                  <h1 className="text-[14px] font-[700] bg_white cursor-pointer text-center border border-[1.5px] border-[#E8E8E8] rounded-[8px] px-[15px] py-[7px] flex justify-center gap-2">
                     Details{" "}
                     <img src={ArrowRight} alt="ArrowRight" className="" />{" "}
                   </h1>
@@ -230,13 +230,13 @@ const TradingCards = () => {
       {/*  */}
       <div className="mt-5 MasterTradeBgImage p-5 sm:flex justify-between gap-5">
         <div className="my-auto">
-          <h1 className="white text-[24px] lg:text-[32px] font-[700]">
+          <h1 className="satoshi_italic white text-[24px] lg:text-[32px] font-[900]">
             Become A{" "}
-            <span className="primaryGreen text-[24px] lg:text-[32px] font-[700] mt-1 tracking-wide">
+            <span className="primaryGreen text-[24px] lg:text-[32px] font-[900] mt-1 tracking-wide">
               Master Trader
             </span>
           </h1>
-          <p className="white text-[16px]  mt-2">
+          <p className="white text-[16px] mt-2 font-[5 00]">
             Let others copy your trades and earn additional income with Tag Copy
             Trading
           </p>

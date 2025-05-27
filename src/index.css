@@ -3,13 +3,33 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Satoshi Variable";
+  src: url("./assets/fonts/Satoshi_Complete/Fonts/Variable/Satoshi-Variable.ttf")
+    format("truetype");
+  font-weight: 100 900; /* Adjust if you know the exact range */
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Satoshi Variable";
+  src: url("./assets/fonts/Satoshi_Complete/Fonts/Variable/Satoshi-VariableItalic.ttf")
+    format("truetype");
+  font-weight: 100 900; /* Match the weight range */
+  font-style: italic;
+}
+
 body {
   margin: 0%;
   padding: 0%;
   box-sizing: border-box;
   background: #efefef;
+  font-family: "Satoshi Variable", sans-serif !important;
+ }
+.satoshi_italic {
+  font-family: "Satoshi Variable", sans-serif !important;
+  font-style: italic;
 }
-
 .gradient-border {
   position: relative;
   z-index: 0;

@@ -29,7 +29,7 @@ const Recruiters = () => {
       <div className="my-3">
         <div className=" HeaderGreenBGimage p-[20px] rounded-[12px]">
           <div className="flex justify-between gap-5">
-            <h1 className="lg:text-[40px] text-[30px] font-[700] black">
+            <h1 className="satoshi_italic lg:text-[40px] text-[30px] font-[900] black">
               Recruiter Hub
             </h1>
             <div className="my-auto">
