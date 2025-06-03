@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-import { Breadcrumb } from "antd";
 import {
   MagnifyingGlass,
   MagnifyingGlassBlack,
@@ -10,6 +8,8 @@ import {
   BlackHandshake,
   BlackUsers,
 } from "../../assets/svgs";
+import { GearSix } from "../../assets/svgs/Followers/FollowersIndex";
+import { ChartPieGray, ChartPieBlack } from "../../assets/svgs/Browse/index";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumb } from "../../Store/HeaderAndBreadCrumbSlice/HeadAndBcSlice";
@@ -24,7 +24,7 @@ const HeaderTabAndBreadCrumb = () => {
   const breadcrumbData =
     breadcrumb && breadcrumb.length > 0
       ? breadcrumb
-      : [{ label: "Browse", path: "/browse" }, { label: "Top ROI" }];
+      : [{ label: "Dashboard", path: "/Dashboard" }, { label: "Top ROI" }];
   // console.log(breadcrumbData?.[0]?.label);
 
   const items = breadcrumbData.map((item, index) => {
@@ -36,13 +36,14 @@ const HeaderTabAndBreadCrumb = () => {
           className={`flex gap-1 ${isClickable ? "cursor-pointer" : ""}`}
           onClick={isClickable ? () => navigate(item.path) : undefined}
         >
-          {item.label === "Browse" ||
+          {item.label === "Dashboard" ||
           item.label === "Providers" ||
           item.label === "Recruiters" ||
+          item.label === "Settings" ||
           item.label === "Followers" ? (
             <img
               src={
-                item.label === "Browse"
+                item.label === "Dashboard"
                   ? MagnifyingGlass
                   : item.label === "Followers"
                   ? Users
@@ -50,6 +51,8 @@ const HeaderTabAndBreadCrumb = () => {
                   ? Handshake
                   : item.label === "Recruiters"
                   ? SuitcaseSimple
+                  : item.label === "Settings"
+                  ? GearSix
                   : null
               }
               alt="MagnifyingGlass"
@@ -71,20 +74,20 @@ const HeaderTabAndBreadCrumb = () => {
   return (
     <div>
       <div className="sm:flex justify-between gap-4 w-full">
-        <div className="my-auto">
+        {/* <div className="my-auto">
           <Breadcrumb items={items} />
-        </div>
+        </div> */}
         {/* Tabs */}
-        <div className="mt-3 lg:mt-0 md:mt-0 bg_white rounded-[8px] p-[3px] sm:flex gap-1">
+        <div className="mt-3 lg:mt-0 md:mt-0 bg_white rounded-[8px] p-[2px] sm:flex gap-[2px]">
           <div
             className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
-              breadcrumbData?.[0]?.label === "Browse" &&
+              breadcrumbData?.[0]?.label === "Dashboard" &&
               "bg_lightgreen font-[700]"
             }`}
             onClick={() => {
               dispatch(
                 setBreadcrumb([
-                  { label: "Browse", path: "/" },
+                  { label: "Dashboard", path: "/" },
                   { label: "Top ROI" },
                 ])
               );
@@ -92,17 +95,17 @@ const HeaderTabAndBreadCrumb = () => {
               navigate("/");
             }}
           >
-            {breadcrumbData?.[0]?.label === "Browse" ? (
-              <img src={MagnifyingGlassBlack} alt="MagnifyingGlassBlack" />
+            {breadcrumbData?.[0]?.label === "Dashboard" ? (
+              <img src={ChartPieBlack} alt="ChartPieBlack" />
             ) : (
-              <img src={MagnifyingGlass} alt="MagnifyingGlass" />
+              <img src={ChartPieGray} alt="ChartPieGray" />
             )}
             <span
               className={`text-[14px] my-auto ${
-                breadcrumbData?.[0]?.label === "Browse" ? "black" : "gray"
+                breadcrumbData?.[0]?.label === "Dashboard" ? "black" : "gray"
               }`}
             >
-              Browse
+              Dashboard
             </span>
           </div>
           {/*  */}
@@ -191,6 +194,35 @@ const HeaderTabAndBreadCrumb = () => {
               }`}
             >
               Recruiters
+            </span>
+          </div>
+          {/*  */}
+          <div
+            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
+              breadcrumbData?.[0]?.label === "Settings" &&
+              "bg_lightgreen font-[700]"
+            }`}
+            onClick={() => {
+              dispatch(
+                setBreadcrumb([
+                  { label: "Settings", path: "/Settings" },
+                  { label: "Dashboard" },
+                ])
+              );
+              // navigate("/Settings");
+            }}
+          >
+            {breadcrumbData?.[0]?.label === "Settings" ? (
+              <img src={GearSix} alt="GearSix" />
+            ) : (
+              <img src={GearSix} alt="GearSix" />
+            )}
+            <span
+              className={`text-[14px] my-auto ${
+                breadcrumbData?.[0]?.label === "Settings" ? "black" : "gray"
+              }`}
+            >
+              Settings
             </span>
           </div>
         </div>

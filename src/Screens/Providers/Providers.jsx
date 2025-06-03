@@ -1,242 +1,233 @@
-import React, { useState } from "react";
-
-import {
-  CoinBlack,
-  ShareBlackIcon,
-  Strategies,
-  ChartLineUp,
-  FollowerColoredDB,
-  TotalPnl,
-  TotalRoi,
-  UnrealizedPnL,
-  UserGuide,
-} from "../../assets/svgs/Followers/FollowersIndex";
-import ProviderDashboard from "./ProvidersDashboard/ProvidersDashboard";
-import ProvidersDetails from "./ProvidersDetails/ProvidersDetails";
-import ProviderWallet from "./ProviderWallet/ProviderWallet";
+import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+// ///////////////////////   *****************   ///////////////////////
 import HeaderTabAndBreadCrumb from "../../components/HeaderTabs/HeaderTabAndBreadCrumb";
-// ///////////////////////   *****************   ///////////////////////
-// ///////////////////////   *****************   ///////////////////////
-const Providers = () => {
-  const [FollowerTabs, setFollowerTabs] = useState("Dashboard");
+import ProfileImage from "../../assets/Images/ProfileImage.png";
+import { Plus } from "../../assets/svgs/Browse/index";
+import { MagnifyingGlassWhite, ArrowRight } from "../../assets/svgs/index";
+import { OpenModelFtn } from "../../Store/StrategySlice/StrategySlice";
+import {
+  CalendarBlank,
+  ChartLineUp,
+  UserActive,
+} from "../../assets/svgs/AdminFollowers/index";
+import {
+  UserDeactive,
+  TreeStructure,
+} from "../../assets/svgs/Provider/ProviderIndex";
 
+// ///////////////////////   *****************   ///////////////////////
+// ///////////////////////   *****************   ///////////////////////
+const dummyData = [
+  {
+    strategy: "Anjuta",
+    Owner: "Jon Homes",
+    AccountNo: "43434343",
+    Followers: "43434343",
+    DateJoined: "Jan 22, 2025",
+    Structure: "4,343",
+    AUM: "$434,343,434",
+  },
+];
+const Providers = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [strategies, setStrategies] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Replace this with actual API URL
+        const response = await axios.get("https://your-api.com/strategies");
+        if (response.status === 200 && Array.isArray(response.data)) {
+          setStrategies(response.data);
+        } else {
+          setStrategies(dummyData);
+        }
+      } catch (err) {
+        console.error("API Error:", err);
+        setError("Failed to fetch data, displaying fallback.");
+        setStrategies(dummyData);
+      }
+    };
+
+    fetchData();
+  }, []);
   return (
     <div className="p-3">
+      {/* Breadcurm and Tabs */}
       <HeaderTabAndBreadCrumb />
-
       {/* Followers Hub header */}
-      <div className="my-5">
-        <div className="HeaderGreenBGimage p-[20px] rounded-[12px]">
-          <div className="flex justify-between gap-5">
-            <h1 className="satoshi_italic lg:text-[40px] text-[30px] font-[900] black">
-              Provider Hub
-            </h1>
-            <div className="my-auto">
-              <button
-                className="text-[14px] font-[700] cursor-pointer border border-[2px] bg_white border-[#E8E8E8]
-             rounded-[8px] px-[15px] py-[7px] flex gap-2"
-              >
-                <img src={UserGuide} alt="UserGuide" className="" />
-                &nbsp;User&nbsp;Guide
-              </button>
+      <div className="my-3 HeaderGreenBGimage p-[20px] rounded-[12px]">
+        <div className="">
+          <h1 className="satoshi_italic lg:text-[40px] text-[30px] font-[900] black">
+            Providers
+          </h1>
+        </div>
+        {/*  */}
+        <div className="my-auto bg_black rounded-[12px] border-[1px] border-[#666666] p-[20px] mt-4">
+          <div className="grid grid:cols-2 lg:grid-cols-5 md:grid-cols-3 gap-3">
+            {/* Active */}
+            <div className="flex gap-x-[15px] ">
+              <div className="lightgreenBoxShahdow lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <img
+                  src={UserActive}
+                  alt="UserActive"
+                  className="item-center mt-3 w-[24px] h-[24px]"
+                />
+              </div>
+              <div className="lightgray my-auto">
+                <p className="lightgray text-[14px] font-[500]">Active</p>
+                <p className="white text-[20px] font-[700]">434</p>
+              </div>
             </div>
-          </div>
-          {/*  */}
-          <div className="my-auto bg_black rounded-[12px] border-[2.5px] border-[#666666] p-[20px] mt-5">
-            <div className="grid grid:cols-1 xl:grid-cols-5 lg:grid-cols-3 md:grid-cols-3 gap-2">
-              {/* Total Balance */}
-              <div className="flex gap-x-[16px]">
-                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
-                  <img
-                    src={CoinBlack}
-                    alt="CoinBlack"
-                    className="item-center mt-3 w-[24px] h-[24px]"
-                  />
-                </div>
-                <div className="lightgray my-auto">
-                  <p className="lightgray text-[14px] font-[500]">
-                    Total&nbsp;AUM&nbsp;-&nbsp;All&nbsp;Details
-                  </p>
-                  <p className="white text-[20px] font-[700]">99,434 USD</p>
-                </div>
+            {/* InActive */}
+            <div className="flex gap-x-[15px] ">
+              <div className="lightgreenBoxShahdow lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <img
+                  src={UserDeactive}
+                  alt="UserDeactive"
+                  className="item-center mt-3 w-[24px] h-[24px]"
+                />
               </div>
-              {/* Total ROI  */}
-              <div className="flex gap-x-[16px]">
-                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
-                  <img
-                    src={TotalRoi}
-                    alt="TotalRoi"
-                    className="item-center mt-3 w-[24px] h-[24px]"
-                  />
-                </div>
-                <div className="lightgray my-auto">
-                  <p className="lightgray text-[14px] font-[500]">
-                    Total&nbsp;ROI{" "}
-                  </p>
-                  <p className="white text-[20px] font-[700]">+18%</p>
-                </div>
+              <div className="lightgray my-auto">
+                <p className="lightgray text-[14px] font-[500]">Inactive</p>
+                <p className="white text-[20px] font-[700]">4134</p>
               </div>
-              {/* Total PnL  */}
-              <div className="flex gap-x-[16px]">
-                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
-                  <img
-                    src={TotalPnl}
-                    alt="TotalPnl"
-                    className="item-center mt-3 w-[24px] h-[24px]"
-                  />
-                </div>
-                <div className="lightgray my-auto">
-                  <p className="lightgray text-[14px] font-[500]">
-                    Total&nbsp;PnL{" "}
-                  </p>
-                  <p className="white text-[20px] font-[700]">+14,343 USD</p>
-                </div>
-              </div>
-              {/*Unrealized PnL  */}
-              <div className="flex gap-x-[16px]">
-                <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
-                  <img
-                    src={UnrealizedPnL}
-                    alt="UnrealizedPnL"
-                    className="item-center mt-3 w-[24px] h-[24px]"
-                  />
-                </div>
-                <div className="lightgray my-auto">
-                  <p className="lightgray text-[14px] font-[500]">
-                    Total&nbsp;Profit&nbsp;Share&nbsp;Earned
-                  </p>
-                  <p className="white text-[20px] font-[700]">-4,343 USD</p>
-                </div>
-              </div>
+            </div>
 
-              {/* <div className="w-full my-auto flex justify-end">
-                <h1
-                  className="text-[14px] font-[700] cursor-pointer border border-[2px] bg_white border-[#E8E8E8]
-             rounded-[8px] px-[15px] py-[7px] flex gap-2"
-                >
-                  <img src={ShareBlackIcon} alt="DespositWallet" className="" />{" "}
-                  Share{" "}
-                </h1>
-              </div> */}
-              <div className=" my-auto lg:flex justify-end">
-                <button
-                  className="w-full lg:w-[100px] flex justify-center text-[14px] font-[700] cursor-pointer border border-[2px] bg_white border-[#E8E8E8]
-             rounded-[8px] px-[15px] py-[7px] flex gap-2"
-                >
-                  <img src={ShareBlackIcon} alt="ShareBlackIcon" className="" />{" "}
-                  Share
-                </button>
+            {/*New MTD  */}
+            <div className="flex gap-x-[15px]">
+              <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <img
+                  src={ChartLineUp}
+                  alt="ChartLineUp"
+                  className="item-center mt-3 w-[24px] h-[24px]"
+                />
+              </div>
+              <div className="lightgray my-auto">
+                <p className="lightgray text-[14px] font-[500]">New MTD</p>
+                <p className="white text-[20px] font-[700]">434</p>
+              </div>
+            </div>
+            {/* Previous Month  */}
+            <div className="flex gap-x-[15px]">
+              <div className="lightgreenBoxShahdow bg_primaryGreen rounded-[8px] flex justify-center w-[48px] h-[48px]">
+                <img
+                  src={CalendarBlank}
+                  alt="CalendarBlank"
+                  className="item-center mt-3 w-[24px] h-[24px]"
+                />
+              </div>
+              <div className="lightgray my-auto">
+                <p className="lightgray text-[14px] font-[500]">
+                  Previous Month{" "}
+                </p>
+                <p className="white text-[20px] font-[700]"> 343</p>
               </div>
             </div>
           </div>
-        </div>{" "}
-      </div>
-      {/* FollowersTabs */}
-      <div className="my-1 sm:flex justify-between gap-2">
-        <div className="rounded-[8px]">
-          {/* Tabs */}
-          <div className="flex gap-[8px]">
-            <div
-              className={`cursor-pointer flex rounded-[8px] px-[16px] py-[10px] font-[500] 
-                 hover:bg-[#F9F9F9] transition-colors duration-200 ${
-                   FollowerTabs === "Dashboard"
-                     ? "bg_white font-[700]"
-                     : "bg_lightgray2"
-                 }`}
-              onClick={() => setFollowerTabs("Dashboard")}
-            >
-              <span className="my-auto">
-                {FollowerTabs === "Dashboard" ? (
-                  <img
-                    src={FollowerColoredDB}
-                    alt="FollowerColoredDB"
-                    className="w-[25px] h-[20px]"
-                  />
-                ) : (
-                  <img
-                    src={FollowerColoredDB}
-                    alt="FollowerColoredDB"
-                    className="w-[25px] h-[20px]"
-                  />
-                )}
-              </span>
-              <span
-                className={` my-auto text-[14px] my-auto ${
-                  FollowerTabs === "Dashboard" ? "black" : "gray"
-                }`}
-              >
-                Dashboard
-              </span>
-            </div>
-            {/*  */}
-            <div
-              className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] 
-                 hover:bg-[#F9F9F9] transition-colors duration-200 
-                  ${
-                    FollowerTabs === "Details"
-                      ? "bg_white font-[700]"
-                      : "bg_lightgray2"
-                  }
-               `}
-              onClick={() => setFollowerTabs("Details")}
-            >
-              {FollowerTabs === "Details" ? (
-                <img src={Strategies} alt="Strategies" />
-              ) : (
-                <img src={Strategies} alt="Strategies" />
-              )}
-              <span
-                className={`text-[14px] my-auto ${
-                  FollowerTabs === "Details" ? "black" : "gray"
-                }`}
-              >
-                Details
-              </span>
-            </div>
-            {/*  */}
-            <div
-              className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-                FollowerTabs === "ProviderWallet"
-                  ? "bg_white font-[700]"
-                  : "bg_lightgray2"
-              }`}
-              onClick={() => setFollowerTabs("ProviderWallet")}
-            >
-              {" "}
-              {FollowerTabs === "ProviderWallet" ? (
-                <img src={ChartLineUp} alt="ChartLineUp" />
-              ) : (
-                <img src={ChartLineUp} alt="ChartLineUp" />
-              )}
-              <span
-                className={`text-[14px] my-auto ${
-                  FollowerTabs === "ProviderWallet" ? "black" : "gray"
-                }`}
-              >
-                Provider Wallet
-              </span>
+        </div>
+      </div>{" "}
+      {/* Table */}
+      <div className="my-3 bg-white rounded-[12px] p-3">
+        <div className="flex justify-between">
+          <div className="searchBar relative my-auto">
+            <input
+              type="text"
+              placeholder="Search"
+              className="w-[180px] sm:w-[280px] border border-[1.5px] border-[#E8E8E8] rounded-[8px] outline-none pl-[15px] pr-[45px] py-[7px]"
+            />
+            <div className="absolute bg_black top-[4px] sm:left-[243px] left-[143px] w-[32px] h-[32px] rounded-[6px] flex justify-center">
+              <img
+                src={MagnifyingGlassWhite}
+                alt="MagnifyingGlass"
+                className="flex justify-center p-[7px]"
+              />
             </div>
           </div>
+          <div onClick={() => dispatch(OpenModelFtn(true))} className="my-auto">
+            <h1 className="cursor-pointer border border-[1.5px] border-[#E8E8E8] rounded-[8px] px-[15px] py-[7px] flex gap-2">
+              <img src={Plus} alt="Plus" className="" />
+              New Strategy{" "}
+            </h1>
+          </div>
         </div>
-        <div className="my-auto mt-2 md:mt-0 lg:mt-0">
-          <button
-            className="w-full lg:w-[110px] flex justify-center text-center text-[14px] font-[700] cursor-pointer border border-[2px] bg_white border-[#E8E8E8]
-             rounded-[8px] px-[15px] py-[7px] flex gap-2"
-          >
-            <img src={UserGuide} alt="UserGuide" className="" />
-            Create
-          </button>
+        {/* Table */}
+        <div className="bg-white rounded-[12px] mt-4 overflow-x-auto">
+          <table className="min-w-full">
+            <thead className="border-[1px] border-[#f4f4f4] rounded-[12px] bg_lightgray5 text-left text-[12px] font-[700] gray">
+              <tr className=" border-[1px] border-[#f4f4f4]">
+                <th className="py-2 px-[15px]">Strategy</th>
+                <th className="py-2 px-[15px]">Owner</th>
+                <th className="py-2 px-[15px]">Account&nbsp;#</th>
+                <th className="py-2 px-[15px]">Followers</th>
+                <th className="py-2 px-[15px]">Date&nbsp;Created</th>
+                <th className="py-2 px-[15px]">Structure </th>
+                <th className="py-2 px-[15px]">AUM</th>
+                <th className="py-2 px-[15px]">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {strategies?.length > 0 ? (
+                strategies.map((item, index) => (
+                  <tr
+                    key={index}
+                    className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
+                  >
+                    <td className="py-2 pr-[15px]">
+                      <div
+                        // onClick={() => navigate("/Followers-Strategy-Detail")}
+                        className="flex gap-2"
+                      >
+                        <img
+                          src={ProfileImage}
+                          alt="Strategy Icon"
+                          className="w-[24px] h-[24px] rounded-full object-cover"
+                        />
+                        <p className="my-auto">{item.strategy}</p>
+                      </div>
+                    </td>
+                    <td className="py-2 px-[15px]">{item.Owner}</td>
+                    <td className="py-2 px-[15px]">{item.AccountNo}</td>
+                    <td className="py-2 px-[15px]">{item.Followers}</td>
+                    <td className="py-2 px-[15px]">{item.DateJoined}</td>
+                    <td className="py-2 px-[15px] flex gap-2">
+                      {" "}
+                      <img
+                        src={TreeStructure}
+                        alt="TreeStructure"
+                        className=""
+                      />
+                      {item.Structure}{" "}
+                      <img src={ArrowRight} alt="ArrowRight" className="" />
+                    </td>
+                    <td className="py-2 px-[15px]">{item.AUM}</td>
+                    <td className="py-2 px-[15px] flex gap-2">
+                      <button
+                        onClick={() => navigate("/Provider-Details")}
+                        className="w-[90px] bg-white border cursor-pointer border-[#E8E8E8] flex gap-1
+                                                  px-[12px] py-[5px] rounded-[8px] text-[14px] hover:bg-gray-100"
+                      >
+                        Details{" "}
+                        <img src={ArrowRight} alt="ArrowRight" className="" />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td className="p-3 text-center text-gray-500" colSpan="9">
+                    No data found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
-      </div>
-      {/* {} */}
-      <div className="">
-        {FollowerTabs === "Dashboard" ? (
-          <ProviderDashboard />
-        ) : FollowerTabs === "Details" ? (
-          <ProvidersDetails />
-        ) : (
-          <ProviderWallet />
-        )}
       </div>
     </div>
   );
