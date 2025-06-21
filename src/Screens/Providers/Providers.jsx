@@ -35,26 +35,69 @@ const Providers = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [strategies, setStrategies] = useState([]);
-  const [error, setError] = useState(null);
+  const [Data, setData] = useState({});
+  const [Loading, setLoading] = useState(false);
+  const [TableData, setTableData] = useState([]);
+
+  const StrategyData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/follower-hub/summary`, {
+        headers: {
+          Authorization: `Bearer ${`Token`}`,
+        },
+      });
+      console.log(" Response:", response?.data);
+
+      setData(response?.data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      // Check for 401 Unauthorized
+      if (
+        error.response?.data?.detail === "Token has expired" ||
+        error.response?.data?.detail === "Unauthorized"
+      ) {
+        console.log(error);
+      } else {
+        Data(null);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    StrategyData();
+  }, []);
+
+  const FollowerTable = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/follower-hub/strategies`, {
+        headers: {
+          Authorization: `Bearer ${`Token`}`,
+        },
+      });
+      console.log(" Response Tables:", response?.data);
+
+      setTableData(response?.data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      // Check for 401 Unauthorized
+      if (
+        error.response?.data?.detail === "Token has expired" ||
+        error.response?.data?.detail === "Unauthorized"
+      ) {
+        console.log(error);
+      } else {
+        setTableData(null);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Replace this with actual API URL
-        const response = await axios.get("https://your-api.com/strategies");
-        if (response.status === 200 && Array.isArray(response.data)) {
-          setStrategies(response.data);
-        } else {
-          setStrategies(dummyData);
-        }
-      } catch (err) {
-        console.error("API Error:", err);
-        setError("Failed to fetch data, displaying fallback.");
-        setStrategies(dummyData);
-      }
-    };
-
-    fetchData();
+    FollowerTable();
   }, []);
   return (
     <div className="p-3">
@@ -81,7 +124,9 @@ const Providers = () => {
               </div>
               <div className="lightgray my-auto">
                 <p className="lightgray text-[14px] font-[500]">Active</p>
-                <p className="white text-[20px] font-[700]">434</p>
+                <p className="white text-[20px] font-[700]">
+                  {Data?.active_user || 0}
+                </p>
               </div>
             </div>
             {/* InActive */}
@@ -95,7 +140,9 @@ const Providers = () => {
               </div>
               <div className="lightgray my-auto">
                 <p className="lightgray text-[14px] font-[500]">Inactive</p>
-                <p className="white text-[20px] font-[700]">4134</p>
+                <p className="white text-[20px] font-[700]">
+                  {Data?.inactive_user || 0}
+                </p>
               </div>
             </div>
 
@@ -110,7 +157,9 @@ const Providers = () => {
               </div>
               <div className="lightgray my-auto">
                 <p className="lightgray text-[14px] font-[500]">New MTD</p>
-                <p className="white text-[20px] font-[700]">434</p>
+                <p className="white text-[20px] font-[700]">
+                  {Data?.new_mtd || 0}
+                </p>
               </div>
             </div>
             {/* Previous Month  */}
@@ -126,7 +175,9 @@ const Providers = () => {
                 <p className="lightgray text-[14px] font-[500]">
                   Previous Month{" "}
                 </p>
-                <p className="white text-[20px] font-[700]"> 343</p>
+                <p className="white text-[20px] font-[700]">
+                  {Data?.inactive_user || 0}
+                </p>
               </div>
             </div>
           </div>
@@ -171,61 +222,81 @@ const Providers = () => {
                 <th className="py-2 px-[15px]">Action</th>
               </tr>
             </thead>
-            <tbody>
-              {strategies?.length > 0 ? (
-                strategies.map((item, index) => (
-                  <tr
-                    key={index}
-                    className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
-                  >
-                    <td className="py-2 pr-[15px]">
-                      <div
-                        // onClick={() => navigate("/Followers-Strategy-Detail")}
-                        className="flex gap-2"
-                      >
+            {Loading ? (
+              <tr>
+                <td
+                  className="py-10 text-center font-[700] lightgray3 text-[16px]"
+                  colSpan="9"
+                >
+                  Loading...
+                </td>
+              </tr>
+            ) : (
+              <tbody>
+                {TableData?.length > 0 ? (
+                  TableData.map((item, index) => (
+                    <tr
+                      key={index}
+                      className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
+                    >
+                      <td className="py-2 pr-[15px]">
+                        <div
+                          // onClick={() => navigate("/Followers-Strategy-Detail")}
+                          className="flex gap-2"
+                        >
+                          <img
+                            src={item?.logo_url || ProfileImage}
+                            alt="Strategy Icon"
+                            className="w-[29px] h-[29px] rounded-full object-cover border border-[#E8E8E8]"
+                          />
+                          <p className="my-auto">{item.name}</p>
+                        </div>
+                      </td>
+                      <td className="py-2 px-[15px]">{item.owner || "N/A"}</td>
+                      <td className="py-2 px-[15px]">
+                        {item.accountNo || "N/A"}
+                      </td>
+                      <td className="py-2 px-[15px]">
+                        {item.followers || "N/A"}
+                      </td>
+                      <td className="py-2 px-[15px]">
+                        {item.dateJoined || "N/A"}
+                      </td>
+                      <td className="py-2 px-[15px] flex gap-2">
+                        {" "}
                         <img
-                          src={ProfileImage}
-                          alt="Strategy Icon"
-                          className="w-[24px] h-[24px] rounded-full object-cover"
+                          src={TreeStructure}
+                          alt="TreeStructure"
+                          className=""
                         />
-                        <p className="my-auto">{item.strategy}</p>
-                      </div>
-                    </td>
-                    <td className="py-2 px-[15px]">{item.Owner}</td>
-                    <td className="py-2 px-[15px]">{item.AccountNo}</td>
-                    <td className="py-2 px-[15px]">{item.Followers}</td>
-                    <td className="py-2 px-[15px]">{item.DateJoined}</td>
-                    <td className="py-2 px-[15px] flex gap-2">
-                      {" "}
-                      <img
-                        src={TreeStructure}
-                        alt="TreeStructure"
-                        className=""
-                      />
-                      {item.Structure}{" "}
-                      <img src={ArrowRight} alt="ArrowRight" className="" />
-                    </td>
-                    <td className="py-2 px-[15px]">{item.AUM}</td>
-                    <td className="py-2 px-[15px] flex gap-2">
-                      <button
-                        onClick={() => navigate("/Provider-Details")}
-                        className="w-[90px] bg-white border cursor-pointer border-[#E8E8E8] flex gap-1
-                                                  px-[12px] py-[5px] rounded-[8px] text-[14px] hover:bg-gray-100"
-                      >
-                        Details{" "}
+                        {item.structure}{" "}
                         <img src={ArrowRight} alt="ArrowRight" className="" />
-                      </button>
+                      </td>
+                      <td className="py-2 px-[15px]">{item.aum || "N/A"}</td>
+                      <td className="py-2 px-[15px] flex gap-2">
+                        <button
+                          onClick={() => navigate("/Provider-Details")}
+                          className="w-[90px] bg-white border cursor-pointer border-[#E8E8E8] flex gap-1
+                                                  px-[12px] py-[5px] rounded-[8px] text-[14px] hover:bg-gray-100"
+                        >
+                          Details{" "}
+                          <img src={ArrowRight} alt="ArrowRight" className="" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      className="py-10 text-center font-[700] lightgray3 text-[16px]"
+                      colSpan="9"
+                    >
+                      No data found.
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td className="p-3 text-center text-gray-500" colSpan="9">
-                    No data found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
+                )}
+              </tbody>
+            )}
           </table>
         </div>
       </div>

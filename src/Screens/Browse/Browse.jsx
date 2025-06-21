@@ -33,33 +33,75 @@ const dummyData = [
 const Browse = () => {
   const dispatch = useDispatch();
   const [strategies, setStrategies] = useState([]);
-  const [error, setError] = useState(null);
+  const [Data, setData] = useState({});
+  const [TableData, setTableData] = useState([]);
+  const [Loading, setLoading] = useState(false);
+
+  const DashboardCardData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/follower-hub/summary`, {
+        headers: {
+          Authorization: `Bearer ${`Token`}`,
+        },
+      });
+      console.log(" Response:", response?.data);
+
+      setData(response?.data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      // Check for 401 Unauthorized
+      if (
+        error.response?.data?.detail === "Token has expired" ||
+        error.response?.data?.detail === "Unauthorized"
+      ) {
+        console.log(error);
+      } else {
+        Data(null);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  //
+  const DashboardTablesData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/follower-hub/strategies`, {
+        headers: {
+          Authorization: `Bearer ${`Token`}`,
+        },
+      });
+      console.log(" Response:", response?.data);
+
+      setTableData(response?.data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      // Check for 401 Unauthorized
+      if (
+        error.response?.data?.detail === "Token has expired" ||
+        error.response?.data?.detail === "Unauthorized"
+      ) {
+        console.log(error);
+      } else {
+        Data(null);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Replace this with actual API URL
-        const response = await axios.get("https://your-api.com/strategies");
-        if (response.status === 200 && Array.isArray(response.data)) {
-          setStrategies(response.data);
-        } else {
-          setStrategies(dummyData);
-        }
-      } catch (err) {
-        console.error("API Error:", err);
-        setError("Failed to fetch data, displaying fallback.");
-        setStrategies(dummyData);
-      }
-    };
-
-    fetchData();
+    DashboardCardData();
+    DashboardTablesData();
   }, []);
+
   return (
     <div className="p-3">
       <HeaderTabAndBreadCrumb />
       {/* Browse Pro Traders */}
       <div className="mt-3 HeaderGreenBGimage p-[20px] rounded-[12px]">
-        <div className="lg:flex justify-between gap-5">
+        <div className="sm:flex justify-between gap-5">
           <h1 className="satoshi_italic lg:text-[40px] text-[30px] font-[900] black">
             Admin Dashboard
           </h1>
@@ -95,7 +137,9 @@ const Browse = () => {
               </div>
               <div className="lightgray my-auto">
                 <p className="lightgray text-[14px] font-[500]">Strategies</p>
-                <p className="white text-[20px] font-[700]">995</p>
+                <p className="white text-[20px] font-[700] max-w-[150px] overflow-hidden text-ellipsis">
+                  {Data?.strategy || 0}
+                </p>
               </div>
             </div>
             {/* Total ROI  */}
@@ -109,7 +153,10 @@ const Browse = () => {
               </div>
               <div className="lightgray my-auto">
                 <p className="lightgray text-[14px] font-[500]">Followers </p>
-                <p className="white text-[20px] font-[700]"> 18,234</p>
+                <p className="white text-[20px] font-[700] max-w-[150px] overflow-hidden text-ellipsis">
+                  {" "}
+                  {Data?.follower || 0}
+                </p>
               </div>
             </div>
             {/* Total PnL  */}
@@ -125,7 +172,10 @@ const Browse = () => {
                 <p className="lightgray text-[14px] font-[500]">
                   Total Performance Fees
                 </p>
-                <p className="white text-[20px] font-[700]">$14,343</p>
+                <p className="white text-[20px] font-[700] max-w-[150px] overflow-hidden text-ellipsis">
+                  {" "}
+                  {Data?.total_balance || 0}
+                </p>
               </div>
             </div>
           </div>
@@ -146,37 +196,53 @@ const Browse = () => {
                   <th className="py-2 px-[15px]">Followers</th>
                 </tr>
               </thead>
-              <tbody>
-                {strategies?.length > 0 ? (
-                  strategies.map((item, index) => (
-                    <tr
-                      key={index}
-                      className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
-                    >
-                      <td className="py-2 pr-[15px]">
-                        <div
-                          onClick={() => navigate("/Followers-Strategy-Detail")}
-                          className="flex gap-2 cursor-pointer hover:text-blue-400"
-                        >
-                          <img
-                            src={ProfileImage}
-                            alt="Strategy Icon"
-                            className="w-[24px] h-[24px] rounded-full object-cover"
-                          />
-                          <p className="my-auto">{item.Name}</p>
-                        </div>
+              {Loading ? (
+                <tr>
+                  <td
+                    className="pt-8 text-center font-[700] lightgray3 text-[16px]"
+                    colSpan="9"
+                  >
+                    Loading...
+                  </td>
+                </tr>
+              ) : (
+                <tbody>
+                  {TableData?.length > 0 ? (
+                    TableData.map((item, index) => (
+                      <tr
+                        key={index}
+                        className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
+                      >
+                        <td className="py-2 pr-[15px]">
+                          <div
+                            onClick={() =>
+                              navigate("/Followers-Strategy-Detail")
+                            }
+                            className="flex gap-2"
+                          >
+                            <img
+                              src={item?.logo_url || ProfileImage}
+                              alt="Strategy Icon"
+                              className="w-[28px] h-[28px] rounded-full object-cover border-[2px] border-[#E8E8E8]"
+                            />
+                            <p className="my-auto">{item.name}</p>
+                          </div>
+                        </td>
+                        <td className="py-2 px-[15px]">{item.invested}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        className="py-10 text-center font-[700] lightgray3 text-[16px]"
+                        colSpan="9"
+                      >
+                        No data found.
                       </td>
-                      <td className="py-2 px-[15px]">{item.Balance}</td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td className="p-3 text-center text-gray-500" colSpan="9">
-                      No data found.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
+                  )}
+                </tbody>
+              )}
             </table>
           </div>
         </div>
@@ -193,38 +259,53 @@ const Browse = () => {
                   <th className="py-2 px-[15px]">Paid</th>
                 </tr>
               </thead>
-              <tbody>
-                {strategies?.length > 0 ? (
-                  strategies.map((item, index) => (
-                    <tr
-                      key={index}
-                      className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
-                    >
-                      {/* <td className="py-2 pr-[15px]">
-                        <div
-                          onClick={() => navigate("/Followers-Strategy-Detail")}
-                          className="flex gap-2 cursor-pointer hover:text-blue-400"
-                        >
-                          <img
-                            src={ProfileImage}
-                            alt="Strategy Icon"
-                            className="w-[24px] h-[24px] rounded-full object-cover"
-                          />
-                          <p className="my-auto">{item.Name}</p>
-                        </div>
-                      </td> */}
-                      <td className="py-2 px-[15px]">{item.Name}</td>
-                      <td className="py-2 px-[15px]">{item.Balance}</td>
+              {Loading ? (
+                <tr>
+                  <td
+                    className="pt-8 text-center font-[700] lightgray3 text-[16px]"
+                    colSpan="9"
+                  >
+                    Loading...
+                  </td>
+                </tr>
+              ) : (
+                <tbody>
+                  {TableData?.length > 0 ? (
+                    TableData.map((item, index) => (
+                      <tr
+                        key={index}
+                        className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
+                      >
+                        <td className="py-2 pr-[15px]">
+                          <div
+                            onClick={() =>
+                              navigate("/Followers-Strategy-Detail")
+                            }
+                            className="flex gap-2"
+                          >
+                            <img
+                              src={item?.logo_url || ProfileImage}
+                              alt="Strategy Icon"
+                              className="w-[28px] h-[28px] rounded-full object-cover border-[2px] border-[#E8E8E8]"
+                            />
+                            <p className="my-auto">{item.name}</p>
+                          </div>
+                        </td>
+                        <td className="py-2 px-[15px]">{item.invested}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        className="pt-8 text-center font-[700] lightgray3 text-[16px]"
+                        colSpan="9"
+                      >
+                        No data found.
+                      </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td className="p-3 text-center text-gray-500" colSpan="9">
-                      No data found.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
+                  )}
+                </tbody>
+              )}
             </table>
           </div>
         </div>
@@ -233,7 +314,7 @@ const Browse = () => {
           <h1 className="pb-2 text-[20px] font-[700] black">
             Most Paid Recruiters
           </h1>{" "}
-          <div className="  overflow-x-auto">
+          <div className="overflow-x-auto">
             <table className="min-w-full bg-white">
               <thead className="border-[1px] border-[#f4f4f4] rounded-[12px] bg_lightgray5 text-left text-[12px] font-[700] gray">
                 <tr className="">
@@ -241,38 +322,53 @@ const Browse = () => {
                   <th className="py-2 px-[15px]">Paid</th>
                 </tr>
               </thead>
-              <tbody>
-                {strategies?.length > 0 ? (
-                  strategies.map((item, index) => (
-                    <tr
-                      key={index}
-                      className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
-                    >
-                      {/* <td className="py-2 pr-[15px]">
-                        <div
-                          onClick={() => navigate("/Followers-Strategy-Detail")}
-                          className="flex gap-2 cursor-pointer hover:text-blue-400"
-                        >
-                          <img
-                            src={ProfileImage}
-                            alt="Strategy Icon"
-                            className="w-[24px] h-[24px] rounded-full object-cover"
-                          />
-                          <p className="my-auto">{item.Name}</p>
-                        </div>
-                      </td> */}
-                      <td className="py-2 px-[15px]">{item.Name}</td>
-                      <td className="py-2 px-[15px]">{item.Balance}</td>
+              {Loading ? (
+                <tr>
+                  <td
+                    className="pt-8 text-center font-[700] lightgray3 text-[16px]"
+                    colSpan="9"
+                  >
+                    Loading...
+                  </td>
+                </tr>
+              ) : (
+                <tbody>
+                  {TableData?.length > 0 ? (
+                    TableData.map((item, index) => (
+                      <tr
+                        key={index}
+                        className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
+                      >
+                        <td className="py-2 pr-[15px]">
+                          <div
+                            onClick={() =>
+                              navigate("/Followers-Strategy-Detail")
+                            }
+                            className="flex gap-2"
+                          >
+                            <img
+                              src={item?.logo_url || ProfileImage}
+                              alt="Strategy Icon"
+                              className="w-[28px] h-[28px] rounded-full object-cover border-[2px] border-[#E8E8E8]"
+                            />
+                            <p className="my-auto">{item.name}</p>
+                          </div>
+                        </td>
+                        <td className="py-2 px-[15px]">{item.invested}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        className="pt-8 text-center font-[700] lightgray3 text-[16px]"
+                        colSpan="9"
+                      >
+                        No data found.
+                      </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td className="p-3 text-center text-gray-500" colSpan="9">
-                      No data found.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
+                  )}
+                </tbody>
+              )}
             </table>
           </div>
         </div>

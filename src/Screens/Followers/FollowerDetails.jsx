@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
 import axios from "axios";
 import { Breadcrumb } from "antd";
+import { useParams, useNavigate } from "react-router-dom";
+
 // ///////////////////////   *****************   ///////////////////////
 import ProfileImage from "../../assets/Images/ProfileImage.png";
 import { EditIcon } from "../../assets/svgs/Followers/FollowersIndex";
@@ -44,30 +45,47 @@ const TradeDetails = [
   },
 ];
 const FollowerDetails = () => {
+  const { id } = useParams();
+
   const navigate = useNavigate();
 
-  const [strategies, setStrategies] = useState([]);
-  const [error, setError] = useState(null);
+  const [strategyDetail, setStrategyDetail] = useState({});
+  const [strategiesData, setStrategiesData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const [Data, setData] = useState({});
+
+  const FollowerStrategyData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/strategies/${id}`, {
+        headers: {
+          Authorization: `Bearer ${`Token`}`,
+        },
+      });
+      console.log(" Response:", response?.data);
+
+      setData(response?.data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      // Check for 401 Unauthorized
+      if (
+        error.response?.data?.detail === "Token has expired" ||
+        error.response?.data?.detail === "Unauthorized"
+      ) {
+        console.log(error);
+      } else {
+        Data(null);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Replace this with actual API URL
-        const response = await axios.get("https://your-api.com/strategies");
-        if (response.status === 200 && Array.isArray(response.data)) {
-          setStrategies(response.data);
-        } else {
-          setStrategies(dummyData);
-        }
-      } catch (err) {
-        console.error("API Error:", err);
-        setError("Failed to fetch data, displaying fallback.");
-        setStrategies(dummyData);
-      }
-    };
-
-    fetchData();
+    FollowerStrategyData();
   }, []);
+
   return (
     <div className="p-3">
       <div className="">
@@ -90,7 +108,7 @@ const FollowerDetails = () => {
             {
               title: (
                 <span className="text-[14px] my-auto black font-[700]">
-                  James Homes
+                  {Data?.name}
                 </span>
               ),
             },
@@ -103,24 +121,24 @@ const FollowerDetails = () => {
         <div className="my-auto flex gap-3">
           <div className="my-auto">
             <img
-              src={ProfileImage}
+              src={Data?.logo_url || ProfileImage}
               alt="Strategy Icon"
-              className="w-[48px] h-[48px] rounded-full object-cover"
+              className="w-[48px] h-[48px] rounded-full object-cover border-[2px] border-[#E8E8E8]"
             />
           </div>
           <div className="">
             <h1 className="satoshi_italic text-[16px] font-[700] black my-auto">
-              Anjuta
+              {Data?.name}
             </h1>
             <div className="flex gap-3">
               <p className="flex gap-1 my-auto text-[14px] font-[500] gray">
                 <img src={EnvelopeSimple} alt="EnvelopeSimple" />
-                james324@aol.com
+                {Data?.email || "N/A"}
               </p>
               <p className="flex gap-1 my-auto text-[14px] font-[500] gray">
                 {" "}
                 <img src={UserRectangle} alt="UserRectangle" />
-                CU32323
+                {Data?.login || "N/A"}
               </p>
             </div>
           </div>
@@ -140,7 +158,9 @@ const FollowerDetails = () => {
                 </div>
                 <div className="lightgray my-auto">
                   <p className="lightgray text-[14px] font-[500]">Paid Fees</p>
-                  <p className="white text-[20px] font-[700]">$43,343</p>
+                  <p className="white text-[20px] font-[700] max-w-[150px] overflow-hidden text-ellipsis">
+                    {Data?.min_investment || 0}
+                  </p>
                 </div>
               </div>
               {/*Min Investment  */}
@@ -154,7 +174,9 @@ const FollowerDetails = () => {
                 </div>
                 <div className="lightgray my-auto">
                   <p className="lightgray text-[14px] font-[500]">Invested</p>
-                  <p className="white text-[20px] font-[700]">$10,430,00</p>
+                  <p className="white text-[20px] font-[700] max-w-[150px] overflow-hidden text-ellipsis">
+                    {Data?.min_investment || 0}
+                  </p>
                 </div>
               </div>
             </div>
@@ -188,70 +210,84 @@ const FollowerDetails = () => {
                 <th className="py-2 px-[15px]">Action</th>
               </tr>
             </thead>
-            <tbody>
-              {strategies?.length > 0 ? (
-                strategies.map((item, index) => (
-                  <tr
-                    key={index}
-                    className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
-                  >
-                    <td className="py-2 pr-[15px]">
-                      <div
-                        onClick={() => navigate("/Followers-Strategy-Detail")}
-                        className="flex gap-2 cursor-pointer hover:text-blue-400"
-                      >
+            {loading ? (
+              <tr>
+                <td
+                  className="pt-5 text-center font-[700] lightgray3 text-[16px]"
+                  colSpan="9"
+                >
+                  Loading...
+                </td>
+              </tr>
+            ) : (
+              <tbody>
+                {strategyDetail?.length > 0 ? (
+                  strategyDetail.map((item, index) => (
+                    <tr
+                      key={index}
+                      className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
+                    >
+                      <td className="py-2 pr-[15px]">
+                        <div
+                          onClick={() => navigate("/Followers-Strategy-Detail")}
+                          className="flex gap-2 cursor-pointer hover:text-blue-400"
+                        >
+                          <img
+                            src={ProfileImage}
+                            alt="Strategy Icon"
+                            className="w-[24px] h-[24px] rounded-full object-cover"
+                          />
+                          <p className="my-auto">{item.strategy}</p>
+                        </div>
+                      </td>
+                      <td className="py-2 px-[15px]">{item.DateJoined}</td>
+                      <td className="py-2 px-[15px]">{item.Invested}</td>
+                      <td className="py-2 px-[15px]">{item.Parent}</td>
+                      <td className="py-2 px-[15px]">{item.AccountNo}</td>
+                      <td className="py-2 px-[15px]">{item.PFPaid}</td>
+                      <td className="py-2 px-[15px] flex items-center gap-1">
+                        {item.RM}{" "}
                         <img
-                          src={ProfileImage}
-                          alt="Strategy Icon"
-                          className="w-[24px] h-[24px] rounded-full object-cover"
+                          src={EditIcon}
+                          alt="EditIcon"
+                          className="cursor-pointer"
                         />
-                        <p className="my-auto">{item.strategy}</p>
-                      </div>
-                    </td>
-                    <td className="py-2 px-[15px]">{item.DateJoined}</td>
-                    <td className="py-2 px-[15px]">{item.Invested}</td>
-                    <td className="py-2 px-[15px]">{item.Parent}</td>
-                    <td className="py-2 px-[15px]">{item.AccountNo}</td>
-                    <td className="py-2 px-[15px]">{item.PFPaid}</td>
-                    <td className="py-2 px-[15px] flex items-center gap-1">
-                      {item.RM}{" "}
-                      <img
-                        src={EditIcon}
-                        alt="EditIcon"
-                        className="cursor-pointer"
-                      />
-                    </td>
-                    <td className="py-2 px-[15px]">{item.Balance}</td>
-                    <td className="p-2 flex gap-2">
-                      <button
-                        className="w-[100px] bg-white border cursor-pointer border-[#E8E8E8] flex gap-1
+                      </td>
+                      <td className="py-2 px-[15px]">{item.Balance}</td>
+                      <td className="p-2 flex gap-2">
+                        <button
+                          className="w-[100px] bg-white border cursor-pointer border-[#E8E8E8] flex gap-1
                         px-[12px] py-[5px] rounded-[8px] text-[14px] hover:bg-gray-100"
-                      >
-                        <img src={LinkBreak} alt="LinkBreak" className="" />
-                        Detach
-                      </button>
-                      <button
-                        className="w-[100px] bg-white border cursor-pointer border-[#E8E8E8] flex gap-1
+                        >
+                          <img src={LinkBreak} alt="LinkBreak" className="" />
+                          Detach
+                        </button>
+                        <button
+                          className="w-[100px] bg-white border cursor-pointer border-[#E8E8E8] flex gap-1
                         px-[12px] py-[5px] rounded-[8px] text-[14px] hover:bg-gray-100"
-                      >
-                        <img
-                          src={RocketLaunch}
-                          alt="RocketLaunch"
-                          className=""
-                        />
-                        Force&nbsp;PF
-                      </button>
+                        >
+                          <img
+                            src={RocketLaunch}
+                            alt="RocketLaunch"
+                            className=""
+                          />
+                          Force&nbsp;PF
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      className="pt-5 text-center font-[700] lightgray3 text-[16px]"
+                      colSpan="9"
+                    >
+                      No data found.
                     </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td className="p-3 text-center text-gray-500" colSpan="9">
-                    No data found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
+                )}
+              </tbody>
+            )}
           </table>
         </div>
       </div>
@@ -293,33 +329,47 @@ const FollowerDetails = () => {
                 <th className="py-2 px-[15px]">RM</th>
               </tr>
             </thead>
-            <tbody>
-              {TradeDetails?.length > 0 ? (
-                TradeDetails.map((item, index) => (
-                  <tr
-                    key={index}
-                    className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
-                  >
-                    <td className="py-2 px-[15px]">{item.Symbol}</td>
-                    <td className="py-2 px-[15px]">{item.Type}</td>
-                    <td className="py-2 px-[15px] green">{item.Vol}</td>
-                    <td className="py-2 px-[15px]">{item.Date}</td>
-                    <td className="py-2 px-[15px]">{item.OpenTime}</td>
-                    <td className="py-2 px-[15px]">{item.CloseTime}</td>
-                    <td className="py-2 px-[15px]">{item.EntryPrice}</td>
-                    <td className="py-2 px-[15px]">{item.ExitPrice}</td>
-                    <td className="py-2 px-[15px] green">{item.PnL}</td>
-                    <td className="py-2 px-[15px]">{item.RM}</td>
+            {loading ? (
+              <tr>
+                <td
+                  className="pt-5 text-center font-[700] lightgray3 text-[16px]"
+                  colSpan="9"
+                >
+                  Loading...
+                </td>
+              </tr>
+            ) : (
+              <tbody>
+                {TradeDetails?.length > 0 ? (
+                  TradeDetails.map((item, index) => (
+                    <tr
+                      key={index}
+                      className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
+                    >
+                      <td className="py-2 px-[15px]">{item.Symbol}</td>
+                      <td className="py-2 px-[15px]">{item.Type}</td>
+                      <td className="py-2 px-[15px] green">{item.Vol}</td>
+                      <td className="py-2 px-[15px]">{item.Date}</td>
+                      <td className="py-2 px-[15px]">{item.OpenTime}</td>
+                      <td className="py-2 px-[15px]">{item.CloseTime}</td>
+                      <td className="py-2 px-[15px]">{item.EntryPrice}</td>
+                      <td className="py-2 px-[15px]">{item.ExitPrice}</td>
+                      <td className="py-2 px-[15px] green">{item.PnL}</td>
+                      <td className="py-2 px-[15px]">{item.RM}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      className="pt-5 text-center font-[700] lightgray3 text-[16px]"
+                      colSpan="9"
+                    >
+                      No data found.
+                    </td>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td className="p-3 text-center text-gray-500" colSpan="9">
-                    No data found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
+                )}
+              </tbody>
+            )}
           </table>
         </div>
       </div>

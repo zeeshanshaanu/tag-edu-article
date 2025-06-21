@@ -14,6 +14,7 @@ import {
   ChartLineUp,
   UserActive,
 } from "../../assets/svgs/AdminFollowers/index";
+import CreateFollower from "./CreateFollower";
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 const dummyData = [
@@ -51,28 +52,71 @@ const dummyData = [
 const Followers = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [strategies, setStrategies] = useState([]);
-  const [error, setError] = useState(null);
+  const [Data, setData] = useState({});
+  const [TableData, setTableData] = useState([]);
+  const [Loading, setLoading] = useState(false);
+
+  const FollowerStrategyData = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/follower-hub/summary`, {
+        headers: {
+          Authorization: `Bearer ${`Token`}`,
+        },
+      });
+      console.log(" Response:", response?.data);
+
+      setData(response?.data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      // Check for 401 Unauthorized
+      if (
+        error.response?.data?.detail === "Token has expired" ||
+        error.response?.data?.detail === "Unauthorized"
+      ) {
+        console.log(error);
+      } else {
+        Data(null);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    FollowerStrategyData();
+  }, []);
+
+  const FollowerTable = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/follower-hub/strategies`, {
+        headers: {
+          Authorization: `Bearer ${`Token`}`,
+        },
+      });
+      console.log(" Response Tables:", response?.data);
+
+      setTableData(response?.data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      // Check for 401 Unauthorized
+      if (
+        error.response?.data?.detail === "Token has expired" ||
+        error.response?.data?.detail === "Unauthorized"
+      ) {
+        console.log(error);
+      } else {
+        setTableData(null);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Replace this with actual API URL
-        const response = await axios.get("https://your-api.com/strategies");
-        if (response.status === 200 && Array.isArray(response.data)) {
-          setStrategies(response.data);
-        } else {
-          setStrategies(dummyData);
-        }
-      } catch (err) {
-        console.error("API Error:", err);
-        setError("Failed to fetch data, displaying fallback.");
-        setStrategies(dummyData);
-      }
-    };
-
-    fetchData();
+    FollowerTable();
   }, []);
+  //  ///////////////////////////////////////////////////////////////
   return (
     <div className="p-3">
       {/* Breadcurm and Tabs */}
@@ -98,7 +142,9 @@ const Followers = () => {
               </div>
               <div className="lightgray my-auto">
                 <p className="lightgray text-[14px] font-[500]">Active</p>
-                <p className="white text-[20px] font-[700]">434</p>
+                <p className="white text-[20px] font-[700]">
+                  {Data?.active_user || 0}
+                </p>
               </div>
             </div>
             {/*New MTD  */}
@@ -112,7 +158,9 @@ const Followers = () => {
               </div>
               <div className="lightgray my-auto">
                 <p className="lightgray text-[14px] font-[500]">New MTD</p>
-                <p className="white text-[20px] font-[700]">434</p>
+                <p className="white text-[20px] font-[700]">
+                  {Data?.new_mtd || 0}
+                </p>
               </div>
             </div>
             {/* Previous Month  */}
@@ -128,7 +176,10 @@ const Followers = () => {
                 <p className="lightgray text-[14px] font-[500]">
                   Previous Month{" "}
                 </p>
-                <p className="white text-[20px] font-[700]"> 343</p>
+                <p className="white text-[20px] font-[700]">
+                  {" "}
+                  {Data?.prev_month || 0}
+                </p>
               </div>
             </div>
             {/* Total AUM  */}
@@ -142,7 +193,9 @@ const Followers = () => {
               </div>
               <div className="lightgray my-auto">
                 <p className="lightgray text-[14px] font-[500]">Total AUM</p>
-                <p className="white text-[20px] font-[700]">$456,456,456</p>
+                <p className="white text-[20px] font-[700] max-w-[150px] overflow-hidden text-ellipsis">
+                  {Data?.total_aum || 0}
+                </p>
               </div>
             </div>
           </div>
@@ -166,10 +219,10 @@ const Followers = () => {
             </div>
           </div>
           <div onClick={() => dispatch(OpenModelFtn(true))} className="my-auto">
-            <h1 className="cursor-pointer border border-[1.5px] border-[#E8E8E8] rounded-[8px] px-[15px] py-[7px] flex gap-2">
+            <button className="cursor-pointer border border-[1.5px] border-[#E8E8E8] rounded-[8px] px-[15px] py-[7px] flex gap-2">
               <img src={Plus} alt="Plus" className="" />
               Create{" "}
-            </h1>
+            </button>
           </div>
         </div>
         {/* Table */}
@@ -189,8 +242,8 @@ const Followers = () => {
               </tr>
             </thead>
             <tbody>
-              {strategies?.length > 0 ? (
-                strategies.map((item, index) => (
+              {TableData?.length > 0 ? (
+                TableData.map((item, index) => (
                   <tr
                     key={index}
                     className="text-[14px] font-[500] black border-t border-[#E8E8E8]"
@@ -203,21 +256,27 @@ const Followers = () => {
                         className="flex gap-2"
                       >
                         <img
-                          src={ProfileImage}
+                          src={item?.logo_url || ProfileImage}
                           alt="Strategy Icon"
-                          className="w-[24px] h-[24px] rounded-full object-cover"
+                          className="w-[29px] h-[29px] rounded-full object-cover border-[2px] border-[#E8E8E8]"
                         />
-                        <p className="my-auto">{item.strategy}</p>
+                        <p className="my-auto">{item.name}</p>
                       </div>
                     </td>
-                    <td className="py-2 px-[15px]">{item.AccountSlave}</td>
-                    <td className="py-2 px-[15px]">{item.DateJoined}</td>
-                    <td className="py-2 px-[15px]">{item.Invested}</td>
-                    <td className="py-2 px-[15px]">{item.Balance}</td>
-                    <td className="py-2 px-[15px] green">{item.pnl}</td>
+                    <td className="py-2 px-[15px]">{item.account_type}</td>
+                    <td className="py-2 px-[15px]">{item.date}</td>
+                    <td className="py-2 px-[15px] max-w-[100px] overflow-hidden text-ellipsis ">
+                      {item.invested}
+                    </td>
+                    <td className="py-2 px-[15px] max-w-[100px] overflow-hidden text-ellipsis ">
+                      {item.balance}
+                    </td>
+                    <td className="py-2 px-[15px] max-w-[100px] overflow-hidden text-ellipsis  green">
+                      {item.pnl}
+                    </td>
                     <td className="py-2 px-[15px] flex gap-2">
                       <button
-                        onClick={() => navigate("/Follower-Details")}
+                        onClick={() => navigate(`/Follower-Details/${item.id}`)}
                         className="w-[90px] bg-white border cursor-pointer border-[#E8E8E8] flex gap-1
                                                   px-[12px] py-[5px] rounded-[8px] text-[14px] hover:bg-gray-100"
                       >
@@ -238,6 +297,7 @@ const Followers = () => {
           </table>
         </div>
       </div>
+      <CreateFollower />
     </div>
   );
 };
