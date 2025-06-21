@@ -23,6 +23,22 @@ import Withdrow from "./Withdrow.svg";
 import Check from "./Check.svg";
 import GearSix from "./GearSix.svg";
 import RecruiterStrucute from "./RecruiterStrucute.svg";
+import CrownBlack from "./CrownBlack.svg";
+import CrownGray from "./CrownGray.svg";
+import Rows from "./Rows.svg";
+import LockSimpleOpen from "./LockSimpleOpen.svg";
+import Play from "./Play.svg";
+import Timer from "./Timer.svg";
+import TimerBlack from "./TimerBlack.svg";
+import RowsBlack from "./RowsBlack.svg";
+import PlayCircleGray from "./PlayCircleGray.svg";
+import CalendarGray from "./CalendarGray.svg";
+import NotePencilWhite from "./NotePencilWhite.svg";
+import PlayCircleBlack from "./PlayCircleBlack.svg";
+import CalendarUpcomingGray from "./CalendarUpcomingGray.svg";
+import CalendarColored from "./CalendarColored.svg";
+import ClockCounterColored from "./ClockCounterColored.svg";
+import ClockCounterGray from "./ClockCounterGray.svg";
 
 // import more as needed
 
@@ -51,4 +67,21 @@ export {
   X,
   GearSix,
   RecruiterStrucute,
+  CrownBlack,
+  CrownGray,
+  Rows,
+  LockSimpleOpen,
+  Play,
+  Timer,
+  TimerBlack,
+  RowsBlack,
+  PlayCircleGray,
+  NotePencilWhite,
+  CalendarGray,
+  
+  CalendarUpcomingGray,
+  CalendarColored,
+  ClockCounterColored,
+  ClockCounterGray,
+  PlayCircleBlack,
 };

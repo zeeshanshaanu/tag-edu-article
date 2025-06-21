@@ -6,43 +6,40 @@ import ProfileImage from "../../assets/Images/ProfileImage.png";
 
 import {
   CirclesThreeColored,
-  LightbulbFilament,
   StackSimple,
 } from "../../assets/svgs/Browse/index";
 import {
   ChartLineUp,
   GearSix,
+  CrownBlack,
+  CrownGray,
+  Rows,
+  Play,
+  Timer,
+  NotePencilWhite,
+  CalendarGray,
+  CalendarUpcomingGray,
+  CalendarColored,
+  ClockCounterColored,
+  ClockCounterGray,
+  PlayCircleBlack,
 } from "../../assets/svgs/Followers/FollowersIndex";
 import { MagnifyingGlassWhite } from "../../assets/svgs/index";
 
 import { useDispatch } from "react-redux";
 import Pagination from "../../components/TablePagination/Pagination";
+import { useNavigate } from "react-router-dom";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
-const dummyData = [
-  {
-    Name: "Anjuta",
-    Balance: "1,586",
-  },
-  {
-    Name: "Anjuta",
-    Balance: "1,586",
-  },
-  {
-    Name: "Anjuta",
-    Balance: "1,586",
-  },
-];
 
-const Browse = () => {
-  const [showBG, setshowBG] = useState("all");
-
+const Webinars = () => {
+  const [showBG, setshowBG] = useState("upcoming");
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [Data, setData] = useState({});
   const [Loading, setLoading] = useState(false);
 
-  const [ChartData, setChartData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10); // or whatever you want
   const [totalCount, setTotalCount] = useState(0);
@@ -52,7 +49,7 @@ const Browse = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `/traders`,
+        `/follower-hub/strategies`,
         {
           params: {
             page: currentPage,
@@ -66,9 +63,9 @@ const Browse = () => {
           },
         }
       );
+      console.log(response?.data);
 
-      setData(response?.data?.items || []);
-      setChartData(response?.data?.items?.[0] || []);
+      setData(response?.data || []);
       setTotalCount(response?.data?.meta?.total || 0);
     } catch (error) {
       console.error("Error fetching profile:", error);
@@ -88,7 +85,7 @@ const Browse = () => {
 
   useEffect(() => {
     FetchData();
-  }, [currentPage, pageSize, Search]);
+  }, []);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -101,7 +98,7 @@ const Browse = () => {
       <div className="mt-3 HeaderGreenBGimage p-[20px] rounded-[12px]">
         <div className="sm:flex justify-between gap-5">
           <h1 className="satoshi_italic lg:text-[40px] text-[30px] font-[900] black">
-            Articles
+            Webinars
           </h1>
         </div>
       </div>{" "}
@@ -109,16 +106,16 @@ const Browse = () => {
       <div className="flex justify-between mt-4">
         <div className="sm:flex gap-[8px] max-w-[100%] overflow-auto my-auto">
           <div
-            className={`cursor-pointer flex rounded-[8px] px-[16px] py-[10px] font-[500] 
+            className={`cursor-pointer flex rounded-[8px] px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              showBG === "all" ? "bg_white font-[700]" : "bg_lightgray2"
+              showBG === "upcoming" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
-            onClick={() => setshowBG("all")}
+            onClick={() => setshowBG("upcoming")}
           >
             <span className="my-auto">
               <img
                 src={
-                  showBG === "all" ? CirclesThreeColored : CirclesThreeColored
+                  showBG === "upcoming" ? CalendarColored : CalendarUpcomingGray
                 }
                 alt="MagnifyingGlassBlack"
                 className="w-[25px] h-[20px]"
@@ -126,100 +123,37 @@ const Browse = () => {
             </span>
             <span
               className={` my-auto text-[14px] my-auto ${
-                showBG === "all" ? "black" : "gray"
+                showBG === "upcoming" ? "black" : "gray"
               }`}
             >
-              All
+              Upcoming
             </span>
           </div>
           {/*  */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] 
+            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 
-             ${showBG === "basics" ? "bg_white font-[700]" : "bg_lightgray2"}
+             ${showBG === "past" ? "bg_white font-[700]" : "bg_lightgray2"}
           `}
-            onClick={() => setshowBG("basics")}
+            onClick={() => setshowBG("past")}
           >
             <img
-              src={showBG === "all" ? LightbulbFilament : LightbulbFilament}
+              src={showBG === "past" ? ClockCounterColored : ClockCounterGray}
               alt="MagnifyingGlassBlack"
-              className="w-[25px] h-[20px]"
+              className="w-[20px] h-[20px]"
             />
 
             <span
               className={`text-[14px] my-auto ${
-                showBG === "basics" ? "black" : "gray"
+                showBG === "past" ? "black" : "gray"
               }`}
             >
-              Basics
-            </span>
-          </div>
-          {/*  */}
-          <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              showBG === "indicators" ? "bg_white font-[700]" : "bg_lightgray2"
-            }`}
-            onClick={() => setshowBG("indicators")}
-          >
-            {" "}
-            <img
-              src={showBG === "all" ? ChartLineUp : ChartLineUp}
-              alt="MagnifyingGlassBlack"
-              className="w-[25px] h-[20px]"
-            />
-            <span
-              className={`text-[14px] my-auto ${
-                showBG === "indicators" ? "black" : "gray"
-              }`}
-            >
-              Indicators
-            </span>
-          </div>
-          {/*  */}
-          <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              showBG === "fundamentals"
-                ? "bg_white font-[700]"
-                : "bg_lightgray2"
-            }`}
-            onClick={() => setshowBG("fundamentals")}
-          >
-            <img
-              src={showBG === "all" ? StackSimple : StackSimple}
-              alt="MagnifyingGlassBlack"
-              className="w-[25px] h-[20px]"
-            />
-            <span
-              className={`text-[14px] my-auto ${
-                showBG === "fundamentals" ? "black" : "gray"
-              }`}
-            >
-              Fundamentals
-            </span>
-          </div>
-          {/*  */}
-          <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              showBG === "technicals" ? "bg_white font-[700]" : "bg_lightgray2"
-            }`}
-            onClick={() => setshowBG("technicals")}
-          >
-            <img
-              src={showBG === "all" ? GearSix : GearSix}
-              alt="MagnifyingGlassBlack"
-              className="w-[25px] h-[20px]"
-            />
-            <span
-              className={`text-[14px] my-auto ${
-                showBG === "technicals" ? "black" : "gray"
-              }`}
-            >
-              Technicals
+              Past
             </span>
           </div>
         </div>
         {/*  */}
-        <div className="flex justify-between searchBar relative my-auto">
+        {/* <div className="flex justify-between searchBar relative my-auto">
           <input
             type="text"
             placeholder="Search"
@@ -235,10 +169,11 @@ const Browse = () => {
               className="flex justify-center p-[7px]"
             />
           </div>
-        </div>
+        </div> */}
       </div>
       {/* Cards */}
       <div className="bg-white rounded-[12px] p-5 mt-1">
+        {/* CARDS */}
         <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
           {Loading ? (
             <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] black text-[20px]">
@@ -257,7 +192,7 @@ const Browse = () => {
                         className=""
                         style={{
                           backgroundImage: `url(${
-                            items?.image || ProfileImage
+                            items?.logo_url || ProfileImage
                           })`,
                           backgroundSize: "cover",
                           backgroundPosition: "center",
@@ -269,17 +204,26 @@ const Browse = () => {
                       ></div>
                       {/* Detail */}
                       <div className="p-[13px]">
-                        <div className="flex gap-[20px]">
+                        {/* <div className="flex gap-[10px]">
                           <h1 className="text-[12px] font-[700] rounded-[8px] border-[2px] border-[#E8E8E8] px-2 py-1 my-auto">
-                            Indicators
+                            {items?.account_type}
+                          </h1>
+                          <h1 className="bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[8px] px-2 py-1 my-auto">
+                            <img
+                              src={CrownBlack}
+                              alt="MagnifyingGlassBlack"
+                              className="w-[20px] h-[20px] my-auto"
+                            />{" "}
+                            <span className="my-auto">past</span>
                           </h1>
                           <p className="text-[12px] font-[500] gray my-auto">
-                            May 16, 2025
+                            Deposit $500 to unlock past
                           </p>
-                        </div>
+                        </div> */}
                         {/*  */}
-                        <h1 className="text-[20px] font-[700] mt-[12px]">
-                          How to Install Indicators
+                        <h1 className="text-[20px] font-[700]">
+                          Getting Started with Copy Trading:  A Beginner’s
+                          Roadmap
                         </h1>
                         {/*  */}
                         <p className="text-[14px] font-[500] gray  mt-[6px] line-clamp-2">
@@ -288,6 +232,74 @@ const Browse = () => {
                           The altcoin market presents significant opportunities
                           and risks in 2025. This comprehensive guide an asdfljh
                         </p>
+                        {/*  */}
+                        <div className="flex gap-5 my-2">
+                          <div className="my-auto">
+                            <p className="flex gap-1 text-[14px] font-[500] gray">
+                              <img
+                                src={CalendarGray}
+                                alt="CalendarGray"
+                                className=" my-auto"
+                              />{" "}
+                              <span className="my-auto">August 29, 2025</span>
+                            </p>
+                          </div>
+                          {showBG === "upcoming" && (
+                            <div className="my-auto">
+                              <p className="flex gap-1 text-[14px] font-[500] gray">
+                                <img
+                                  src={Timer}
+                                  alt="Timer"
+                                  className=" my-auto"
+                                />{" "}
+                                <span className="my-auto">6:00 PM UTC</span>
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                        {/*  */}
+                        {showBG === "past" ? (
+                          <div className="mt-4">
+                            <button
+                              // onClick={() =>
+                              //   navigate(`/CourseDetails/${items?.id}`)
+                              // }
+                              className="flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
+                             w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
+                            >
+                              <img
+                                // PlayCircleBlack
+                                src={PlayCircleBlack}
+                                alt="PlayCircleBlack"
+                                className=" my-auto"
+                              />{" "}
+                              <span className="my-auto text-[14px] font-[700] ">
+                                {" "}
+                                Watch Recording
+                              </span>
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="mt-4">
+                            <button
+                              // onClick={() =>
+                              //   navigate(`/CourseDetails/${items?.id}`)
+                              // }
+                              className="flex justify-center gap-1 cursor-pointer bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700]"
+                            >
+                              <img
+                                // LockSimpleOpen
+                                src={NotePencilWhite}
+                                alt="NotePencilWhite"
+                                className=" my-auto"
+                              />{" "}
+                              <span className="my-auto text-[14px] font-[700] ">
+                                {" "}
+                                Register
+                              </span>
+                            </button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -317,4 +329,4 @@ const Browse = () => {
   );
 };
 
-export default Browse;
+export default Webinars;

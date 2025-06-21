@@ -9,7 +9,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import axios from "axios";
 // ///////////////////////////////////////
 // ///////////////////////////////////////
-axios.defaults.baseURL = "http://185.202.223.173:8000";
+axios.defaults.baseURL = "https://tagxapi.tagmarkets.com";
 // ///////////////////////////////////////
 // ///////////////////////////////////////
 createRoot(document.getElementById("root")).render(
