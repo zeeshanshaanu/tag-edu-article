@@ -20,28 +20,12 @@ import Pagination from "../../components/TablePagination/Pagination";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
-const dummyData = [
-  {
-    Name: "Anjuta",
-    Balance: "1,586",
-  },
-  {
-    Name: "Anjuta",
-    Balance: "1,586",
-  },
-  {
-    Name: "Anjuta",
-    Balance: "1,586",
-  },
-];
 
 const Browse = () => {
   const [showBG, setshowBG] = useState("all");
-
   const dispatch = useDispatch();
   const [Data, setData] = useState({});
   const [Loading, setLoading] = useState(false);
-
   const [ChartData, setChartData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10); // or whatever you want
@@ -109,7 +93,7 @@ const Browse = () => {
       <div className="flex justify-between mt-4">
         <div className="sm:flex gap-[8px] max-w-[100%] overflow-auto my-auto">
           <div
-            className={`cursor-pointer flex rounded-[8px] px-[16px] py-[10px] font-[500] 
+            className={`cursor-pointer flex rounded-[8px] px-[16px] py-[6px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 ${
               showBG === "all" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
@@ -134,7 +118,7 @@ const Browse = () => {
           </div>
           {/*  */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] 
+            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[6px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 
              ${showBG === "basics" ? "bg_white font-[700]" : "bg_lightgray2"}
           `}
@@ -156,7 +140,7 @@ const Browse = () => {
           </div>
           {/*  */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[6px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
               showBG === "indicators" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
             onClick={() => setshowBG("indicators")}
@@ -177,7 +161,7 @@ const Browse = () => {
           </div>
           {/*  */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[6px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
               showBG === "fundamentals"
                 ? "bg_white font-[700]"
                 : "bg_lightgray2"
@@ -199,7 +183,7 @@ const Browse = () => {
           </div>
           {/*  */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[10px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[6px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
               showBG === "technicals" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
             onClick={() => setshowBG("technicals")}
@@ -226,9 +210,9 @@ const Browse = () => {
             value={Search}
             onChange={(e) => setSearch(e.target.value)}
             autoComplete="off"
-            className="w-[180px] sm:w-[280px] border border-[1.5px] border-[#E8E8E8] bg-white rounded-[8px] outline-none pl-[15px] pr-[45px] py-[7px]"
+            className="w-[180px] sm:w-[280px] border border-[1.5px] border-[#E8E8E8] bg-white rounded-[8px] outline-none pl-[15px] pr-[45px] py-[6px]"
           />
-          <div className="absolute bg_black top-[4px] sm:left-[243px] left-[143px] w-[32px] h-[32px] rounded-[6px] flex justify-center">
+          <div className="absolute bg_black top-[3px] sm:left-[243px] left-[143px] w-[32px] h-[31px] rounded-[6px] flex justify-center">
             <img
               src={MagnifyingGlassWhite}
               alt="MagnifyingGlass"

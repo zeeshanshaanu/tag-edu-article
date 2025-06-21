@@ -2,29 +2,18 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Breadcrumb } from "antd";
 import { useParams, useNavigate } from "react-router-dom";
+import ReactPlayer from "react-player";
 
 // ///////////////////////   *****************   ///////////////////////
-import ProfileImage from "../../assets/Images/ProfileImage.png";
 import {
   TimerBlack,
   RowsBlack,
-  CrownBlack,
-  Rows,
   Play,
   Timer,
   PlayCircleGray,
 } from "../../assets/svgs/Followers/FollowersIndex";
-import { UserRectangle } from "../../assets/svgs/Provider/ProviderIndex";
-import {
-  EnvelopeSimple,
-  FollowerDetailInvested,
-  LinkBreak,
-  Paperclip,
-  Receipt,
-  RocketLaunch,
-} from "../../assets/svgs/AdminFollowers/index";
-import { blackFire } from "../../assets/svgs";
-
+import { ArrowRight, ArrowLeftBlack } from "../../assets/svgs/index";
+import VedioListImg from "../../assets/Images/VedioListImg.png";
 import { GraduationCapGray } from "../../assets/svgs/Browse/index";
 import Pagination from "../../components/TablePagination/Pagination";
 // ///////////////////////   *****************   ///////////////////////
@@ -137,7 +126,7 @@ const CourseDetails = () => {
             {
               title: (
                 <span className="text-[14px] my-auto black font-[700]">
-                  {Data?.name}
+                  {Data?.name || "John"}
                 </span>
               ),
             },
@@ -147,16 +136,20 @@ const CourseDetails = () => {
       {/* Followers Hub header */}
       <div className="my-4 HeaderGreenBGimage p-[20px] rounded-[12px]">
         <div className="lg:flex justify-between gap-5">
-          <div className="">
+          <div className="my-auto">
             <h1 className="satoshi_italic lg:text-[40px] text-[30px] font-[900] black">
               Forex 101 with John
             </h1>
-            <p className="lg:text-[16px] text-[14px] font-[500] black max-w-[450px]">
+            <p className="lg:text-[15px] text-[13px] font-[500] black max-w-[450px]">
               Forex 101 is the ultimate beginner’s course designed to give you a
               complete understanding of the forex market.
             </p>
           </div>
-          <div className="mt-3 lg:mt-0 bg_black flex gap-[30px] rounded-[12px] border-[2.5px] border-[#666666] px-[20px]">
+          {/*  */}
+          <div
+            className="max-h-[90px] my-auto bg_black flex gap-[30px]
+           rounded-[12px] border-[2.5px] border-[#666666] p-[20px]"
+          >
             <div className="flex gap-[16px]">
               <div className="lightgreenBoxShahdow my-auto bg_primaryGreen rounded-[8px] flex items-center justidfy-center pl-[14px] w-[55px] h-[45px]">
                 <img
@@ -208,11 +201,121 @@ const CourseDetails = () => {
       </div>
       {/* Vedio and List  */}
       <div className="grid grid:cols-1 lg:grid-cols-12 md:grid-cols-8 gap-4">
+        {/* Vedio Player */}
         <div className="bg_white rounded-[8px] col-span-12 md:col-span-5 lg:col-span-8 p-4">
-          Vedio Play
+          {/* <img
+            src={VedioListImg}
+            alt="VedioListImg"
+            className=" my-auto object-cover w-full max-h-[450px] rounded-[8px]"
+          />{" "} */}
+          <div className="video-wrapper">
+            <ReactPlayer
+              url="https://www.youtube.com/watch?v=dQw4w9WgXcQ" // or your own .mp4 file URL
+              controls={true}
+              width="100%"
+              height="100%"
+              playing={false}
+            />
+          </div>
+
+          {/*  */}
+          <div className="flex justify-between mt-3">
+            <h1 className="text-[20px] font-[700] black">
+              Candlestick Formations
+            </h1>
+            <div className="flex gap-[8px]">
+              <button className="cursor-pointer border border-[1.5px] border-[#E8E8E8] rounded-[8px] p-[10px]">
+                <img
+                  src={ArrowLeftBlack}
+                  alt="ArrowLeftBlack"
+                  className="w-[13px]"
+                />{" "}
+              </button>
+              <button className="cursor-pointer border border-[1.5px] border-[#E8E8E8] rounded-[8px] p-[10px]">
+                <img src={ArrowRight} alt="ArrowRight" className="" />{" "}
+              </button>
+            </div>
+          </div>
+          {/* Time and lessons */}
+          <div className="flex gap-5">
+            <div className="my-auto">
+              <p className="flex gap-1 text-[14px] font-[500] gray">
+                <img src={Timer} alt="Timer" className=" my-auto" />{" "}
+                <span className="my-auto"> 6h 45m</span>
+              </p>
+            </div>
+            <div className="my-auto">
+              <p className="flex gap-1 text-[14px] font-[500] gray">
+                <img
+                  src={PlayCircleGray}
+                  alt="PlayCircleGray"
+                  className=" my-auto"
+                />{" "}
+                <span className="my-auto">6/8 Lessons</span>
+              </p>
+            </div>
+          </div>
+          {/* Desc */}
+          <p className="text-[14px] font-[500] gray  mt-[6px] line-clamp-4">
+            Welcome to Forex 101, your beginner-friendly course into the world
+            of foreign exchange. In this module, we dive into candlestick
+            formations, one of the most essential tools in a trader’s technical
+            arsenal. You’ll learn how to recognize key patterns, interpret price
+            actions, and make smarter entry and exit decisions.
+          </p>
         </div>
+        {/* Vedio List */}
         <div className="bg_white rounded-[8px] col-span-12 md:col-span-3 lg:col-span-4 p-4">
-          Vedio List
+          <h1 className="inline-block bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[6px] px-2 py-[3px]">
+            Module 1
+          </h1>
+          <h1 className="text-[20px] font-[700] black mt-3">
+            Introduction to Forex
+          </h1>
+          <p className="text-[14px] font-[500] gray mt-[6px] line-clamp-2">
+            This is where you learn the basics of how the Forex market operates.
+          </p>
+          <div className="VedioList mt-4 max-h-[450px] overflow-y-scroll">
+            {Loading ? (
+              <span className="text-center p-5 grid grid-cols-1 col-span-10 font-[700] lightgray3 text-[20px]">
+                Loading...
+              </span>
+            ) : (
+              <>
+                {Data?.length > 0 ? (
+                  Data?.map((items, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className=" flex gap-3 mt-3 hover:bg-[#F4F4F4] hover:rounded-[8px] cursor-pointer"
+                      >
+                        <div className="my-auto">
+                          <img
+                            src={VedioListImg}
+                            alt="VedioListImg"
+                            className=" my-auto w-[130px] h-[80px] rounded-[8px]"
+                          />{" "}
+                        </div>
+                        <div className="my-auto">
+                          <h1 className="text-[14px] font-[500] black">
+                            1. What is Forex?
+                          </h1>
+                          <p className="flex gap-1 text-[14px] font-[500] gray mt-[5px]">
+                            <img src={Timer} alt="Timer" className=" my-auto" />{" "}
+                            <span className="my-auto"> 6h 45m</span>
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <span className="text-center p-5 grid grid-cols-1 col-span-10 font-[700] lightgray3 text-[20px]">
+                    No vedio list
+                  </span>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
       {/* Course Modules */}
