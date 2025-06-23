@@ -82,18 +82,18 @@ const Browse = () => {
     <div className="p-3">
       <HeaderTabAndBreadCrumb />
       {/* Browse Pro Traders */}
-      <div className="mt-3 HeaderGreenBGimage p-[20px] rounded-[12px]">
+      <div className="mt-3 HeaderGreenBGimage sm:p-[20px] p-[12px] rounded-[12px]">
         <div className="sm:flex justify-between gap-5">
-          <h1 className="satoshi_italic lg:text-[40px] text-[30px] font-[900] black">
+          <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black">
             Articles
           </h1>
         </div>
       </div>{" "}
       {/* Tabs and Search-input */}
-      <div className="flex justify-between mt-4">
-        <div className="sm:flex gap-[8px] max-w-[100%] overflow-auto my-auto">
+      <div className="lg:flex justify-between mt-4">
+        <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
           <div
-            className={`cursor-pointer flex rounded-[8px] px-[16px] py-[6px] font-[500] 
+            className={`min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 ${
               showBG === "all" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
@@ -118,7 +118,7 @@ const Browse = () => {
           </div>
           {/*  */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[6px] font-[500] 
+            className={`min-w-[90px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 
              ${showBG === "basics" ? "bg_white font-[700]" : "bg_lightgray2"}
           `}
@@ -140,7 +140,7 @@ const Browse = () => {
           </div>
           {/*  */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[6px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+            className={`min-w-[120px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
               showBG === "indicators" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
             onClick={() => setshowBG("indicators")}
@@ -161,7 +161,7 @@ const Browse = () => {
           </div>
           {/*  */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[6px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+            className={`min-w-[140px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
               showBG === "fundamentals"
                 ? "bg_white font-[700]"
                 : "bg_lightgray2"
@@ -183,7 +183,7 @@ const Browse = () => {
           </div>
           {/*  */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[6px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+            className={`min-w-[130px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
               showBG === "technicals" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
             onClick={() => setshowBG("technicals")}
@@ -203,26 +203,28 @@ const Browse = () => {
           </div>
         </div>
         {/*  */}
-        <div className="flex justify-between searchBar relative my-auto">
+        {/*               className="flex justify-center p-[7px] absolute bg_black top-[3px] sm:left-[243px] left-[365px] w-[32px] h-[31px] rounded-[6px] flex justify-center"
+         */}
+        <div className="relative my-auto md:mt-2 lg:mt-0 w-full sm:w-[280px]">
           <input
             type="text"
             placeholder="Search"
             value={Search}
             onChange={(e) => setSearch(e.target.value)}
             autoComplete="off"
-            className="w-[180px] sm:w-[280px] border border-[1.5px] border-[#E8E8E8] bg-white rounded-[8px] outline-none pl-[15px] pr-[45px] py-[6px]"
+            className="w-full border border-[1.5px] border-[#E8E8E8] bg-white rounded-[8px] outline-none pl-[15px] pr-[45px] py-[7px]"
           />
-          <div className="absolute bg_black top-[3px] sm:left-[243px] left-[143px] w-[32px] h-[31px] rounded-[6px] flex justify-center">
+          <div className="absolute top-[4px] right-[5px]">
             <img
               src={MagnifyingGlassWhite}
               alt="MagnifyingGlass"
-              className="flex justify-center p-[7px]"
+              className="w-[32px] h-[31px] p-[7px] bg_black rounded-[6px]"
             />
           </div>
         </div>
       </div>
       {/* Cards */}
-      <div className="bg-white rounded-[12px] p-5 mt-1">
+      <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">
         <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
           {Loading ? (
             <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] black text-[20px]">
@@ -235,7 +237,7 @@ const Browse = () => {
                   return (
                     <div
                       key={index}
-                      className="rounded-[8px] border-[2px] border-[#E8E8E8]"
+                      className="rounded-[8px] border-[1px] border-[#E8E8E8]"
                     >
                       <div
                         className=""
@@ -254,7 +256,7 @@ const Browse = () => {
                       {/* Detail */}
                       <div className="p-[13px]">
                         <div className="flex gap-[20px]">
-                          <h1 className="text-[12px] font-[700] rounded-[8px] border-[2px] border-[#E8E8E8] px-2 py-1 my-auto">
+                          <h1 className="text-[12px] font-[700] rounded-[8px] border-[1px] border-[#E8E8E8] px-2 py-1 my-auto">
                             Indicators
                           </h1>
                           <p className="text-[12px] font-[500] gray my-auto">
@@ -262,7 +264,7 @@ const Browse = () => {
                           </p>
                         </div>
                         {/*  */}
-                        <h1 className="text-[20px] font-[700] mt-[12px]">
+                        <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px]">
                           How to Install Indicators
                         </h1>
                         {/*  */}

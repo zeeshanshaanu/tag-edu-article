@@ -5,16 +5,6 @@ import HeaderTabAndBreadCrumb from "../../components/HeaderTabs/HeaderTabAndBrea
 import ProfileImage from "../../assets/Images/ProfileImage.png";
 
 import {
-  CirclesThreeColored,
-  StackSimple,
-} from "../../assets/svgs/Browse/index";
-import {
-  ChartLineUp,
-  GearSix,
-  CrownBlack,
-  CrownGray,
-  Rows,
-  Play,
   Timer,
   NotePencilWhite,
   CalendarGray,
@@ -24,7 +14,6 @@ import {
   ClockCounterGray,
   PlayCircleBlack,
 } from "../../assets/svgs/Followers/FollowersIndex";
-import { MagnifyingGlassWhite } from "../../assets/svgs/index";
 
 import { useDispatch } from "react-redux";
 import Pagination from "../../components/TablePagination/Pagination";
@@ -95,18 +84,18 @@ const Webinars = () => {
     <div className="p-3">
       <HeaderTabAndBreadCrumb />
       {/* Browse Pro Traders */}
-      <div className="mt-3 HeaderGreenBGimage p-[20px] rounded-[12px]">
+      <div className="mt-3 HeaderGreenBGimage sm:p-[20px] p-[12px] rounded-[12px]">
         <div className="sm:flex justify-between gap-5">
-          <h1 className="satoshi_italic lg:text-[40px] text-[30px] font-[900] black">
+          <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black">
             Webinars
           </h1>
         </div>
       </div>{" "}
       {/* Tabs and Search-input */}
-      <div className="flex justify-between mt-4">
-        <div className="sm:flex gap-[8px] max-w-[100%] overflow-auto my-auto">
+      <div className="lg:flex justify-between mt-3">
+        <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
           <div
-            className={`cursor-pointer flex rounded-[8px] px-[16px] py-[8px] font-[500] 
+            className={`min-w-[70px] rounded-full lg:rounded-[8px] cursor-pointer flex px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 ${
               showBG === "upcoming" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
@@ -131,7 +120,7 @@ const Webinars = () => {
           </div>
           {/*  */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] 
+            className={`min-w-[70px] rounded-full lg:rounded-[8px] cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 
              ${showBG === "past" ? "bg_white font-[700]" : "bg_lightgray2"}
           `}
@@ -172,8 +161,7 @@ const Webinars = () => {
         </div> */}
       </div>
       {/* Cards */}
-      <div className="bg-white rounded-[12px] p-5 mt-1">
-        {/* CARDS */}
+      <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">
         <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
           {Loading ? (
             <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] black text-[20px]">
@@ -221,8 +209,8 @@ const Webinars = () => {
                           </p>
                         </div> */}
                         {/*  */}
-                        <h1 className="text-[20px] font-[700]">
-                          Getting Started with Copy Trading:  A Beginner’s
+                        <h1 className="lg:text-[20px] text-[16px] font-[700] ">
+                          Getting Started with Copy Trading: A Beginner’s
                           Roadmap
                         </h1>
                         {/*  */}

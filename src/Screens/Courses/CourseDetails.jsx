@@ -137,17 +137,17 @@ const CourseDetails = () => {
       <div className="my-4 HeaderGreenBGimage p-[20px] rounded-[12px]">
         <div className="lg:flex justify-between gap-5">
           <div className="my-auto">
-            <h1 className="satoshi_italic lg:text-[40px] text-[30px] font-[900] black">
+            <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black">
               Forex 101 with John
             </h1>
-            <p className="lg:text-[15px] text-[13px] font-[500] black max-w-[450px]">
+            <p className="lg:text-[15px] text-[13px] font-[500] black max-w-[450px] mb-2">
               Forex 101 is the ultimate beginner’s course designed to give you a
               complete understanding of the forex market.
             </p>
           </div>
           {/*  */}
           <div
-            className="max-h-[90px] my-auto bg_black flex gap-[30px]
+            className="max-h-[90px] my-auto bg_black flex gap-[20px]
            rounded-[12px] border-[2.5px] border-[#666666] p-[20px]"
           >
             <div className="flex gap-[16px]">
@@ -319,7 +319,7 @@ const CourseDetails = () => {
         </div>
       </div>
       {/* Course Modules */}
-      <div className="my-4 bg_white rounded-[8px] p-4">
+      <div className="my-4 bg_white rounded-[8px]  sm:p-5 p-3">
         <h1 className="text-[20px] font-[700] black mb-4 ">Course Modules</h1>
         <div className="Cards grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
           {Loading ? (

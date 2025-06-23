@@ -88,18 +88,18 @@ const Courses = () => {
     <div className="p-3">
       <HeaderTabAndBreadCrumb />
       {/* Browse Pro Traders */}
-      <div className="mt-3 HeaderGreenBGimage p-[20px] rounded-[12px]">
+      <div className="mt-3 HeaderGreenBGimage sm:p-[20px] p-[12px] rounded-[12px]">
         <div className="sm:flex justify-between gap-5">
-          <h1 className="satoshi_italic lg:text-[40px] text-[30px] font-[900] black">
+          <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black">
             Courses
           </h1>
         </div>
       </div>{" "}
       {/* Tabs and Search-input */}
-      <div className="flex justify-between mt-4">
-        <div className="sm:flex gap-[8px] max-w-[100%] overflow-auto my-auto">
+      <div className="lg:flex justify-between mt-4">
+        <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
           <div
-            className={`cursor-pointer flex rounded-[8px] px-[16px] py-[8px] font-[500] 
+            className={`min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 ${
               showBG === "all" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
@@ -124,7 +124,7 @@ const Courses = () => {
           </div>
           {/*  */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] 
+            className={`min-w-[80px]  rounded-full lg:rounded-[8px] cursor-pointer my-auto flex gap-1  px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 
              ${showBG === "VIP" ? "bg_white font-[700]" : "bg_lightgray2"}
           `}
@@ -146,7 +146,7 @@ const Courses = () => {
           </div>
           {/*  */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+            className={` min-w-[120px] rounded-full lg:rounded-[8px] cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
               showBG === "indicators" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
             onClick={() => setshowBG("indicators")}
@@ -167,7 +167,7 @@ const Courses = () => {
           </div>
           {/*  */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+            className={`min-w-[150px] rounded-full lg:rounded-[8px]  cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
               showBG === "fundamentals"
                 ? "bg_white font-[700]"
                 : "bg_lightgray2"
@@ -189,7 +189,7 @@ const Courses = () => {
           </div>
           {/*  */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+            className={`min-w-[120px] rounded-full lg:rounded-[8px]  cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
               showBG === "technicals" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
             onClick={() => setshowBG("technicals")}
@@ -209,27 +209,26 @@ const Courses = () => {
           </div>
         </div>
         {/*  */}
-        <div className="flex justify-between searchBar relative my-auto">
+        <div className="relative my-auto md:mt-2 lg:mt-0 w-full sm:w-[280px]">
           <input
             type="text"
             placeholder="Search"
             value={Search}
             onChange={(e) => setSearch(e.target.value)}
             autoComplete="off"
-            className="w-[180px] sm:w-[280px] border border-[1.5px] border-[#E8E8E8] bg-white rounded-[8px] outline-none pl-[15px] pr-[45px] py-[7px]"
+            className="w-full border border-[1.5px] border-[#E8E8E8] bg-white rounded-[8px] outline-none pl-[15px] pr-[45px] py-[7px]"
           />
-          <div className="absolute bg_black top-[4px] sm:left-[243px] left-[143px] w-[32px] h-[32px] rounded-[6px] flex justify-center">
+          <div className="absolute top-[4px] right-[5px]">
             <img
               src={MagnifyingGlassWhite}
               alt="MagnifyingGlass"
-              className="flex justify-center p-[7px]"
+              className="w-[32px] h-[31px] p-[7px] bg_black rounded-[6px]"
             />
           </div>
         </div>
       </div>
       {/* Cards */}
-      <div className="bg-white rounded-[12px] p-5 mt-1">
-        {/* CARDS */}
+      <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">
         <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
           {Loading ? (
             <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] black text-[20px]">
@@ -284,7 +283,7 @@ const Courses = () => {
                           </p>
                         </div>
                         {/*  */}
-                        <h1 className="text-[20px] font-[700] mt-[12px]">
+                        <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px]">
                           How to Install Indicators
                         </h1>
                         {/*  */}
