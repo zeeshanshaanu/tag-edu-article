@@ -15,69 +15,62 @@ import {
 } from "../../assets/svgs/Followers/FollowersIndex";
 import { MagnifyingGlassWhite } from "../../assets/svgs/index";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Pagination from "../../components/TablePagination/Pagination";
+import { Tooltip } from "antd";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 
-const Browse = () => {
-  const [showBG, setshowBG] = useState("all");
+const Articles = () => {
   const dispatch = useDispatch();
-  const [Data, setData] = useState({});
-  const [Loading, setLoading] = useState(false);
-  const [ChartData, setChartData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10); // or whatever you want
-  const [totalCount, setTotalCount] = useState(0);
+  const [Status, setStatus] = useState("all");
+  const [loading, setLoading] = useState(false);
+  const [articlesData, setArticlesData] = useState([]);
+  const AuthToken = useSelector((state) => state?.Auth);
+  const token = AuthToken?.Authtoken;
+
+  // Pagination, Search and filtersPaging
   const [Search, setSearch] = useState("");
-
-  const FetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `/traders`,
-        {
-          params: {
-            page: currentPage,
-            size: pageSize,
-            search: Search,
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${`Token`}`,
-          },
-        }
-      );
-
-      setData(response?.data?.items || []);
-      setChartData(response?.data?.items?.[0] || []);
-      setTotalCount(response?.data?.meta?.total || 0);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-      // Check for 401 Unauthorized
-      if (
-        error.response?.data?.detail === "Token has expired" ||
-        error.response?.data?.detail === "Unauthorized"
-      ) {
-        console.log(error);
-      } else {
-        setData(null);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [totalCount, setTotalCount] = useState(0);
+  const [filtersPaging, setFiltersPaging] = useState({ skip: 0, limit: 10 });
+  const currentPage = Math.floor(filtersPaging.skip / filtersPaging.limit) + 1;
 
   useEffect(() => {
-    FetchData();
-  }, [currentPage, pageSize, Search]);
+    const FetchArticles = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `/api/article?page=${currentPage}&limit=${filtersPaging.limit}&category=${Status}&search=${Search}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+        const result = response?.data;
+        console.log(result);
+
+        setArticlesData(result?.data);
+        setTotalCount(result?.totalCount || 0);
+      } catch (error) {
+        if (error?.response?.status === 401) {
+          handleLogout();
+        }
+        console.error("Error fetching articles:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    FetchArticles();
+  }, [currentPage, Search, Status, filtersPaging.limit]);
+
+  const handlePageChange = (newPage) => {
+    setFiltersPaging((prev) => ({
+      ...prev,
+      skip: (newPage - 1) * prev.limit,
+    }));
   };
-
   return (
     <div className="p-3">
       <HeaderTabAndBreadCrumb />
@@ -95,14 +88,14 @@ const Browse = () => {
           <div
             className={`min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              showBG === "all" ? "bg_white font-[700]" : "bg_lightgray2"
+              Status === "all" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
-            onClick={() => setshowBG("all")}
+            onClick={() => setStatus("all")}
           >
             <span className="my-auto">
               <img
                 src={
-                  showBG === "all" ? CirclesThreeColored : CirclesThreeColored
+                  Status === "all" ? CirclesThreeColored : CirclesThreeColored
                 }
                 alt="MagnifyingGlassBlack"
                 className="w-[25px] h-[20px]"
@@ -110,7 +103,7 @@ const Browse = () => {
             </span>
             <span
               className={` my-auto text-[14px] my-auto ${
-                showBG === "all" ? "black" : "gray"
+                Status === "all" ? "black" : "gray"
               }`}
             >
               All
@@ -120,19 +113,19 @@ const Browse = () => {
           <div
             className={`min-w-[90px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 
-             ${showBG === "basics" ? "bg_white font-[700]" : "bg_lightgray2"}
+             ${Status === "basics" ? "bg_white font-[700]" : "bg_lightgray2"}
           `}
-            onClick={() => setshowBG("basics")}
+            onClick={() => setStatus("basics")}
           >
             <img
-              src={showBG === "all" ? LightbulbFilament : LightbulbFilament}
+              src={Status === "all" ? LightbulbFilament : LightbulbFilament}
               alt="MagnifyingGlassBlack"
               className="w-[25px] h-[20px]"
             />
 
             <span
               className={`text-[14px] my-auto ${
-                showBG === "basics" ? "black" : "gray"
+                Status === "basics" ? "black" : "gray"
               }`}
             >
               Basics
@@ -141,19 +134,19 @@ const Browse = () => {
           {/*  */}
           <div
             className={`min-w-[120px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              showBG === "indicators" ? "bg_white font-[700]" : "bg_lightgray2"
+              Status === "indicators" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
-            onClick={() => setshowBG("indicators")}
+            onClick={() => setStatus("indicators")}
           >
             {" "}
             <img
-              src={showBG === "all" ? ChartLineUp : ChartLineUp}
+              src={Status === "all" ? ChartLineUp : ChartLineUp}
               alt="MagnifyingGlassBlack"
               className="w-[25px] h-[20px]"
             />
             <span
               className={`text-[14px] my-auto ${
-                showBG === "indicators" ? "black" : "gray"
+                Status === "indicators" ? "black" : "gray"
               }`}
             >
               Indicators
@@ -162,20 +155,20 @@ const Browse = () => {
           {/*  */}
           <div
             className={`min-w-[140px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              showBG === "fundamentals"
+              Status === "fundamentals"
                 ? "bg_white font-[700]"
                 : "bg_lightgray2"
             }`}
-            onClick={() => setshowBG("fundamentals")}
+            onClick={() => setStatus("fundamentals")}
           >
             <img
-              src={showBG === "all" ? StackSimple : StackSimple}
+              src={Status === "all" ? StackSimple : StackSimple}
               alt="MagnifyingGlassBlack"
               className="w-[25px] h-[20px]"
             />
             <span
               className={`text-[14px] my-auto ${
-                showBG === "fundamentals" ? "black" : "gray"
+                Status === "fundamentals" ? "black" : "gray"
               }`}
             >
               Fundamentals
@@ -184,18 +177,18 @@ const Browse = () => {
           {/*  */}
           <div
             className={`min-w-[130px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              showBG === "technicals" ? "bg_white font-[700]" : "bg_lightgray2"
+              Status === "technicals" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
-            onClick={() => setshowBG("technicals")}
+            onClick={() => setStatus("technicals")}
           >
             <img
-              src={showBG === "all" ? GearSix : GearSix}
+              src={Status === "all" ? GearSix : GearSix}
               alt="MagnifyingGlassBlack"
               className="w-[25px] h-[20px]"
             />
             <span
               className={`text-[14px] my-auto ${
-                showBG === "technicals" ? "black" : "gray"
+                Status === "technicals" ? "black" : "gray"
               }`}
             >
               Technicals
@@ -203,8 +196,7 @@ const Browse = () => {
           </div>
         </div>
         {/*  */}
-        {/*               className="flex justify-center p-[7px] absolute bg_black top-[3px] sm:left-[243px] left-[365px] w-[32px] h-[31px] rounded-[6px] flex justify-center"
-         */}
+
         <div className="relative my-auto md:mt-2 lg:mt-0 w-full sm:w-[280px]">
           <input
             type="text"
@@ -226,14 +218,14 @@ const Browse = () => {
       {/* Cards */}
       <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">
         <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
-          {Loading ? (
+          {loading ? (
             <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] black text-[20px]">
               Loading...
             </span>
           ) : (
             <>
-              {Data?.length > 0 ? (
-                Data?.map((items, index) => {
+              {articlesData?.length > 0 ? (
+                articlesData?.map((items, index) => {
                   return (
                     <div
                       key={index}
@@ -256,23 +248,35 @@ const Browse = () => {
                       {/* Detail */}
                       <div className="p-[13px]">
                         <div className="flex gap-[20px]">
-                          <h1 className="text-[12px] font-[700] rounded-[8px] border-[1px] border-[#E8E8E8] px-2 py-1 my-auto">
-                            Indicators
+                          <h1 className="text-[12px] font-[700] rounded-[8px] border-[1px] border-[#E8E8E8] px-2 py-1 my-auto capitalize">
+                            {items?.category}
                           </h1>
                           <p className="text-[12px] font-[500] gray my-auto">
-                            May 16, 2025
+                            {items?.date}
                           </p>
                         </div>
                         {/*  */}
                         <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px]">
-                          How to Install Indicators
+                          {items?.title}{" "}
                         </h1>
                         {/*  */}
-                        <p className="text-[14px] font-[500] gray  mt-[6px] line-clamp-2">
-                          The altcoin market presents significant opportunities
-                          and risks in 2025. This comprehensive guide an asdfljh
-                          The altcoin market presents significant opportunities
-                          and risks in 2025. This comprehensive guide an asdfljh
+                        <p className="text-[14px] font-[500] gray mt-[6px] line-clamp-3">
+                          <Tooltip
+                            title={
+                              <div
+                                dangerouslySetInnerHTML={{
+                                  __html: items?.content,
+                                }}
+                              />
+                            }
+                            placement="topLeft"
+                          >
+                            <p
+                              dangerouslySetInnerHTML={{
+                                __html: items?.content,
+                              }}
+                            />
+                          </Tooltip>
                         </p>
                       </div>
                     </div>
@@ -280,27 +284,25 @@ const Browse = () => {
                 })
               ) : (
                 <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] lightgray3 text-[20px]">
-                  No Trads
+                  No Article Found
                 </span>
               )}
             </>
           )}
         </div>
         {/*  */}
-        {Data?.length > 0 && (
-          <div className="Pagination">
-            <Pagination
-              current={currentPage}
-              total={totalCount}
-              pageSize={pageSize}
-              onPageChange={handlePageChange}
-              isLoading={Loading}
-            />
-          </div>
+        {articlesData?.length > 0 && (
+          <Pagination
+            current={currentPage}
+            total={totalCount}
+            pageSize={filtersPaging.limit}
+            onPageChange={handlePageChange}
+            isLoading={loading}
+          />
         )}
       </div>
     </div>
   );
 };
 
-export default Browse;
+export default Articles;

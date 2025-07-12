@@ -78,7 +78,6 @@ export {
   PlayCircleGray,
   NotePencilWhite,
   CalendarGray,
-  
   CalendarUpcomingGray,
   CalendarColored,
   ClockCounterColored,

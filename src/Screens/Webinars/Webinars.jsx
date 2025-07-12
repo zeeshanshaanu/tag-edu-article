@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Tooltip } from "antd";
+import { useDispatch, useSelector } from "react-redux";
 // ///////////////////////   *****************   ///////////////////////
 import HeaderTabAndBreadCrumb from "../../components/HeaderTabs/HeaderTabAndBreadCrumb";
 import ProfileImage from "../../assets/Images/ProfileImage.png";
@@ -15,71 +17,59 @@ import {
   PlayCircleBlack,
 } from "../../assets/svgs/Followers/FollowersIndex";
 
-import { useDispatch } from "react-redux";
 import Pagination from "../../components/TablePagination/Pagination";
-import { useNavigate } from "react-router-dom";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 
 const Webinars = () => {
-  const [showBG, setshowBG] = useState("upcoming");
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [Data, setData] = useState({});
-  const [Loading, setLoading] = useState(false);
+  const [Status, setStatus] = useState("upcoming");
+  const [loading, setLoading] = useState(false);
+  const [WebinarsData, setWebinarsData] = useState([]);
+  const AuthToken = useSelector((state) => state?.Auth);
+  const token = AuthToken?.Authtoken;
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10); // or whatever you want
-  const [totalCount, setTotalCount] = useState(0);
+  // Pagination, Search and filtersPaging
   const [Search, setSearch] = useState("");
-
-  const FetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `/follower-hub/strategies`,
-        {
-          params: {
-            page: currentPage,
-            size: pageSize,
-            search: Search,
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${`Token`}`,
-          },
-        }
-      );
-      console.log(response?.data);
-
-      setData(response?.data || []);
-      setTotalCount(response?.data?.meta?.total || 0);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-      // Check for 401 Unauthorized
-      if (
-        error.response?.data?.detail === "Token has expired" ||
-        error.response?.data?.detail === "Unauthorized"
-      ) {
-        console.log(error);
-      } else {
-        setData(null);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [totalCount, setTotalCount] = useState(0);
+  const [filtersPaging, setFiltersPaging] = useState({ skip: 0, limit: 10 });
+  const currentPage = Math.floor(filtersPaging.skip / filtersPaging.limit) + 1;
 
   useEffect(() => {
-    FetchData();
-  }, []);
+    const FetchWebinars = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `/api/webinar?page=${currentPage}&limit=${filtersPaging.limit}&category=${Status}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+        const result = response?.data;
+        console.log(result);
+
+        setWebinarsData(result?.data);
+        setTotalCount(result?.totalCount || 0);
+      } catch (error) {
+        if (error?.response?.status === 401) {
+          handleLogout();
+        }
+        console.error("Error fetching Webinars:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    FetchWebinars();
+  }, [currentPage, Status, filtersPaging.limit]);
+
+  const handlePageChange = (newPage) => {
+    setFiltersPaging((prev) => ({
+      ...prev,
+      skip: (newPage - 1) * prev.limit,
+    }));
   };
-
   return (
     <div className="p-3">
       <HeaderTabAndBreadCrumb />
@@ -97,14 +87,14 @@ const Webinars = () => {
           <div
             className={`min-w-[70px] rounded-full lg:rounded-[8px] cursor-pointer flex px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              showBG === "upcoming" ? "bg_white font-[700]" : "bg_lightgray2"
+              Status === "upcoming" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
-            onClick={() => setshowBG("upcoming")}
+            onClick={() => setStatus("upcoming")}
           >
             <span className="my-auto">
               <img
                 src={
-                  showBG === "upcoming" ? CalendarColored : CalendarUpcomingGray
+                  Status === "upcoming" ? CalendarColored : CalendarUpcomingGray
                 }
                 alt="MagnifyingGlassBlack"
                 className="w-[25px] h-[20px]"
@@ -112,7 +102,7 @@ const Webinars = () => {
             </span>
             <span
               className={` my-auto text-[14px] my-auto ${
-                showBG === "upcoming" ? "black" : "gray"
+                Status === "upcoming" ? "black" : "gray"
               }`}
             >
               Upcoming
@@ -122,19 +112,19 @@ const Webinars = () => {
           <div
             className={`min-w-[70px] rounded-full lg:rounded-[8px] cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 
-             ${showBG === "past" ? "bg_white font-[700]" : "bg_lightgray2"}
+             ${Status === "past" ? "bg_white font-[700]" : "bg_lightgray2"}
           `}
-            onClick={() => setshowBG("past")}
+            onClick={() => setStatus("past")}
           >
             <img
-              src={showBG === "past" ? ClockCounterColored : ClockCounterGray}
+              src={Status === "past" ? ClockCounterColored : ClockCounterGray}
               alt="MagnifyingGlassBlack"
               className="w-[20px] h-[20px]"
             />
 
             <span
               className={`text-[14px] my-auto ${
-                showBG === "past" ? "black" : "gray"
+                Status === "past" ? "black" : "gray"
               }`}
             >
               Past
@@ -163,14 +153,14 @@ const Webinars = () => {
       {/* Cards */}
       <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">
         <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
-          {Loading ? (
+          {loading ? (
             <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] black text-[20px]">
               Loading...
             </span>
           ) : (
             <>
-              {Data?.length > 0 ? (
-                Data?.map((items, index) => {
+              {WebinarsData?.length > 0 ? (
+                WebinarsData?.map((items, index) => {
                   return (
                     <div
                       key={index}
@@ -180,7 +170,7 @@ const Webinars = () => {
                         className=""
                         style={{
                           backgroundImage: `url(${
-                            items?.logo_url || ProfileImage
+                            items?.image || ProfileImage
                           })`,
                           backgroundSize: "cover",
                           backgroundPosition: "center",
@@ -210,15 +200,26 @@ const Webinars = () => {
                         </div> */}
                         {/*  */}
                         <h1 className="lg:text-[20px] text-[16px] font-[700] ">
-                          Getting Started with Copy Trading: A Beginner’s
-                          Roadmap
+                          {items?.title}
                         </h1>
                         {/*  */}
-                        <p className="text-[14px] font-[500] gray  mt-[6px] line-clamp-2">
-                          The altcoin market presents significant opportunities
-                          and risks in 2025. This comprehensive guide an asdfljh
-                          The altcoin market presents significant opportunities
-                          and risks in 2025. This comprehensive guide an asdfljh
+                        <p className="text-[14px] font-[500] gray mt-[6px] line-clamp-3">
+                          <Tooltip
+                            title={
+                              <div
+                                dangerouslySetInnerHTML={{
+                                  __html: items?.content,
+                                }}
+                              />
+                            }
+                            placement="topLeft"
+                          >
+                            <p
+                              dangerouslySetInnerHTML={{
+                                __html: items?.content,
+                              }}
+                            />
+                          </Tooltip>
                         </p>
                         {/*  */}
                         <div className="flex gap-5 my-2">
@@ -229,10 +230,13 @@ const Webinars = () => {
                                 alt="CalendarGray"
                                 className=" my-auto"
                               />{" "}
-                              <span className="my-auto">August 29, 2025</span>
+                              <span className="my-auto">
+                                {" "}
+                                {items?.created_at?.slice(0, 10)}
+                              </span>
                             </p>
                           </div>
-                          {showBG === "upcoming" && (
+                          {Status === "upcoming" && (
                             <div className="my-auto">
                               <p className="flex gap-1 text-[14px] font-[500] gray">
                                 <img
@@ -240,13 +244,16 @@ const Webinars = () => {
                                   alt="Timer"
                                   className=" my-auto"
                                 />{" "}
-                                <span className="my-auto">6:00 PM UTC</span>
+                                <span className="my-auto">
+                                  {" "}
+                                  {items?.estimated_time}PM UTC
+                                </span>
                               </p>
                             </div>
                           )}
                         </div>
                         {/*  */}
-                        {showBG === "past" ? (
+                        {Status === "past" ? (
                           <div className="mt-4">
                             <button
                               // onClick={() =>
@@ -301,16 +308,14 @@ const Webinars = () => {
           )}
         </div>
         {/*  */}
-        {Data?.length > 0 && (
-          <div className="Pagination">
-            <Pagination
-              current={currentPage}
-              total={totalCount}
-              pageSize={pageSize}
-              onPageChange={handlePageChange}
-              isLoading={Loading}
-            />
-          </div>
+        {WebinarsData?.length > 0 && (
+          <Pagination
+            current={currentPage}
+            total={totalCount}
+            pageSize={filtersPaging.limit}
+            onPageChange={handlePageChange}
+            isLoading={loading}
+          />
         )}
       </div>
     </div>

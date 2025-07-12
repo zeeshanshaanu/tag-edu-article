@@ -25,7 +25,10 @@ body {
   box-sizing: border-box;
   background: #efefef;
   font-family: "Satoshi Variable", sans-serif !important;
+  max-width: 1700px;
+  margin: 0 auto;
 }
+
 .satoshi_italic {
   font-family: "Satoshi Variable", sans-serif !important;
   font-style: italic;

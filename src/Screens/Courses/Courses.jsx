@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Tooltip } from "antd";
+import { useDispatch, useSelector } from "react-redux";
 // ///////////////////////   *****************   ///////////////////////
 import HeaderTabAndBreadCrumb from "../../components/HeaderTabs/HeaderTabAndBreadCrumb";
 import ProfileImage from "../../assets/Images/ProfileImage.png";
@@ -16,72 +18,64 @@ import {
   Rows,
   Play,
   Timer,
+  LockSimpleOpen,
 } from "../../assets/svgs/Followers/FollowersIndex";
 import { MagnifyingGlassWhite } from "../../assets/svgs/index";
 
-import { useDispatch } from "react-redux";
 import Pagination from "../../components/TablePagination/Pagination";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 
 const Courses = () => {
-  const [showBG, setshowBG] = useState("all");
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [Data, setData] = useState({});
-  const [Loading, setLoading] = useState(false);
+  const [Status, setStatus] = useState("all");
+  const [loading, setLoading] = useState(false);
+  const [CoursesData, setCoursesData] = useState([]);
+  const AuthToken = useSelector((state) => state?.Auth);
+  const token = AuthToken?.Authtoken;
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10); // or whatever you want
-  const [totalCount, setTotalCount] = useState(0);
+  // Pagination, Search and filtersPaging
   const [Search, setSearch] = useState("");
-
-  const FetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `/follower-hub/strategies`,
-        {
-          params: {
-            page: currentPage,
-            size: pageSize,
-            search: Search,
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${`Token`}`,
-          },
-        }
-      );
-      console.log(response?.data);
-
-      setData(response?.data || []);
-      setTotalCount(response?.data?.meta?.total || 0);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-      // Check for 401 Unauthorized
-      if (
-        error.response?.data?.detail === "Token has expired" ||
-        error.response?.data?.detail === "Unauthorized"
-      ) {
-        console.log(error);
-      } else {
-        setData(null);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [totalCount, setTotalCount] = useState(0);
+  const [filtersPaging, setFiltersPaging] = useState({ skip: 0, limit: 10 });
+  const currentPage = Math.floor(filtersPaging.skip / filtersPaging.limit) + 1;
 
   useEffect(() => {
-    FetchData();
-  }, []);
+    const FetchCourses = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `/api/course?page=${currentPage}&limit=${filtersPaging.limit}&tag=${Status}&search=${Search}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+        const result = response?.data;
+        console.log(result);
+
+        setCoursesData(result?.data);
+        setTotalCount(result?.totalCount || 0);
+      } catch (error) {
+        if (error?.response?.status === 401) {
+          handleLogout();
+        }
+        console.error("Error fetching Courses:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    FetchCourses();
+  }, [currentPage, Status, Search, filtersPaging.limit]);
+
+  const handlePageChange = (newPage) => {
+    setFiltersPaging((prev) => ({
+      ...prev,
+      skip: (newPage - 1) * prev.limit,
+    }));
   };
 
   return (
@@ -101,14 +95,14 @@ const Courses = () => {
           <div
             className={`min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              showBG === "all" ? "bg_white font-[700]" : "bg_lightgray2"
+              Status === "all" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
-            onClick={() => setshowBG("all")}
+            onClick={() => setStatus("all")}
           >
             <span className="my-auto">
               <img
                 src={
-                  showBG === "all" ? CirclesThreeColored : CirclesThreeColored
+                  Status === "all" ? CirclesThreeColored : CirclesThreeColored
                 }
                 alt="MagnifyingGlassBlack"
                 className="w-[25px] h-[20px]"
@@ -116,7 +110,7 @@ const Courses = () => {
             </span>
             <span
               className={` my-auto text-[14px] my-auto ${
-                showBG === "all" ? "black" : "gray"
+                Status === "all" ? "black" : "gray"
               }`}
             >
               All
@@ -126,19 +120,19 @@ const Courses = () => {
           <div
             className={`min-w-[80px]  rounded-full lg:rounded-[8px] cursor-pointer my-auto flex gap-1  px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 
-             ${showBG === "VIP" ? "bg_white font-[700]" : "bg_lightgray2"}
+             ${Status === "VIP" ? "bg_white font-[700]" : "bg_lightgray2"}
           `}
-            onClick={() => setshowBG("VIP")}
+            onClick={() => setStatus("VIP")}
           >
             <img
-              src={showBG === "VIP" ? CrownBlack : CrownGray}
+              src={Status === "VIP" ? CrownBlack : CrownGray}
               alt="MagnifyingGlassBlack"
               className="w-[20px] h-[20px]"
             />
 
             <span
               className={`text-[14px] my-auto ${
-                showBG === "VIP" ? "black" : "gray"
+                Status === "VIP" ? "black" : "gray"
               }`}
             >
               VIP
@@ -147,19 +141,19 @@ const Courses = () => {
           {/*  */}
           <div
             className={` min-w-[120px] rounded-full lg:rounded-[8px] cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              showBG === "indicators" ? "bg_white font-[700]" : "bg_lightgray2"
+              Status === "indicators" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
-            onClick={() => setshowBG("indicators")}
+            onClick={() => setStatus("indicators")}
           >
             {" "}
             <img
-              src={showBG === "all" ? ChartLineUp : ChartLineUp}
+              src={Status === "all" ? ChartLineUp : ChartLineUp}
               alt="MagnifyingGlassBlack"
               className="w-[25px] h-[20px]"
             />
             <span
               className={`text-[14px] my-auto ${
-                showBG === "indicators" ? "black" : "gray"
+                Status === "indicators" ? "black" : "gray"
               }`}
             >
               Indicators
@@ -168,20 +162,20 @@ const Courses = () => {
           {/*  */}
           <div
             className={`min-w-[150px] rounded-full lg:rounded-[8px]  cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              showBG === "fundamentals"
+              Status === "fundamentals"
                 ? "bg_white font-[700]"
                 : "bg_lightgray2"
             }`}
-            onClick={() => setshowBG("fundamentals")}
+            onClick={() => setStatus("fundamentals")}
           >
             <img
-              src={showBG === "all" ? StackSimple : StackSimple}
+              src={Status === "all" ? StackSimple : StackSimple}
               alt="MagnifyingGlassBlack"
               className="w-[25px] h-[20px]"
             />
             <span
               className={`text-[14px] my-auto ${
-                showBG === "fundamentals" ? "black" : "gray"
+                Status === "fundamentals" ? "black" : "gray"
               }`}
             >
               Fundamentals
@@ -190,18 +184,18 @@ const Courses = () => {
           {/*  */}
           <div
             className={`min-w-[120px] rounded-full lg:rounded-[8px]  cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              showBG === "technicals" ? "bg_white font-[700]" : "bg_lightgray2"
+              Status === "technicals" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
-            onClick={() => setshowBG("technicals")}
+            onClick={() => setStatus("technicals")}
           >
             <img
-              src={showBG === "all" ? GearSix : GearSix}
+              src={Status === "all" ? GearSix : GearSix}
               alt="MagnifyingGlassBlack"
               className="w-[25px] h-[20px]"
             />
             <span
               className={`text-[14px] my-auto ${
-                showBG === "technicals" ? "black" : "gray"
+                Status === "technicals" ? "black" : "gray"
               }`}
             >
               Technicals
@@ -230,31 +224,24 @@ const Courses = () => {
       {/* Cards */}
       <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">
         <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
-          {Loading ? (
-            <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] black text-[20px]">
+          {loading ? (
+            <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[600] black text-[16px]">
               Loading...
             </span>
           ) : (
             <>
-              {Data?.length > 0 ? (
-                Data?.map((items, index) => {
+              {CoursesData?.length > 0 ? (
+                CoursesData?.map((items, index) => {
                   return (
                     <div
                       key={index}
-                      // style={{
-                      //   background: `linear-gradient(0deg, #CAFD5D00 0%, #CAFD5D4D 0%, #FFFFFF 50%)`,
-                      //   backgroundClip: "padding-box, border-box",
-                      //   boxShadow: "0px 2px 2px 0px #CAFD5D66",
-                      //   mixBlendMode: "multiply",
-                      //   zIndex: 1,
-                      // }}
                       className="rounded-[8px] border-[2px] border-[#E8E8E8]"
                     >
                       <div
                         className=""
                         style={{
                           backgroundImage: `url(${
-                            items?.logo_url || ProfileImage
+                            items?.image || ProfileImage
                           })`,
                           backgroundSize: "cover",
                           backgroundPosition: "center",
@@ -267,31 +254,48 @@ const Courses = () => {
                       {/* Detail */}
                       <div className="p-[13px]">
                         <div className="flex gap-[10px]">
-                          <h1 className="text-[12px] font-[700] rounded-[8px] border-[2px] border-[#E8E8E8] px-2 py-1 my-auto">
-                            {items?.account_type}
+                          <h1 className="text-[12px] font-[700] rounded-[8px] border-[2px] border-[#E8E8E8] px-2 py-1 my-auto capitalize">
+                            {items?.level}
                           </h1>
                           <h1 className="bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[8px] px-2 py-1 my-auto">
-                            <img
-                              src={CrownBlack}
-                              alt="MagnifyingGlassBlack"
-                              className="w-[20px] h-[20px] my-auto"
-                            />{" "}
-                            <span className="my-auto">VIP</span>
+                            {items?.tag === "vip" && (
+                              <img
+                                src={CrownBlack}
+                                alt="MagnifyingGlassBlack"
+                                className="w-[20px] h-[20px] my-auto"
+                              />
+                            )}
+                            <span className="my-auto uppercase">
+                              {items?.tag}
+                            </span>
                           </h1>
+
                           <p className="text-[12px] font-[500] gray my-auto">
                             Deposit $500 to unlock VIP
                           </p>
                         </div>
                         {/*  */}
                         <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px]">
-                          How to Install Indicators
+                          {items?.title}{" "}
                         </h1>
                         {/*  */}
-                        <p className="text-[14px] font-[500] gray  mt-[6px] line-clamp-2">
-                          The altcoin market presents significant opportunities
-                          and risks in 2025. This comprehensive guide an asdfljh
-                          The altcoin market presents significant opportunities
-                          and risks in 2025. This comprehensive guide an asdfljh
+                        <p className="text-[14px] font-[500] gray mt-[6px] line-clamp-2 min-h-[40px]">
+                          <Tooltip
+                            title={
+                              <div
+                                dangerouslySetInnerHTML={{
+                                  __html: items?.content,
+                                }}
+                              />
+                            }
+                            placement="topLeft"
+                          >
+                            <p
+                              dangerouslySetInnerHTML={{
+                                __html: items?.content,
+                              }}
+                            />
+                          </Tooltip>
                         </p>
                         {/*  */}
                         <div className="flex gap-5 my-2">
@@ -302,13 +306,18 @@ const Courses = () => {
                                 alt="Timer"
                                 className=" my-auto"
                               />{" "}
-                              <span className="my-auto"> 6h 45m</span>
+                              <span className="my-auto">
+                                {" "}
+                                {items?.estimated_time}
+                              </span>
                             </p>
                           </div>
                           <div className="my-auto">
                             <p className="flex gap-1 text-[14px] font-[500] gray">
                               <img src={Rows} alt="Rows" className=" my-auto" />{" "}
-                              <span className="my-auto">6 modules</span>
+                              <span className="my-auto">
+                                {items?.modules?.length} modules
+                              </span>
                             </p>
                           </div>
                         </div>
@@ -316,19 +325,21 @@ const Courses = () => {
                         <div className="mt-4">
                           <button
                             onClick={() =>
-                              navigate(`/CourseDetails/${items?.id}`)
+                              navigate(`/CourseDetails/${items?._id}`)
                             }
                             className="flex justify-center gap-1 cursor-pointer bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700]"
                           >
                             <img
                               // LockSimpleOpen
-                              src={Play}
+                              src={items?.tag === "vip" ? LockSimpleOpen : Play}
                               alt="Play"
                               className=" my-auto"
                             />{" "}
                             <span className="my-auto text-[14px] font-[700] ">
                               {" "}
-                              Begin Course
+                              {items?.tag === "vip"
+                                ? "Unlock VIP Course"
+                                : "Begin Course"}
                             </span>
                           </button>
                         </div>
@@ -337,24 +348,22 @@ const Courses = () => {
                   );
                 })
               ) : (
-                <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] lightgray3 text-[20px]">
-                  No Trads
+                <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[500] lightgray3 text-[16px]">
+                  No Course Found
                 </span>
               )}
             </>
           )}
         </div>
-        {/*  */}
-        {Data?.length > 0 && (
-          <div className="Pagination">
-            <Pagination
-              current={currentPage}
-              total={totalCount}
-              pageSize={pageSize}
-              onPageChange={handlePageChange}
-              isLoading={Loading}
-            />
-          </div>
+        {/* CoursesData */}
+        {CoursesData?.length > 0 && (
+          <Pagination
+            current={currentPage}
+            total={totalCount}
+            pageSize={filtersPaging.limit}
+            onPageChange={handlePageChange}
+            isLoading={loading}
+          />
         )}
       </div>
     </div>
