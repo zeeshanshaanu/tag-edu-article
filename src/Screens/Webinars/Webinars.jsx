@@ -164,10 +164,10 @@ const Webinars = () => {
                   return (
                     <div
                       key={index}
-                      className="rounded-[8px] border-[2px] border-[#E8E8E8]"
+                      className="rounded-[8px] border border-[#E8E8E8] flex flex-col h-full"
                     >
+                      {/* Top Image Section */}
                       <div
-                        className=""
                         style={{
                           backgroundImage: `url(${
                             items?.image || ProfileImage
@@ -179,31 +179,16 @@ const Webinars = () => {
                           borderTopLeftRadius: "8px",
                           borderTopRightRadius: "8px",
                         }}
-                      ></div>
-                      {/* Detail */}
-                      <div className="p-[13px]">
-                        {/* <div className="flex gap-[10px]">
-                          <h1 className="text-[12px] font-[700] rounded-[8px] border-[2px] border-[#E8E8E8] px-2 py-1 my-auto">
-                            {items?.account_type}
-                          </h1>
-                          <h1 className="bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[8px] px-2 py-1 my-auto">
-                            <img
-                              src={CrownBlack}
-                              alt="MagnifyingGlassBlack"
-                              className="w-[20px] h-[20px] my-auto"
-                            />{" "}
-                            <span className="my-auto">past</span>
-                          </h1>
-                          <p className="text-[12px] font-[500] gray my-auto">
-                            Deposit $500 to unlock past
-                          </p>
-                        </div> */}
-                        {/*  */}
-                        <h1 className="lg:text-[20px] text-[16px] font-[700] ">
+                      />
+
+                      {/* Content Section */}
+                      <div className="flex flex-col p-[13px] flex-grow">
+                        <h1 className="lg:text-[20px] text-[16px] font-[700]">
                           {items?.title}
                         </h1>
-                        {/*  */}
-                        <p className="text-[14px] font-[500] gray mt-[6px] line-clamp-3">
+
+                        {/* Description with Tooltip */}
+                        <div className="text-[14px] font-[500] gray mt-[6px] line-clamp-3">
                           <Tooltip
                             title={
                               <div
@@ -220,81 +205,70 @@ const Webinars = () => {
                               }}
                             />
                           </Tooltip>
-                        </p>
-                        {/*  */}
+                        </div>
+
+                        {/* Meta Info */}
                         <div className="flex gap-5 my-2">
                           <div className="my-auto">
                             <p className="flex gap-1 text-[14px] font-[500] gray">
                               <img
                                 src={CalendarGray}
                                 alt="CalendarGray"
-                                className=" my-auto"
-                              />{" "}
+                                className="my-auto"
+                              />
                               <span className="my-auto">
-                                {" "}
                                 {items?.created_at?.slice(0, 10)}
                               </span>
                             </p>
                           </div>
+
                           {Status === "upcoming" && (
                             <div className="my-auto">
                               <p className="flex gap-1 text-[14px] font-[500] gray">
                                 <img
                                   src={Timer}
                                   alt="Timer"
-                                  className=" my-auto"
-                                />{" "}
+                                  className="my-auto"
+                                />
                                 <span className="my-auto">
-                                  {" "}
-                                  {items?.estimated_time}PM UTC
+                                  {items?.estimated_time} PM UTC
                                 </span>
                               </p>
                             </div>
                           )}
                         </div>
-                        {/*  */}
-                        {Status === "past" ? (
-                          <div className="mt-4">
+
+                        {/* Action Button at Bottom */}
+                        <div className="mt-auto pt-4">
+                          {Status === "past" ? (
                             <button
-                              // onClick={() =>
-                              //   navigate(`/CourseDetails/${items?.id}`)
-                              // }
                               className="flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
-                             w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
+            w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
                             >
                               <img
-                                // PlayCircleBlack
                                 src={PlayCircleBlack}
                                 alt="PlayCircleBlack"
-                                className=" my-auto"
-                              />{" "}
-                              <span className="my-auto text-[14px] font-[700] ">
-                                {" "}
-                                Watch Recording
-                              </span>
+                                className="my-auto"
+                              />
+                              <span className="my-auto">Watch Recording</span>
                             </button>
-                          </div>
-                        ) : (
-                          <div className="mt-4">
-                            <button
-                              // onClick={() =>
-                              //   navigate(`/CourseDetails/${items?.id}`)
-                              // }
-                              className="flex justify-center gap-1 cursor-pointer bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700]"
+                          ) : (
+                            <a
+                              href={items?.vedio_link}
+                              target="_blank"
+                              rel="noopener noreferrer"
                             >
-                              <img
-                                // LockSimpleOpen
-                                src={NotePencilWhite}
-                                alt="NotePencilWhite"
-                                className=" my-auto"
-                              />{" "}
-                              <span className="my-auto text-[14px] font-[700] ">
-                                {" "}
-                                Register
-                              </span>
-                            </button>
-                          </div>
-                        )}
+                              <button className="flex justify-center gap-1 cursor-pointer bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700]">
+                                <img
+                                  src={NotePencilWhite}
+                                  alt="NotePencilWhite"
+                                  className="my-auto"
+                                />
+                                <span className="my-auto">Read More</span>
+                              </button>
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );

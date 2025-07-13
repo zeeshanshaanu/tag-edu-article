@@ -235,10 +235,10 @@ const Courses = () => {
                   return (
                     <div
                       key={index}
-                      className="rounded-[8px] border-[1px] border-[#E8E8E8]"
+                      className="rounded-[8px] border border-[#E8E8E8] flex flex-col h-full"
                     >
+                      {/* Top Image Section */}
                       <div
-                        className=""
                         style={{
                           backgroundImage: `url(${
                             items?.image || ProfileImage
@@ -250,18 +250,20 @@ const Courses = () => {
                           borderTopLeftRadius: "8px",
                           borderTopRightRadius: "8px",
                         }}
-                      ></div>
-                      {/* Detail */}
-                      <div className="p-[13px]">
+                      />
+
+                      {/* Detail Section */}
+                      <div className="p-[13px] flex flex-col flex-1">
+                        {/* Tags */}
                         <div className="flex gap-[10px]">
-                          <h1 className="text-[12px] font-[700] rounded-[8px] border-[1px] border-[#E8E8E8] px-2 py-1 my-auto capitalize">
+                          <h1 className="text-[12px] font-[700] rounded-[8px] border border-[#E8E8E8] px-2 py-1 my-auto capitalize">
                             {items?.level}
                           </h1>
                           <h1 className="bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[8px] px-2 py-1 my-auto">
                             {items?.tag === "vip" && (
                               <img
                                 src={CrownBlack}
-                                alt="MagnifyingGlassBlack"
+                                alt="VIP"
                                 className="w-[20px] h-[20px] my-auto"
                               />
                             )}
@@ -269,17 +271,18 @@ const Courses = () => {
                               {items?.tag}
                             </span>
                           </h1>
-
                           <p className="text-[12px] font-[500] gray my-auto">
                             Deposit $500 to unlock VIP
                           </p>
                         </div>
-                        {/*  */}
+
+                        {/* Title */}
                         <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px]">
-                          {items?.title}{" "}
+                          {items?.title}
                         </h1>
-                        {/*  */}
-                        <p className="text-[14px] font-[500] gray mt-[6px] line-clamp-2 min-h-[40px]">
+
+                        {/* Description with Tooltip */}
+                        <div className="text-[14px] font-[500] gray mt-[6px] line-clamp-2 min-h-[40px]">
                           <Tooltip
                             title={
                               <div
@@ -296,33 +299,38 @@ const Courses = () => {
                               }}
                             />
                           </Tooltip>
-                        </p>
-                        {/*  */}
+                        </div>
+
+                        {/* Info Rows */}
                         <div className="flex gap-5 my-2">
                           <div className="my-auto">
                             <p className="flex gap-1 text-[14px] font-[500] gray">
                               <img
                                 src={Timer}
                                 alt="Timer"
-                                className=" my-auto"
-                              />{" "}
+                                className="my-auto"
+                              />
                               <span className="my-auto">
-                                {" "}
                                 {items?.estimated_time}
                               </span>
                             </p>
                           </div>
                           <div className="my-auto">
                             <p className="flex gap-1 text-[14px] font-[500] gray">
-                              <img src={Rows} alt="Rows" className=" my-auto" />{" "}
+                              <img
+                                src={Rows}
+                                alt="Modules"
+                                className="my-auto"
+                              />
                               <span className="my-auto">
                                 {items?.modules?.length} modules
                               </span>
                             </p>
                           </div>
                         </div>
-                        {/*  */}
-                        <div className="mt-4">
+
+                        {/* Button Always at Bottom */}
+                        <div className="mt-auto pt-4">
                           <button
                             onClick={() =>
                               navigate(`/CourseDetails/${items?._id}`)
@@ -330,13 +338,11 @@ const Courses = () => {
                             className="flex justify-center gap-1 cursor-pointer bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700]"
                           >
                             <img
-                              // LockSimpleOpen
                               src={items?.tag === "vip" ? LockSimpleOpen : Play}
                               alt="Play"
-                              className=" my-auto"
-                            />{" "}
-                            <span className="my-auto text-[14px] font-[700] ">
-                              {" "}
+                              className="my-auto"
+                            />
+                            <span className="my-auto">
                               {items?.tag === "vip"
                                 ? "Unlock VIP Course"
                                 : "Begin Course"}
