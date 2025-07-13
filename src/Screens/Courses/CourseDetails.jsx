@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import ReactPlayer from "react-player";
 import { useSelector } from "react-redux";
 
-// ///////////////////////   *****************   ///////////////////////
+/////////////////////////   *****************   ///////////////////////
 import {
   TimerBlack,
   RowsBlack,
@@ -13,7 +13,6 @@ import {
   Timer,
   PlayCircleGray,
 } from "../../assets/svgs/Followers/FollowersIndex";
-import { ArrowRight, ArrowLeftBlack } from "../../assets/svgs/index";
 import VedioListImg from "../../assets/Images/VedioListImg.png";
 import { GraduationCapGray } from "../../assets/svgs/Browse/index";
 // ///////////////////////   *****************   ///////////////////////
@@ -111,8 +110,8 @@ const CourseDetails = () => {
             },
             {
               title: (
-                <span className="text-[14px] my-auto black font-[700]">
-                  {CourseDetail?.title?.slice(0, 10)}
+                <span className="text-[14px] my-auto black font-[700] line-clamp-1">
+                  {CourseDetail?.title?.slice(0, 50)}
                 </span>
               ),
             },
@@ -123,28 +122,15 @@ const CourseDetails = () => {
       <div className="my-4 HeaderGreenBGimage p-[20px] rounded-[12px]">
         <div className="md:flex justify-between gap-5">
           <div className="my-auto">
-            <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black max-w-[400px] line-clamp-1">
+            <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black max-w-[550px] line-clamp-1">
               {CourseDetail?.title}
             </h1>
-            <p className="lg:text-[15px] text-[13px] font-[500] black max-w-[400px] line-clamp-2 mb-2">
-              <Tooltip
-                title={
-                  <div
-                    className="bg-black text-white"
-                    dangerouslySetInnerHTML={{
-                      __html: CourseDetail?.content,
-                    }}
-                  />
-                }
-                placement="topLeft"
-              >
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: CourseDetail?.content,
-                  }}
-                />
-              </Tooltip>
-            </p>
+            <p
+              className="lg:text-[15px] text-[13px] font-[500] black max-w-[500px] line-clamp-2 mb-2"
+              dangerouslySetInnerHTML={{
+                __html: CourseDetail?.content,
+              }}
+            />
           </div>
           {/*  */}
           <div
@@ -224,18 +210,6 @@ const CourseDetails = () => {
             <h1 className="text-[20px] font-[700] black line-clamp-2ss max-w-[100%]">
               {selectedLesson?.title}
             </h1>
-            {/* <div className="flex gap-[8px] min-w-[100px] justify-end">
-              <button className="cursor-pointer border border-[1.5px] border-[#E8E8E8] rounded-[8px] p-[10px]">
-                <img
-                  src={ArrowLeftBlack}
-                  alt="ArrowLeftBlack"
-                  className="w-[13px]"
-                />{" "}
-              </button>
-              <button className="cursor-pointer border border-[1.5px] border-[#E8E8E8] rounded-[8px] p-[10px]">
-                <img src={ArrowRight} alt="ArrowRight" className="" />{" "}
-              </button>
-            </div> */}
           </div>
           {/* Time and lessons */}
           <div className="flex gap-5">
@@ -278,7 +252,7 @@ const CourseDetails = () => {
             {selectedModule?.title}
           </h1>
           <p className="text-[14px] font-[500] gray mt-[6px] line-clamp-2">
-            <Tooltip
+            {/* <Tooltip
               title={
                 <div
                   className="bg-black text-white"
@@ -288,13 +262,13 @@ const CourseDetails = () => {
                 />
               }
               placement="topLeft"
-            >
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: selectedModule?.module_summary,
-                }}
-              />
-            </Tooltip>{" "}
+            > */}
+            <p
+              dangerouslySetInnerHTML={{
+                __html: selectedModule?.module_summary,
+              }}
+            />
+            {/* </Tooltip>{" "} */}
           </p>
           <div className="VedioList mt-4 max-h-[620px] overflow-y-scroll">
             {Loading ? (
@@ -365,13 +339,15 @@ const CourseDetails = () => {
                   return (
                     <div
                       key={index}
-                      className="rounded-[8px] border-[1px] border-[#E8E8E8]"
+                      className="rounded-[8px] border-[1px] border-[#E8E8E8] flex flex-col"
                     >
                       {/* Detail */}
-                      <div className="p-[13px]">
-                        <h1 className="inline-block bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[6px] px-2 py-[3px]">
-                          Module {index + 1}
-                        </h1>
+                      <div className="p-[13px] flex flex-col flex-1">
+                        <div className="">
+                          <h1 className="inline-block bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[6px] px-2 py-[3px]">
+                            Module {index + 1}
+                          </h1>
+                        </div>
 
                         {/*  */}
                         <h1 className="text-[20px] font-[700] mt-[12px] line-clamp-1">
@@ -379,7 +355,7 @@ const CourseDetails = () => {
                         </h1>
                         {/*  */}
                         <p className="text-[14px] font-[500] gray  mt-[6px] line-clamp-2">
-                          <Tooltip
+                          {/* <Tooltip
                             title={
                               <div
                                 className="bg-black text-white"
@@ -389,13 +365,13 @@ const CourseDetails = () => {
                               />
                             }
                             placement="topLeft"
-                          >
-                            <p
-                              dangerouslySetInnerHTML={{
-                                __html: items?.module_summary,
-                              }}
-                            />
-                          </Tooltip>
+                          > */}
+                          <p
+                            dangerouslySetInnerHTML={{
+                              __html: items?.module_summary,
+                            }}
+                          />
+                          {/* </Tooltip> */}
                         </p>
                         {/*  */}
                         <div className="flex gap-5 my-2">
@@ -426,22 +402,16 @@ const CourseDetails = () => {
                           </div>
                         </div>
                         {/*  */}
-                        <div className="mt-4">
+                        <div className="mt-auto pt-3">
                           <button
                             onClick={() => {
                               setSelectedModule(items);
                               setSelectedLessonIndex(index + 1);
                             }}
-                            className="flex justify-center gap-1 cursor-pointer bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700]"
+                            className="cursor-pointer flex justify-center gap-1 bg-black w-full py-2 px-5 rounded-[8px] text-white text-[14px] font-[700]"
                           >
-                            <img
-                              // LockSimpleOpen
-                              src={Play}
-                              alt="Play"
-                              className=" my-auto"
-                            />{" "}
-                            <span className="my-auto text-[14px] font-[700] ">
-                              {" "}
+                            <img src={Play} alt="Play" className="my-auto" />
+                            <span className="my-auto text-[14px] font-[700]">
                               Start
                             </span>
                           </button>

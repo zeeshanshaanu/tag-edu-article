@@ -235,7 +235,7 @@ const Courses = () => {
                   return (
                     <div
                       key={index}
-                      className="rounded-[8px] border-[2px] border-[#E8E8E8]"
+                      className="rounded-[8px] border-[1px] border-[#E8E8E8]"
                     >
                       <div
                         className=""
@@ -254,7 +254,7 @@ const Courses = () => {
                       {/* Detail */}
                       <div className="p-[13px]">
                         <div className="flex gap-[10px]">
-                          <h1 className="text-[12px] font-[700] rounded-[8px] border-[2px] border-[#E8E8E8] px-2 py-1 my-auto capitalize">
+                          <h1 className="text-[12px] font-[700] rounded-[8px] border-[1px] border-[#E8E8E8] px-2 py-1 my-auto capitalize">
                             {items?.level}
                           </h1>
                           <h1 className="bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[8px] px-2 py-1 my-auto">
