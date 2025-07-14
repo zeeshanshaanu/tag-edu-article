@@ -11,8 +11,8 @@ function App() {
   const handleSubmit = async () => {
     try {
       const response = await axios.post("/api/admin/login", {
-        email: "zeeshanzahoor409@gmail.com",
-        password: "zee@123",
+        email: "tag.education@gmail.com",
+        password: "tag@edu",
       });
 
       // console.log(response?.data);
