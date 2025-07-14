@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Tooltip } from "antd";
 import { useDispatch, useSelector } from "react-redux";
+import { useRef } from "react";
+
 // ///////////////////////   *****************   ///////////////////////
 import HeaderTabAndBreadCrumb from "../../components/HeaderTabs/HeaderTabAndBreadCrumb";
 import ProfileImage from "../../assets/Images/ProfileImage.png";
@@ -34,9 +36,19 @@ const Webinars = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [filtersPaging, setFiltersPaging] = useState({ skip: 0, limit: 10 });
   const currentPage = Math.floor(filtersPaging.skip / filtersPaging.limit) + 1;
-
+  const loadingDelayRef = useRef(null);
+  const [expandedItems, setExpandedItems] = useState({});
+  const toggleExpand = (index) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
   useEffect(() => {
     const FetchWebinars = async () => {
+      loadingDelayRef.current = setTimeout(() => {
+        setLoading(true);
+      }, 300);
       setLoading(true);
       try {
         const response = await axios.get(
@@ -153,133 +165,138 @@ const Webinars = () => {
       {/* Cards */}
       <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">
         <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
-          {loading ? (
+          {/* {loading ? (
             <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] black text-[20px]">
               Loading...
             </span>
           ) : (
-            <>
-              {WebinarsData?.length > 0 ? (
-                WebinarsData?.map((items, index) => {
-                  return (
+          )} */}
+          <>
+            {WebinarsData?.length > 0 ? (
+              WebinarsData?.map((items, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="rounded-[8px] border border-[#E8E8E8] flex flex-col h-full"
+                  >
+                    {/* Top Image Section */}
                     <div
-                      key={index}
-                      className="rounded-[8px] border border-[#E8E8E8] flex flex-col h-full"
-                    >
-                      {/* Top Image Section */}
-                      <div
-                        style={{
-                          backgroundImage: `url(${
-                            items?.image || ProfileImage
-                          })`,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          width: "100%",
-                          height: "200px",
-                          borderTopLeftRadius: "8px",
-                          borderTopRightRadius: "8px",
-                        }}
-                      />
+                      style={{
+                        backgroundImage: `url(${items?.image || ProfileImage})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        width: "100%",
+                        height: "200px",
+                        borderTopLeftRadius: "8px",
+                        borderTopRightRadius: "8px",
+                      }}
+                    />
 
-                      {/* Content Section */}
-                      <div className="flex flex-col p-[13px] flex-grow">
-                        <h1 className="lg:text-[20px] text-[16px] font-[700]">
-                          {items?.title}
-                        </h1>
+                    {/* Content Section */}
+                    <div className="flex flex-col p-[13px] flex-grow">
+                      <h1 className="lg:text-[20px] text-[16px] font-[700]">
+                        {items?.title}
+                      </h1>
 
-                        {/* Description with Tooltip */}
-                        <div className="text-[14px] font-[500] gray mt-[6px] line-clamp-3">
-                          <Tooltip
-                            title={
-                              <div
-                                dangerouslySetInnerHTML={{
-                                  __html: items?.content,
-                                }}
-                              />
-                            }
-                            placement="topLeft"
+                      <div className="mt-[6px]">
+                        <div
+                          className={`text-[14px] font-[500] gray  ${
+                            expandedItems[index] ? "" : "line-clamp-3"
+                          }`}
+                          dangerouslySetInnerHTML={{
+                            __html: items?.content,
+                          }}
+                        />
+                        {items?.content?.length > 290 && (
+                          <button
+                            onClick={() => toggleExpand(index)}
+                            className="text-[14px] font-[700] gray mt-1 cursor-pointer hover:underline"
                           >
-                            <p
-                              dangerouslySetInnerHTML={{
-                                __html: items?.content,
-                              }}
+                            {expandedItems[index] ? "Show less" : "Read more"}
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Meta Info */}
+                      <div className="flex gap-5 my-2">
+                        <div className="my-auto">
+                          <p className="flex gap-1 text-[14px] font-[500] gray">
+                            <img
+                              src={CalendarGray}
+                              alt="CalendarGray"
+                              className="my-auto"
                             />
-                          </Tooltip>
+
+                            <p className="text-[12px] font-[500] gray my-auto">
+                              {new Date(items?.created_at).toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                }
+                              )}
+                            </p>
+                          </p>
                         </div>
 
-                        {/* Meta Info */}
-                        <div className="flex gap-5 my-2">
+                        {Status === "upcoming" && (
                           <div className="my-auto">
                             <p className="flex gap-1 text-[14px] font-[500] gray">
                               <img
-                                src={CalendarGray}
-                                alt="CalendarGray"
+                                src={Timer}
+                                alt="Timer"
                                 className="my-auto"
                               />
                               <span className="my-auto">
-                                {items?.created_at?.slice(0, 10)}
+                                {items?.estimated_time} PM UTC
                               </span>
                             </p>
                           </div>
+                        )}
+                      </div>
 
-                          {Status === "upcoming" && (
-                            <div className="my-auto">
-                              <p className="flex gap-1 text-[14px] font-[500] gray">
-                                <img
-                                  src={Timer}
-                                  alt="Timer"
-                                  className="my-auto"
-                                />
-                                <span className="my-auto">
-                                  {items?.estimated_time} PM UTC
-                                </span>
-                              </p>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Action Button at Bottom */}
-                        <div className="mt-auto pt-4">
-                          {Status === "past" ? (
-                            <button
-                              className="flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
+                      {/* Action Button at Bottom */}
+                      <div className="mt-auto pt-4">
+                        {Status === "past" ? (
+                          <button
+                            className="flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
             w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
-                            >
+                          >
+                            <img
+                              src={PlayCircleBlack}
+                              alt="PlayCircleBlack"
+                              className="my-auto"
+                            />
+                            <span className="my-auto">Watch Recording</span>
+                          </button>
+                        ) : (
+                          <a
+                            href={items?.vedio_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <button className="flex justify-center gap-1 cursor-pointer bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700]">
                               <img
-                                src={PlayCircleBlack}
-                                alt="PlayCircleBlack"
+                                src={NotePencilWhite}
+                                alt="NotePencilWhite"
                                 className="my-auto"
                               />
-                              <span className="my-auto">Watch Recording</span>
+                              <span className="my-auto">Read More</span>
                             </button>
-                          ) : (
-                            <a
-                              href={items?.vedio_link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <button className="flex justify-center gap-1 cursor-pointer bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700]">
-                                <img
-                                  src={NotePencilWhite}
-                                  alt="NotePencilWhite"
-                                  className="my-auto"
-                                />
-                                <span className="my-auto">Read More</span>
-                              </button>
-                            </a>
-                          )}
-                        </div>
+                          </a>
+                        )}
                       </div>
                     </div>
-                  );
-                })
-              ) : (
-                <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] lightgray3 text-[20px]">
-                  No Trads
-                </span>
-              )}
-            </>
-          )}
+                  </div>
+                );
+              })
+            ) : (
+              <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] lightgray3 text-[20px]">
+                No Trads
+              </span>
+            )}
+          </>
         </div>
         {/*  */}
         {WebinarsData?.length > 0 && (

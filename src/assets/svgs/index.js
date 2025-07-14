@@ -16,6 +16,7 @@ import FirewithColor from "./FirewithColor.svg";
 import blackFire from "./blackFire.svg";
 //
 import ArrowRight from "./ArrowRight.svg";
+import ArrowLeftBlack from "./ArrowLeftBlack.svg";
 //
 import Heart from "./Heart.svg";
 import Trophy from "./Trophy.svg";
@@ -25,16 +26,20 @@ import Fire from "./Fire.svg";
 import Clock from "./Clock.svg";
 import Leaf from "./Leaf.svg";
 import Star from "./Star.svg";
-import ArrowLeftBlack from "./ArrowLeftBlack.svg";
 import BlackTick from "./BlackTick.svg";
 import UploadIcon from "./UploadIcon.svg";
 import DeleteIcon from "./DeleteIcon.svg";
 import ChangeItemIcon from "./ChangeItemIcon.svg";
+import UK from "./UK.svg";
+import BlackLeftArrow from "./BlackLeftArrow.svg";
+import BlackRightArrow from "./BlackRightArrow.svg";
 
 // import more as needed
 
 export {
   // HeaderTabs
+  BlackLeftArrow,
+  BlackRightArrow,
   MagnifyingGlass,
   MagnifyingGlassBlack,
   Users,
@@ -47,6 +52,7 @@ export {
   blackFire,
   //
   ArrowRight,
+  ArrowLeftBlack,
   //   SearchBar
   MagnifyingGlassWhite,
   FirewithColor,
@@ -60,9 +66,9 @@ export {
   Leaf,
   Star,
   //
-  ArrowLeftBlack,
   BlackTick,
   UploadIcon,
   ChangeItemIcon,
   DeleteIcon,
+  UK,
 };

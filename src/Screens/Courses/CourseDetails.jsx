@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Breadcrumb, Tooltip } from "antd";
+import { Breadcrumb } from "antd";
 import { useParams, useNavigate } from "react-router-dom";
 import ReactPlayer from "react-player";
 import { useSelector } from "react-redux";
@@ -13,6 +13,7 @@ import {
   Timer,
   PlayCircleGray,
 } from "../../assets/svgs/Followers/FollowersIndex";
+import { BlackLeftArrow, BlackRightArrow } from "../../assets/svgs/index";
 import VedioListImg from "../../assets/Images/VedioListImg.png";
 import { GraduationCapGray } from "../../assets/svgs/Browse/index";
 // ///////////////////////   *****************   ///////////////////////
@@ -25,7 +26,14 @@ const CourseDetails = () => {
   const [Loading, setLoading] = useState(false);
   const [selectedModule, setSelectedModule] = useState(null);
   const [selectedLessonIndex, setSelectedLessonIndex] = useState(0);
-  //
+  const [expandedLesson, setExpandedLesson] = useState(false);
+  const [expandedItems, setExpandedItems] = useState({});
+  const toggleExpand = (index) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
   const AuthToken = useSelector((state) => state?.Auth);
   const token = AuthToken?.Authtoken;
 
@@ -207,9 +215,17 @@ const CourseDetails = () => {
 
           {/*  */}
           <div className="flex justify-between mt-3 gap-5">
-            <h1 className="text-[20px] font-[700] black line-clamp-2ss max-w-[100%]">
+            <h1 className="text-[20px] font-[700] black line-clamp-2 max-w-[600px]">
               {selectedLesson?.title}
             </h1>
+            <div className="flex gap-2">
+              <button className="cursor-pointer hover:shadow-sm transition-shadow duration-300 px-3 py-3 border-[1px] border-[#E8E8E8] rounded-[8px]">
+                <img src={BlackLeftArrow} alt="" className="" />
+              </button>
+              <button className="cursor-pointer hover:shadow-sm transition-shadow duration-300 px-3 py-2 border-[1px] border-[#E8E8E8] rounded-[8px]">
+                <img src={BlackRightArrow} alt="" className="" />
+              </button>
+            </div>
           </div>
           {/* Time and lessons */}
           <div className="flex gap-5">
@@ -235,12 +251,30 @@ const CourseDetails = () => {
             </div>
           </div>
           {/* Desc */}
-          <p className="text-[14px] font-[500] gray mt-[6px] max-h-[100px] overflow-y-scroll">
-            <p
+          <p className="text-[14px] font-[500] gray mt-[6px] ">
+            {/* <p
               dangerouslySetInnerHTML={{
                 __html: selectedLesson?.lession_summary,
               }}
-            />
+            /> */}
+            <div className="mt-[6px]">
+              <div
+                className={`text-[14px] font-[500] gray  ${
+                  expandedLesson ? "" : "line-clamp-4"
+                }`}
+                dangerouslySetInnerHTML={{
+                  __html: selectedLesson?.lession_summary,
+                }}
+              />
+              {selectedLesson?.lession_summary?.length > 400 && (
+                <button
+                  onClick={() => setExpandedLesson(!expandedLesson)}
+                  className="text-[14px] font-[700] gray mt-1 cursor-pointer hover:underline"
+                >
+                  {expandedLesson ? "Show less" : "Read more"}
+                </button>
+              )}
+            </div>
           </p>
         </div>
         {/* Vedio List */}
@@ -251,25 +285,12 @@ const CourseDetails = () => {
           <h1 className="text-[20px] font-[700] black mt-3">
             {selectedModule?.title}
           </h1>
-          <p className="text-[14px] font-[500] gray mt-[6px] line-clamp-2">
-            {/* <Tooltip
-              title={
-                <div
-                  className="bg-black text-white"
-                  dangerouslySetInnerHTML={{
-                    __html: selectedModule?.module_summary,
-                  }}
-                />
-              }
-              placement="topLeft"
-            > */}
-            <p
-              dangerouslySetInnerHTML={{
-                __html: selectedModule?.module_summary,
-              }}
-            />
-            {/* </Tooltip>{" "} */}
-          </p>
+          <p
+            dangerouslySetInnerHTML={{
+              __html: selectedModule?.module_summary,
+            }}
+            className="text-[14px] font-[500] gray mt-[6px] line-clamp-2"
+          ></p>
           <div className="VedioList mt-4 max-h-[620px] overflow-y-scroll">
             {Loading ? (
               <span className="text-center p-5 grid grid-cols-1 col-span-10 font-[500] lightgray3 text-[16px]">
@@ -352,27 +373,27 @@ const CourseDetails = () => {
                         {/*  */}
                         <h1 className="text-[20px] font-[700] mt-[12px] line-clamp-1">
                           {items?.title}
+                          {/* __html: items?.module_summary, */}
                         </h1>
                         {/*  */}
-                        <p className="text-[14px] font-[500] gray  mt-[6px] line-clamp-2">
-                          {/* <Tooltip
-                            title={
-                              <div
-                                className="bg-black text-white"
-                                dangerouslySetInnerHTML={{
-                                  __html: items?.module_summary,
-                                }}
-                              />
-                            }
-                            placement="topLeft"
-                          > */}
-                          <p
+                        <div className="mt-[6px]">
+                          <div
+                            className={`text-[14px] font-[500] gray  ${
+                              expandedItems[index] ? "" : "line-clamp-3"
+                            }`}
                             dangerouslySetInnerHTML={{
                               __html: items?.module_summary,
                             }}
                           />
-                          {/* </Tooltip> */}
-                        </p>
+                          {items?.module_summary?.length > 290 && (
+                            <button
+                              onClick={() => toggleExpand(index)}
+                              className="text-[14px] font-[700] gray mt-1 cursor-pointer hover:underline"
+                            >
+                              {expandedItems[index] ? "Show less" : "Read more"}
+                            </button>
+                          )}
+                        </div>
                         {/*  */}
                         <div className="flex gap-5 my-2">
                           <div className="my-auto">

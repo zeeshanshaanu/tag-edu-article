@@ -6,11 +6,30 @@ import {
   GraduationCapBlack,
   MonitorPlayBlack,
 } from "../../assets/svgs/Browse/index";
+import { UK } from "../../assets/svgs/index";
+import { Button, Dropdown } from "antd";
+import { DownOutlined, SmileOutlined } from "@ant-design/icons";
+
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumb } from "../../Store/HeaderAndBreadCrumbSlice/HeadAndBcSlice";
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
+const items = [
+  {
+    key: "1",
+    label: (
+      <div className="flex gap-2 cursor-pointer">
+        <div className="my-auto">
+          <img src={UK} className="w-[18px] h-[18px]"/>
+        </div>
+        <div className="my-auto">
+          <h1 className="gray font-[500] text-[14px]">EN</h1>
+        </div>
+      </div>
+    ),
+  },
+];
 const HeaderTabAndBreadCrumb = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -130,7 +149,24 @@ const HeaderTabAndBreadCrumb = () => {
             </div>
           </div>
           <div className="my-auto pr-4">
-            <h1>EN</h1>
+            <Dropdown
+              menu={{ items }}
+              placement="bottomRight"
+              arrow
+              trigger={["click"]}
+            >
+              <div className="flex gap-2 cursor-pointer">
+                <div className="my-auto">
+                  <img src={UK} />
+                </div>
+                <div className="my-auto">
+                  <h1 className="gray font-[500] text-[14px]">EN</h1>
+                </div>
+                <div className="my-auto">
+                  <DownOutlined className="text-[14px] lightgray font-bold" />
+                </div>
+              </div>
+            </Dropdown>
           </div>
         </div>
       </div>

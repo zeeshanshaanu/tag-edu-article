@@ -17,7 +17,7 @@ import { MagnifyingGlassWhite } from "../../assets/svgs/index";
 
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from "../../components/TablePagination/Pagination";
-import { Tooltip } from "antd";
+import { useRef } from "react";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
@@ -29,6 +29,16 @@ const Articles = () => {
   const [articlesData, setArticlesData] = useState([]);
   const AuthToken = useSelector((state) => state?.Auth);
   const token = AuthToken?.Authtoken;
+  const loadingDelayRef = useRef(null);
+  const [expandedItems, setExpandedItems] = useState({});
+  
+  const toggleExpand = (index) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
+ 
 
   // Pagination, Search and filtersPaging
   const [Search, setSearch] = useState("");
@@ -38,7 +48,10 @@ const Articles = () => {
 
   useEffect(() => {
     const FetchArticles = async () => {
-      setLoading(true);
+      loadingDelayRef.current = setTimeout(() => {
+        setLoading(true);
+      }, 300);
+
       try {
         const response = await axios.get(
           `/api/article?page=${currentPage}&limit=${filtersPaging.limit}&category=${Status}&search=${Search}`,
@@ -58,11 +71,18 @@ const Articles = () => {
         }
         console.error("Error fetching articles:", error);
       } finally {
+        // Clear delay timer and hide loader
+        clearTimeout(loadingDelayRef.current);
         setLoading(false);
       }
     };
 
     FetchArticles();
+
+    return () => {
+      // Cleanup in case component unmounts or re-renders quickly
+      clearTimeout(loadingDelayRef.current);
+    };
   }, [currentPage, Search, Status, filtersPaging.limit]);
 
   const handlePageChange = (newPage) => {
@@ -218,77 +238,86 @@ const Articles = () => {
       {/* Cards */}
       <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">
         <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
-          {loading ? (
+          {/* {loading ? (
             <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] black text-[20px]">
               Loading...
             </span>
           ) : (
-            <>
-              {articlesData?.length > 0 ? (
-                articlesData?.map((items, index) => {
-                  return (
+          )} */}
+          <>
+            {articlesData?.length > 0 ? (
+              articlesData?.map((items, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="rounded-[8px] border-[1px] border-[#E8E8E8]"
+                  >
                     <div
-                      key={index}
-                      className="rounded-[8px] border-[1px] border-[#E8E8E8]"
-                    >
-                      <div
-                        className=""
-                        style={{
-                          backgroundImage: `url(${
-                            items?.image || ProfileImage
-                          })`,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          width: "100%",
-                          height: "200px",
-                          borderTopLeftRadius: "8px",
-                          borderTopRightRadius: "8px",
-                        }}
-                      ></div>
-                      {/* Detail */}
-                      <div className="p-[13px]">
-                        <div className="flex gap-[20px]">
-                          <h1 className="text-[12px] font-[700] rounded-[8px] border-[1px] border-[#E8E8E8] px-2 py-1 my-auto capitalize">
-                            {items?.category}
-                          </h1>
-                          <p className="text-[12px] font-[500] gray my-auto">
-                            {items?.date}
-                          </p>
-                        </div>
-                        {/*  */}
-                        <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px]">
-                          {items?.title}{" "}
+                      className=""
+                      style={{
+                        backgroundImage: `url(${items?.image || ProfileImage})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        width: "100%",
+                        height: "200px",
+                        borderTopLeftRadius: "8px",
+                        borderTopRightRadius: "8px",
+                      }}
+                    ></div>
+                    {/* Detail */}
+                    <div className="p-[13px]">
+                      <div className="flex gap-[12px]">
+                        <h1 className="text-[12px] font-[700] rounded-[8px] border-[1px] border-[#E8E8E8] px-2 py-1 my-auto capitalize">
+                          {items?.category}
                         </h1>
-                        {/*  */}
-                        <p className="text-[14px] font-[500] gray mt-[6px] line-clamp-3">
-                          <Tooltip
-                            title={
-                              <div
-                                dangerouslySetInnerHTML={{
-                                  __html: items?.content,
-                                }}
-                              />
-                            }
-                            placement="topLeft"
-                          >
-                            <p
-                              dangerouslySetInnerHTML={{
-                                __html: items?.content,
-                              }}
-                            />
-                          </Tooltip>
+                        <p className="text-[12px] font-[500] gray my-auto">
+                          {new Date(items?.date).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })}
                         </p>
                       </div>
+                      {/*  */}
+                      <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px]">
+                        {items?.title}{" "}
+                      </h1>
+                      {/*  */}
+                      {/* <p
+                        dangerouslySetInnerHTML={{
+                          __html: items?.content,
+                        }}
+                        className="text-[14px] font-[500] gray mt-[6px] line-clamp-3"
+                      /> */}
+
+                      <div className="mt-[6px]">
+                        <div
+                          className={`text-[14px] font-[500] gray  ${
+                            expandedItems[index] ? "" : "line-clamp-3"
+                          }`}
+                          dangerouslySetInnerHTML={{
+                            __html: items?.content,
+                          }}
+                        />
+                        {items?.content?.length > 290 && (
+                          <button
+                            onClick={() => toggleExpand(index)}
+                            className="text-[14px] font-[700] gray mt-1 cursor-pointer hover:underline"
+                          >
+                            {expandedItems[index] ? "Show less" : "Read more"}
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  );
-                })
-              ) : (
-                <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] lightgray3 text-[20px]">
-                  No Article Found
-                </span>
-              )}
-            </>
-          )}
+                  </div>
+                );
+              })
+            ) : (
+              <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[600] lightgray3 text-[16px]">
+                No Article Found
+              </span>
+            )}
+          </>
         </div>
         {/*  */}
         {articlesData?.length > 0 && (
