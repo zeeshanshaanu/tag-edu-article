@@ -9,8 +9,8 @@ import { PersistGate } from "redux-persist/integration/react";
 import axios from "axios";
 // ///////////////////////////////////////
 // ///////////////////////////////////////
-// axios.defaults.baseURL = "https://tageduapi.tagmarkets.com/";
-axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.baseURL = "https://tageduapi.tagmarkets.com/";
+// axios.defaults.baseURL = "http://localhost:8000";
 
 // ///////////////////////////////////////
 // ///////////////////////////////////////
