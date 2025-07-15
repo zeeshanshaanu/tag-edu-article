@@ -59,7 +59,7 @@ const Courses = () => {
         );
 
         const result = response?.data;
-        console.log(result);
+        // console.log(result);
 
         setCoursesData(result?.data);
         setTotalCount(result?.totalCount || 0);

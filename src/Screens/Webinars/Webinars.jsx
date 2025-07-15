@@ -292,8 +292,8 @@ const Webinars = () => {
                 );
               })
             ) : (
-              <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] lightgray3 text-[20px]">
-                No Trads
+              <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[500] lightgray3 text-[16px]">
+                No Webinar Found
               </span>
             )}
           </>
