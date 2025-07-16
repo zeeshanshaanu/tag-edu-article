@@ -6,7 +6,7 @@ import {
   GraduationCapBlack,
   MonitorPlayBlack,
 } from "../../assets/svgs/Browse/index";
-import { Uk } from "../../assets/svgs/index.js";
+import { EnglandFlag } from "../../assets/svgs/index";
 import { Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +20,11 @@ const items = [
     label: (
       <div className="flex gap-2 cursor-pointer">
         <div className="my-auto">
-          <img src={Uk} alt="Uk" className="w-[18px] h-[18px]" />
+          <img
+            src={EnglandFlag}
+            alt="EnglandFlag"
+            className="w-[18px] h-[18px]"
+          />
         </div>
         <div className="my-auto">
           <h1 className="gray font-[500] text-[14px]">EN</h1>
@@ -156,7 +160,7 @@ const HeaderTabAndBreadCrumb = () => {
             >
               <div className="flex gap-2 cursor-pointer">
                 <div className="my-auto">
-                  <img src={Uk} alt="Uk" />
+                  <img src={EnglandFlag} alt="EnglandFlag" />
                 </div>
                 <div className="my-auto">
                   <h1 className="gray font-[500] text-[14px]">EN</h1>

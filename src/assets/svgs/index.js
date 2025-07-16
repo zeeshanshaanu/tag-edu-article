@@ -30,9 +30,9 @@ import BlackTick from "./BlackTick.svg";
 import UploadIcon from "./UploadIcon.svg";
 import DeleteIcon from "./DeleteIcon.svg";
 import ChangeItemIcon from "./ChangeItemIcon.svg";
-import UK from "./UK.svg";
 import BlackLeftArrow from "./BlackLeftArrow.svg";
 import BlackRightArrow from "./BlackRightArrow.svg";
+import EnglandFlag from "./EnglandFlag.svg";
 
 // import more as needed
 
@@ -70,5 +70,5 @@ export {
   UploadIcon,
   ChangeItemIcon,
   DeleteIcon,
-  UK,
+  EnglandFlag,
 };
