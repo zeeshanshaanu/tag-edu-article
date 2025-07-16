@@ -43,7 +43,6 @@ const HeaderTabAndBreadCrumb = () => {
     breadcrumb && breadcrumb.length > 0
       ? breadcrumb
       : [{ label: "Articles", path: "/Articles" }, { label: "Top ROI" }];
-  // console.log(breadcrumbData?.[0]?.label);
 
   return (
     <div>

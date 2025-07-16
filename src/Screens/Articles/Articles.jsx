@@ -18,27 +18,23 @@ import { MagnifyingGlassWhite } from "../../assets/svgs/index";
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from "../../components/TablePagination/Pagination";
 import { useRef } from "react";
+import { useNavigate } from "react-router";
+import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 
 const Articles = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [Status, setStatus] = useState("all");
   const [loading, setLoading] = useState(false);
   const [articlesData, setArticlesData] = useState([]);
   const AuthToken = useSelector((state) => state?.Auth);
   const token = AuthToken?.Authtoken;
   const loadingDelayRef = useRef(null);
-  const [expandedItems, setExpandedItems] = useState({});
   
-  const toggleExpand = (index) => {
-    setExpandedItems((prev) => ({
-      ...prev,
-      [index]: !prev[index],
-    }));
-  };
- 
 
   // Pagination, Search and filtersPaging
   const [Search, setSearch] = useState("");
@@ -61,7 +57,7 @@ const Articles = () => {
         );
 
         const result = response?.data;
-        console.log(result);
+        // console.log(result);
 
         setArticlesData(result?.data);
         setTotalCount(result?.totalCount || 0);
@@ -93,7 +89,8 @@ const Articles = () => {
   };
   return (
     <div className="p-3">
-      <HeaderTabAndBreadCrumb />
+      {/* <HeaderTabs /> */}
+      <HeaderTabs />
       {/* Browse Pro Traders */}
       <div className="mt-3 HeaderGreenBGimage sm:p-[20px] p-[12px] rounded-[12px]">
         <div className="sm:flex justify-between gap-5">
@@ -249,8 +246,9 @@ const Articles = () => {
               articlesData?.map((items, index) => {
                 return (
                   <div
+                    onClick={() => navigate(`/ArticleDetails/${items?._id}`)}
                     key={index}
-                    className="rounded-[8px] border-[1px] border-[#E8E8E8]"
+                    className="cursor-pointer hover:shadow-lg transition-shadow duration-200 rounded-[8px] border-[1px] border-[#E8E8E8]"
                   >
                     <div
                       className=""
@@ -282,31 +280,13 @@ const Articles = () => {
                       <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px]">
                         {items?.title}{" "}
                       </h1>
-                      {/*  */}
-                      {/* <p
-                        dangerouslySetInnerHTML={{
-                          __html: items?.content,
-                        }}
-                        className="text-[14px] font-[500] gray mt-[6px] line-clamp-3"
-                      /> */}
-
                       <div className="mt-[6px]">
                         <div
-                          className={`text-[14px] font-[500] gray  ${
-                            expandedItems[index] ? "" : "line-clamp-3"
-                          }`}
+                          className={`text-[14px] font-[500] gray line-clamp-2`}
                           dangerouslySetInnerHTML={{
                             __html: items?.content,
                           }}
                         />
-                        {items?.content?.length > 290 && (
-                          <button
-                            onClick={() => toggleExpand(index)}
-                            className="text-[14px] font-[700] gray mt-1 cursor-pointer hover:underline"
-                          >
-                            {expandedItems[index] ? "Show less" : "Read more"}
-                          </button>
-                        )}
                       </div>
                     </div>
                   </div>

@@ -4,6 +4,7 @@ const initialState = {
   Breadcrumb2: "",
   Breadcrumb3: "",
   Breadcrumb: [],
+  HeaderTabs: "Articles",
 };
 
 const HeadAndBcSlice = createSlice({
@@ -19,12 +20,20 @@ const HeadAndBcSlice = createSlice({
     BreadcrumbFtn3: (state, action) => {
       state.Breadcrumb3 = action.payload;
     },
+    HeaderTabsFtn: (state, action) => {
+      state.HeaderTabs = action.payload;
+    },
     setBreadcrumb: (state, action) => {
       state.Breadcrumb = action.payload;
     },
   },
 });
 
-export const { BreadcrumbFtn1, BreadcrumbFtn2, BreadcrumbFtn3, setBreadcrumb } =
-  HeadAndBcSlice.actions;
+export const {
+  BreadcrumbFtn1,
+  BreadcrumbFtn2,
+  BreadcrumbFtn3,
+  setBreadcrumb,
+  HeaderTabsFtn,
+} = HeadAndBcSlice.actions;
 export default HeadAndBcSlice.reducer;

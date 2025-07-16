@@ -15,8 +15,8 @@ import {
 import { BlackLeftArrow, BlackRightArrow } from "../../assets/svgs/index";
 import VedioListImg from "../../assets/Images/VedioListImg.png";
 import { GraduationCapGray } from "../../assets/svgs/Browse/index";
-import HeaderTabAndBreadCrumb from "../../components/HeaderTabs/HeaderTabAndBreadCrumb";
 import { useLessonProgress } from "../../hooks/userLessonProgress";
+import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
@@ -79,7 +79,7 @@ const CourseDetails = ({ lesson }) => {
 
   useEffect(() => {
     LessonsProgress();
-    const interval = setInterval(LessonsProgress, 10000);
+    const interval = setInterval(LessonsProgress, 3000);
     return () => clearInterval(interval);
   }, []);
 
@@ -218,7 +218,7 @@ const CourseDetails = ({ lesson }) => {
             },
           ]}
         /> */}
-        <HeaderTabAndBreadCrumb />
+        <HeaderTabs />
       </div>
       {/* Followers Hub header */}
       <div className="my-4 HeaderGreenBGimage p-[20px] rounded-[12px]">

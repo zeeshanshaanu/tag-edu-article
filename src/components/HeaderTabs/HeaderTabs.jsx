@@ -10,10 +10,30 @@ import {
   BlackHandshake,
   BlackUsers,
 } from "../../assets/svgs";
+
+import {
+  BookOpenBlackIcon,
+  GraduationCapGray,
+  WebinarPlayGray,
+  BookOpenGray,
+  GraduationCapBlack,
+  MonitorPlayBlack,
+} from "../../assets/svgs/Browse/index";
+import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import { HeaderTabsFtn } from "../../Store/HeaderAndBreadCrumbSlice/HeadAndBcSlice";
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 const HeaderTabs = () => {
-  const [showBG, setshowBG] = useState("browse");
+  const dispatch = useDispatch();
+
+  // HeaderTabsFtn
+  const HeaderTabValue = useSelector(
+    (state) => state.HeadAndBreadCrumb?.HeaderTabs
+  );
+  // console.log(HeaderTabValue);
+
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -21,82 +41,76 @@ const HeaderTabs = () => {
       <div className="bg_white rounded-[8px] p-[3px] flex gap-1">
         <div
           className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
-            showBG === "browse" && "bg_lightgreen font-[700]"
+            HeaderTabValue === "Articles" && "bg_lightgreen font-[700]"
           }`}
-          onClick={() => setshowBG("browse")}
+          onClick={() => {
+            dispatch(HeaderTabsFtn("Articles"));
+            navigate("/");
+          }}
         >
-          {showBG === "browse" ? (
-            <img src={MagnifyingGlassBlack} alt="MagnifyingGlassBlack" />
-          ) : (
-            <img src={MagnifyingGlass} alt="MagnifyingGlass" />
-          )}
+          <img
+            src={
+              HeaderTabValue === "Articles" ? BookOpenBlackIcon : BookOpenGray
+            }
+            alt="MagnifyingGlassBlack"
+          />
+
           <span
             className={`text-[14px] my-auto ${
-              showBG === "browse" ? "black" : "gray"
+              HeaderTabValue === "Articles" ? "black" : "gray"
             }`}
           >
-            Browse
+            Articles
           </span>
         </div>
-        {/*  */}
-        <div
-          className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200  ${
-            showBG === "followers" && "bg_lightgreen font-[700]"
-          }`}
-          onClick={() => setshowBG("followers")}
-        >
-          {showBG === "followers" ? (
-            <img src={BlackUsers} alt="MagnifyingGlass" />
-          ) : (
-            <img src={Users} alt="MagnifyingGlassBlack" />
-          )}
-          <span
-            className={`text-[14px] my-auto ${
-              showBG === "followers" ? "black" : "gray"
-            }`}
-          >
-            Followers
-          </span>
-        </div>
-        {/*  */}
         <div
           className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
-            showBG === "providers" && "bg_lightgreen font-[700]"
+            HeaderTabValue === "Courses" && "bg_lightgreen font-[700]"
           }`}
-          onClick={() => setshowBG("providers")}
+          onClick={() => {
+            dispatch(HeaderTabsFtn("Courses"));
+            navigate("/Courses");
+          }}
         >
-          {" "}
-          {showBG === "providers" ? (
-            <img src={BlackHandshake} alt="BlackHandshake" />
-          ) : (
-            <img src={Handshake} alt="Handshake" />
-          )}
+          <img
+            src={
+              HeaderTabValue === "Courses"
+                ? GraduationCapBlack
+                : GraduationCapGray
+            }
+            alt="MagnifyingGlassBlack"
+          />
+
           <span
             className={`text-[14px] my-auto ${
-              showBG === "providers" ? "black" : "gray"
+              HeaderTabValue === "Courses" ? "black" : "gray"
             }`}
           >
-            Providers
+            Courses
           </span>
         </div>
-        {/*  */}
         <div
           className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
-            showBG === "recruiters" && "bg_lightgreen font-[700]"
+            HeaderTabValue === "Webinars" && "bg_lightgreen font-[700]"
           }`}
-          onClick={() => setshowBG("recruiters")}
+          onClick={() => {
+            dispatch(HeaderTabsFtn("Webinars"));
+            navigate("/Webinars");
+          }}
         >
-          {showBG === "recruiters" ? (
-            <img src={BlackSuitcaseSimple} alt="BlackSuitcaseSimple" />
-          ) : (
-            <img src={SuitcaseSimple} alt="SuitcaseSimple" />
-          )}
+          <img
+            src={
+              HeaderTabValue === "Webinars" ? MonitorPlayBlack : WebinarPlayGray
+            }
+            alt="MagnifyingGlassBlack"
+          />
+
           <span
             className={`text-[14px] my-auto ${
-              showBG === "recruiters" ? "black" : "gray"
+              HeaderTabValue === "Webinars" ? "black" : "gray"
             }`}
           >
-            Recruiters
+            Webinars
           </span>
         </div>
       </div>

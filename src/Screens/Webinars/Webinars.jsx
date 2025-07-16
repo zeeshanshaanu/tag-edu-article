@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRef } from "react";
 
 // ///////////////////////   *****************   ///////////////////////
-import HeaderTabAndBreadCrumb from "../../components/HeaderTabs/HeaderTabAndBreadCrumb";
 import ProfileImage from "../../assets/Images/ProfileImage.png";
 
 import {
@@ -20,6 +19,7 @@ import {
 } from "../../assets/svgs/Followers/FollowersIndex";
 
 import Pagination from "../../components/TablePagination/Pagination";
+import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
@@ -84,7 +84,7 @@ const Webinars = () => {
   };
   return (
     <div className="p-3">
-      <HeaderTabAndBreadCrumb />
+      <HeaderTabs />
       {/* Browse Pro Traders */}
       <div className="mt-3 HeaderGreenBGimage sm:p-[20px] p-[12px] rounded-[12px]">
         <div className="sm:flex justify-between gap-5">
