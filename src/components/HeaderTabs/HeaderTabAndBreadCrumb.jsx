@@ -6,10 +6,9 @@ import {
   GraduationCapBlack,
   MonitorPlayBlack,
 } from "../../assets/svgs/Browse/index";
-import { UK } from "../../assets/svgs/index";
-import { Button, Dropdown } from "antd";
-import { DownOutlined, SmileOutlined } from "@ant-design/icons";
-
+import { Uk } from "../../assets/svgs/index.js";
+import { Dropdown } from "antd";
+import { DownOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setBreadcrumb } from "../../Store/HeaderAndBreadCrumbSlice/HeadAndBcSlice";
@@ -21,7 +20,7 @@ const items = [
     label: (
       <div className="flex gap-2 cursor-pointer">
         <div className="my-auto">
-          <img src={UK} className="w-[18px] h-[18px]"/>
+          <img src={Uk} alt="Uk" className="w-[18px] h-[18px]" />
         </div>
         <div className="my-auto">
           <h1 className="gray font-[500] text-[14px]">EN</h1>
@@ -157,7 +156,7 @@ const HeaderTabAndBreadCrumb = () => {
             >
               <div className="flex gap-2 cursor-pointer">
                 <div className="my-auto">
-                  <img src={UK} />
+                  <img src={Uk} alt="Uk" />
                 </div>
                 <div className="my-auto">
                   <h1 className="gray font-[500] text-[14px]">EN</h1>
