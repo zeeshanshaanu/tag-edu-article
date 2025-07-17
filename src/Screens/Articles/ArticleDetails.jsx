@@ -91,7 +91,7 @@ const ArticleDetails = () => {
           {/*  */}
 
           <div className="grid grid:cols-1 lg:grid-cols-12 md:grid-cols-12 gap-4">
-            <div className="bg-white p-4 rounded-[8px] border-[1px] border-[#E8E8E8] bg_white rounded-[8px] col-span-12 md:col-span-12 lg:col-span-8 p-4">
+            <div className="bg-white rounded-[8px] border-[1px] border-[#E8E8E8] bg_white rounded-[8px] col-span-12 md:col-span-12 lg:col-span-8 p-2 lg:p-4">
               <div className="">
                 <img
                   src={ArticleDetail?.image}
@@ -100,7 +100,7 @@ const ArticleDetails = () => {
                 />
               </div>
               {/* Detail */}
-              <div className="p-[13px]">
+              <div className="mt-3">
                 <div className="flex gap-[12px]">
                   <h1 className="text-[12px] font-[700] rounded-[8px] border-[1px] border-[#E8E8E8] px-2 py-1 my-auto capitalize">
                     {ArticleDetail?.category}
@@ -127,10 +127,10 @@ const ArticleDetails = () => {
                 </div>
               </div>
             </div>
-            <div className="bg_white rounded-[8px] col-span-12 md:col-span-12 lg:col-span-4 p-4">
+            <div className="bg_white rounded-[8px] col-span-12 md:col-span-12 lg:col-span-4 p-2 lg:p-4">
               <h1 className="text-[20px] font-[700] black">Latest Articles </h1>
 
-              <div className="mt-5">
+              <div className="mt-4">
                 {articlesData?.length > 0 ? (
                   articlesData?.slice(0, 5)?.map((items, index) => {
                     return (

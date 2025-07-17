@@ -12,30 +12,11 @@ import { HeaderTabsFtn } from "../../Store/HeaderAndBreadCrumbSlice/HeadAndBcSli
 import { EnglandFlag } from "../../assets/svgs/index";
 import { Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import MobileHeaderTabs from "./MobileHeaderTabs";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
-const items = [
-  {
-    key: "1",
-    label: (
-      <div className="flex gap-2 cursor-pointer">
-        <div className="my-auto">
-          <img
-            src={EnglandFlag}
-            alt="EnglandFlag"
-            className="w-[18px] h-[18px]"
-          />
-        </div>
-        <div className="my-auto">
-          <h1 className="gray font-[500] text-[14px]">EN</h1>
-        </div>
-      </div>
-    ),
-  },
-];
-const HeaderTabs = () => {
+
+const MobileHeaderTabs = () => {
   const dispatch = useDispatch();
 
   // HeaderTabsFtn
@@ -48,12 +29,10 @@ const HeaderTabs = () => {
 
   return (
     <div>
-      {/* Web Tabs - Hidden on small screens */}
-      <div className="bg_white rounded-[8px] p-[2px] sm:flex justify-between gap-[2px] w-full hidden sm:flex">
-        <div className="mt-3 lg:mt-0 md:mt-0 flex gap-[2px]">
-          {/* Articles Tab */}
+      <div className="bg_white rounded-[8px] p-[2px] flex gap-5 inline-block mt-5">
+        <div className="flex gap-[2px]">
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
+            className={`cursor-pointer inline-flex items-center gap-1 rounded-[8px] px-[10px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
               HeaderTabValue === "Articles" && "bg_lightgreen font-[700]"
             }`}
             onClick={() => {
@@ -65,20 +44,19 @@ const HeaderTabs = () => {
               src={
                 HeaderTabValue === "Articles" ? BookOpenBlackIcon : BookOpenGray
               }
-              alt="Articles"
+              alt="Articles Icon"
             />
             <span
-              className={`text-[14px] my-auto ${
+              className={`text-[14px] ${
                 HeaderTabValue === "Articles" ? "black" : "gray"
               }`}
             >
-              Articles
+              {HeaderTabValue === "Articles" && "Articles"}
             </span>
           </div>
 
-          {/* Courses Tab */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
+            className={`cursor-pointer inline-flex items-center gap-1 rounded-[8px] px-[10px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
               HeaderTabValue === "Courses" && "bg_lightgreen font-[700]"
             }`}
             onClick={() => {
@@ -92,20 +70,19 @@ const HeaderTabs = () => {
                   ? GraduationCapBlack
                   : GraduationCapGray
               }
-              alt="Courses"
+              alt="Courses Icon"
             />
             <span
-              className={`text-[14px] my-auto ${
+              className={`text-[14px] ${
                 HeaderTabValue === "Courses" ? "black" : "gray"
               }`}
             >
-              Courses
+              {HeaderTabValue === "Courses" && "Courses"}
             </span>
           </div>
 
-          {/* Webinars Tab */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
+            className={`cursor-pointer inline-flex items-center gap-1 rounded-[8px] px-[10px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
               HeaderTabValue === "Webinars" && "bg_lightgreen font-[700]"
             }`}
             onClick={() => {
@@ -119,46 +96,15 @@ const HeaderTabs = () => {
                   ? MonitorPlayBlack
                   : WebinarPlayGray
               }
-              alt="Webinars"
+              alt="Webinars Icon"
             />
             <span
-              className={`text-[14px] my-auto ${
+              className={`text-[14px] ${
                 HeaderTabValue === "Webinars" ? "black" : "gray"
               }`}
             >
-              Webinars
+              {HeaderTabValue === "Webinars" && "Webinars"}
             </span>
-          </div>
-        </div>
-
-        {/* Language Dropdown */}
-        <div className="my-auto pr-4">
-          <Dropdown
-            menu={{ items }}
-            placement="bottomRight"
-            arrow
-            trigger={["click"]}
-          >
-            <div className="flex gap-2 cursor-pointer">
-              <div className="my-auto">
-                <img src={EnglandFlag} alt="EnglandFlag" />
-              </div>
-              <div className="my-auto">
-                <h1 className="gray font-[500] text-[14px]">EN</h1>
-              </div>
-              <div className="my-auto">
-                <DownOutlined className="text-[14px] lightgray font-bold" />
-              </div>
-            </div>
-          </Dropdown>
-        </div>
-      </div>
-
-      {/* Mobile Tabs - Only visible on small screens */}
-      <div className="block sm:hidden fixed bottom-5 left-0 right-0 w-full z-50">
-        <div className="flex justify-center">
-          <div className="w-fit">
-            <MobileHeaderTabs />
           </div>
         </div>
       </div>
@@ -166,4 +112,4 @@ const HeaderTabs = () => {
   );
 };
 
-export default HeaderTabs;
+export default MobileHeaderTabs;

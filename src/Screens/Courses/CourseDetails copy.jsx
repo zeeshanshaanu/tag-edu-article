@@ -30,12 +30,30 @@ const CourseDetails = () => {
   const [CourseDetail, setCourseDetail] = useState({});
   const [selectedModule, setSelectedModule] = useState(null);
   const [selectedLessonIndex, setSelectedLessonIndex] = useState(0);
+  const [selectedModuleId, setSelectedModuleId] = useState(null);
   const [expandedLesson, setExpandedLesson] = useState(false);
   const [expandedItems, setExpandedItems] = useState({});
   const [duration, setDuration] = useState("");
   const [userProgress, setUserProgress] = useState(null);
-  const [videoDurations, setVideoDurations] = useState({});
-  const [videoDuration, setVideoDuration] = useState(0);
+  const [videoDuration, setVideoDuration] = useState({});
+
+  const handlePreloadDuration = (lessonId, duration) => {
+    setVideoDuration((prev) => ({
+      ...prev,
+      [lessonId]: duration,
+    }));
+  };
+
+  const handleDuration = (duration) => {
+    if (selectedLesson?.lessonId) {
+      setVideoDuration((prev) => ({
+        ...prev,
+        [selectedLesson.lessonId]: duration,
+      }));
+    }
+  };
+
+  // console.log(videoDuration);
 
   const formatVideoDuration = (milliseconds) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
@@ -49,23 +67,6 @@ const CourseDetails = () => {
       return `${minutes}m ${seconds}s`;
     } else {
       return `${seconds}s`;
-    }
-  };
-
-  const handlePreloadDuration = (lessonId, duration) => {
-    setVideoDurations((prev) => ({
-      ...prev,
-      [lessonId]: duration,
-    }));
-  };
-
-  const handleDuration = (duration) => {
-    if (selectedLesson?.lessonId) {
-      setVideoDurations((prev) => ({
-        ...prev,
-        [selectedLesson.lessonId]: duration,
-      }));
-      setVideoDuration(duration);
     }
   };
 
@@ -163,10 +164,10 @@ const CourseDetails = () => {
   };
 
   const handlePrevLesson = () => {
-    if (!selectedModule) return;
+    if (!selectedModule) return; // guard
     if (selectedLesson?.index > 1) {
-      const newIndex = selectedLesson.index - 1;
-      const lessonObj = selectedModule.lessons[newIndex - 1];
+      const newIndex = selectedLesson.index - 1; // 1‑based → 1‑based
+      const lessonObj = selectedModule.lessons[newIndex - 1]; // 0‑based array
       setSelectedLesson({ ...lessonObj, index: newIndex });
     }
   };
@@ -338,8 +339,9 @@ const CourseDetails = () => {
               <p className="flex gap-1 text-[14px] font-[500] gray">
                 <img src={Timer} alt="Timer" className=" my-auto" />{" "}
                 <span className="my-auto pr-[12px] border-r-[2px] border-[#E8E8E8]">
+                  {/* {formatVideoDuration(videoDuration * 1000)} */}
                   {formatVideoDuration(
-                    (videoDurations[selectedLesson.lessonId] || 0) * 1000
+                    (videoDuration[selectedLesson.lessonId] || 0) * 1000
                   )}
                 </span>
               </p>
@@ -444,7 +446,6 @@ const CourseDetails = () => {
                           <div className="my-auto  w-[100px] h-[60px] lg:w-[130px] lg:h-[80px]">
                             <img
                               src={getYouTubeThumbnail(items?.video_url)}
-                              // alt={items?.title}
                               className="w-full h-full object-cover my-auto rounded-[8px]"
                             />{" "}
                           </div>
@@ -459,8 +460,9 @@ const CourseDetails = () => {
                                 className=" my-auto"
                               />{" "}
                               <span className="my-auto">
+                                {/* {formatVideoDuration(videoDuration * 1000)} */}
                                 {formatVideoDuration(
-                                  (videoDurations[items._id] || 0) * 1000
+                                  (videoDuration[items._id] || 0) * 1000
                                 )}
                               </span>
                             </p>
@@ -580,6 +582,7 @@ const CourseDetails = () => {
                             onClick={() => {
                               setSelectedModule(items);
                               setSelectedLessonIndex(index + 1);
+                              setSelectedModuleId(items?._id ?? index);
                             }}
                             disabled={selectedModule?.title === items?.title}
                             className={`flex justify-center gap-1 w-full py-2 px-5 rounded-[8px] text-[14px] font-[700]
