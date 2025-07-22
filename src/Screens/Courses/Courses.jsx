@@ -74,7 +74,7 @@ const Courses = () => {
     };
 
     FetchCourses();
-  }, [currentPage, Status, Search, filtersPaging.limit]);
+  }, [currentPage, Status, Search, filtersPaging.limit, token]);
 
   const handlePageChange = (newPage) => {
     setFiltersPaging((prev) => ({

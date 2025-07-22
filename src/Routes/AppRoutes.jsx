@@ -1,16 +1,36 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import Courses from "../Screens/Courses/Courses";
 import CourseDetails from "../Screens/Courses/CourseDetails";
 import Webinars from "../Screens/Webinars/Webinars";
 import Articles from "../Screens/Articles/Articles";
 import ArticleDetails from "../Screens/Articles/ArticleDetails";
+import { useDispatch } from "react-redux";
+import { AuthtokenFtn, UserInfoFtn } from "../Store/AuthSlice/AuthSlice";
+import { useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 const AppRoutes = () => {
+  const dispatch = useDispatch();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
+
+    if (token) {
+      dispatch(AuthtokenFtn(token));
+      const decoded = jwtDecode(token);
+      dispatch(UserInfoFtn(decoded));
+    }
+  }, [location.search]);
+
+  //////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////
   return (
     <div>
-      <BrowserRouter>
+      <>
         <Routes>
           <Route path="/" element={<Articles />} />
           <Route path="/ArticleDetails/:id" element={<ArticleDetails />} />
@@ -18,7 +38,7 @@ const AppRoutes = () => {
           <Route path="/CourseDetails/:id" element={<CourseDetails />} />
           <Route path="/Webinars" element={<Webinars />} />
         </Routes>
-      </BrowserRouter>
+      </>
     </div>
   );
 };

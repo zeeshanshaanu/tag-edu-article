@@ -14,7 +14,6 @@ import {
 } from "../../assets/svgs/Followers/FollowersIndex";
 import { BlackLeftArrow, BlackRightArrow } from "../../assets/svgs/index";
 import VedioListImg from "../../assets/Images/VedioListImg.png";
-import { GraduationCapGray } from "../../assets/svgs/Browse/index";
 import { useLessonProgress } from "../../hooks/userLessonProgress";
 import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
 

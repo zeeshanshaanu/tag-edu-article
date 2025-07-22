@@ -3,31 +3,13 @@ import AppRoutes from "./Routes/AppRoutes";
 import { AuthtokenFtn } from "./Store/AuthSlice/AuthSlice";
 import axios from "axios";
 import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
 
 ///////////////////////////////////////////////////////
 function App() {
-  const dispatch = useDispatch();
 
-  const handleSubmit = async () => {
-    try {
-      const response = await axios.post("/api/admin/login", {
-        email: "tag.education@gmail.com",
-        password: "tag@edu",
-      });
-
-      // console.log(response?.data);
-      const token = response?.data?.token;
- 
-      if (token) {
-        dispatch(AuthtokenFtn(token));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    handleSubmit();
-  }, []);
 
   return (
     <div>

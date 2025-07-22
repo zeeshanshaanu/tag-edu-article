@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Tooltip } from "antd";
-import { useDispatch, useSelector } from "react-redux";
+import { message } from "antd";
+import { useSelector } from "react-redux";
 import { useRef } from "react";
+import dayjs from "dayjs";
 
 // ///////////////////////   *****************   ///////////////////////
 import ProfileImage from "../../assets/Images/ProfileImage.png";
@@ -29,52 +30,62 @@ const Webinars = () => {
   const [loading, setLoading] = useState(false);
   const [WebinarsData, setWebinarsData] = useState([]);
   const AuthToken = useSelector((state) => state?.Auth);
+  // console.log(AuthToken);
+  const ValidUser = AuthToken?.UserInfo;
   const token = AuthToken?.Authtoken;
+  const [messageApi, contextHolder] = message.useMessage();
 
   // Pagination, Search and filtersPaging
-  const [Search, setSearch] = useState("");
   const [totalCount, setTotalCount] = useState(0);
   const [filtersPaging, setFiltersPaging] = useState({ skip: 0, limit: 10 });
   const currentPage = Math.floor(filtersPaging.skip / filtersPaging.limit) + 1;
   const loadingDelayRef = useRef(null);
   const [expandedItems, setExpandedItems] = useState({});
+
   const toggleExpand = (index) => {
     setExpandedItems((prev) => ({
       ...prev,
       [index]: !prev[index],
     }));
   };
-  useEffect(() => {
-    const FetchWebinars = async () => {
-      loadingDelayRef.current = setTimeout(() => {
-        setLoading(true);
-      }, 300);
+
+  const FetchWebinars = async () => {
+    loadingDelayRef.current = setTimeout(() => {
       setLoading(true);
-      try {
-        const response = await axios.get(
-          `/api/webinar?page=${currentPage}&limit=${filtersPaging.limit}&category=${Status}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        const result = response?.data;
-        console.log(result);
-
-        setWebinarsData(result?.data);
-        setTotalCount(result?.totalCount || 0);
-      } catch (error) {
-        if (error?.response?.status === 401) {
-          handleLogout();
+    }, 300);
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `/api/webinar?page=${currentPage}&limit=${filtersPaging.limit}&status=${Status}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
         }
-        console.error("Error fetching Webinars:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      );
 
+      const result = response?.data;
+      // console.log(result);
+
+      setWebinarsData(result?.data);
+      setTotalCount(result?.totalCount || 0);
+    } catch (error) {
+      if (error?.response?.status === 401) {
+        handleLogout();
+      }
+      console.error("Error fetching Webinars:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     FetchWebinars();
-  }, [currentPage, Status, filtersPaging.limit]);
+
+    const interval = setInterval(() => {
+      FetchWebinars();
+    }, 1 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [currentPage, Status, filtersPaging.limit, token]);
 
   const handlePageChange = (newPage) => {
     setFiltersPaging((prev) => ({
@@ -82,8 +93,47 @@ const Webinars = () => {
       skip: (newPage - 1) * prev.limit,
     }));
   };
+
+  const [enrollmentLoadingIds, setEnrollmentLoadingIds] = useState(new Set());
+
+  const handleEnrollment = async (EnrollID) => {
+    setEnrollmentLoadingIds((prev) => new Set(prev).add(EnrollID));
+
+    try {
+      const response = await axios.post(
+        "/api/webinar/enroll",
+        {
+          webinar_id: EnrollID,
+          user_email: ValidUser?.email,
+          first_name: ValidUser?.first_name,
+          last_name: ValidUser?.last_name,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(response?.data);
+      messageApi.success(response?.data?.message);
+      FetchWebinars();
+    } catch (error) {
+      messageApi.error(error?.response?.data?.message);
+
+      console.error("ENROLL ERROR:", error?.response);
+    } finally {
+      setEnrollmentLoadingIds((prev) => {
+        const updated = new Set(prev);
+        updated.delete(EnrollID);
+        return updated;
+      });
+    }
+  };
+
   return (
     <div className="p-3">
+      {contextHolder}
       <HeaderTabs />
       {/* Browse Pro Traders */}
       <div className="mt-3 HeaderGreenBGimage sm:p-[20px] p-[12px] rounded-[12px]">
@@ -143,160 +193,154 @@ const Webinars = () => {
             </span>
           </div>
         </div>
-        {/*  */}
-        {/* <div className="flex justify-between searchBar relative my-auto">
-          <input
-            type="text"
-            placeholder="Search"
-            value={Search}
-            onChange={(e) => setSearch(e.target.value)}
-            autoComplete="off"
-            className="w-[180px] sm:w-[280px] border border-[1.5px] border-[#E8E8E8] bg-white rounded-[8px] outline-none pl-[15px] pr-[45px] py-[7px]"
-          />
-          <div className="absolute bg_black top-[4px] sm:left-[243px] left-[143px] w-[32px] h-[32px] rounded-[6px] flex justify-center">
-            <img
-              src={MagnifyingGlassWhite}
-              alt="MagnifyingGlass"
-              className="flex justify-center p-[7px]"
-            />
-          </div>
-        </div> */}
       </div>
       {/* Cards */}
       <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">
         <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
-          {/* {loading ? (
-            <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[700] black text-[20px]">
-              Loading...
-            </span>
-          ) : (
-          )} */}
-          <>
-            {WebinarsData?.length > 0 ? (
-              WebinarsData?.map((items, index) => {
-                return (
+          {WebinarsData?.length > 0 ? (
+            WebinarsData?.map((items, index) => {
+              return (
+                <div
+                  key={index}
+                  className="rounded-[8px] border border-[#E8E8E8] flex flex-col h-full"
+                >
+                  {/* Top Image Section */}
                   <div
-                    key={index}
-                    className="rounded-[8px] border border-[#E8E8E8] flex flex-col h-full"
-                  >
-                    {/* Top Image Section */}
-                    <div
-                      style={{
-                        backgroundImage: `url(${items?.image || ProfileImage})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        width: "100%",
-                        height: "200px",
-                        borderTopLeftRadius: "8px",
-                        borderTopRightRadius: "8px",
-                      }}
-                    />
+                    style={{
+                      backgroundImage: `url(${items?.image || ProfileImage})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      width: "100%",
+                      height: "200px",
+                      borderTopLeftRadius: "8px",
+                      borderTopRightRadius: "8px",
+                    }}
+                  />
 
-                    {/* Content Section */}
-                    <div className="flex flex-col p-[13px] flex-grow">
-                      <h1 className="lg:text-[20px] text-[16px] font-[700]">
-                        {items?.title}
-                      </h1>
+                  {/* Content Section */}
+                  <div className="flex flex-col p-[13px] flex-grow">
+                    <h1 className="lg:text-[20px] text-[16px] font-[700]">
+                      {items?.title}
+                    </h1>
 
-                      <div className="mt-[6px]">
-                        <div
-                          className={`text-[14px] font-[500] gray  ${
-                            expandedItems[index] ? "" : "line-clamp-3"
-                          }`}
-                          dangerouslySetInnerHTML={{
-                            __html: items?.content,
-                          }}
-                        />
-                        {items?.content?.length > 290 && (
-                          <button
-                            onClick={() => toggleExpand(index)}
-                            className="text-[14px] font-[700] gray mt-1 cursor-pointer hover:underline"
-                          >
-                            {expandedItems[index] ? "Show less" : "Read more"}
-                          </button>
-                        )}
+                    <div className="mt-[6px]">
+                      <div
+                        className={`text-[14px] font-[500] gray  ${
+                          expandedItems[index] ? "" : "line-clamp-3"
+                        }`}
+                        dangerouslySetInnerHTML={{
+                          __html: items?.content,
+                        }}
+                      />
+                      {items?.content?.length > 290 && (
+                        <button
+                          onClick={() => toggleExpand(index)}
+                          className="text-[14px] font-[700] gray mt-1 cursor-pointer hover:underline"
+                        >
+                          {expandedItems[index] ? "Show less" : "Read more"}
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Meta Info */}
+                    <div className="flex gap-5 my-2">
+                      <div className="my-auto">
+                        <p className="flex gap-1 text-[14px] font-[500] gray">
+                          <img
+                            src={CalendarGray}
+                            alt="CalendarGray"
+                            className="my-auto"
+                          />
+
+                          <p className="text-[12px] font-[500] gray my-auto">
+                            {dayjs(items?.start_time).format("MMMM D, YYYY")}
+                          </p>
+                        </p>
                       </div>
 
-                      {/* Meta Info */}
-                      <div className="flex gap-5 my-2">
+                      {Status === "upcoming" && (
                         <div className="my-auto">
                           <p className="flex gap-1 text-[14px] font-[500] gray">
-                            <img
-                              src={CalendarGray}
-                              alt="CalendarGray"
-                              className="my-auto"
-                            />
-
-                            <p className="text-[12px] font-[500] gray my-auto">
-                              {new Date(items?.created_at).toLocaleDateString(
-                                "en-US",
-                                {
-                                  year: "numeric",
-                                  month: "long",
-                                  day: "numeric",
-                                }
-                              )}
-                            </p>
+                            <img src={Timer} alt="Timer" className="my-auto" />
+                            <span className="my-auto">
+                              {dayjs(items?.start_time).format(" hh:mm A")} UTC
+                            </span>
                           </p>
                         </div>
+                      )}
+                    </div>
 
-                        {Status === "upcoming" && (
-                          <div className="my-auto">
-                            <p className="flex gap-1 text-[14px] font-[500] gray">
-                              <img
-                                src={Timer}
-                                alt="Timer"
-                                className="my-auto"
-                              />
-                              <span className="my-auto">
-                                {items?.estimated_time} PM UTC
-                              </span>
-                            </p>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Action Button at Bottom */}
-                      <div className="mt-auto pt-4">
-                        {Status === "past" ? (
-                          <button
-                            className="flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
-            w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
-                          >
-                            <img
-                              src={PlayCircleBlack}
-                              alt="PlayCircleBlack"
-                              className="my-auto"
-                            />
-                            <span className="my-auto">Watch Recording</span>
-                          </button>
-                        ) : (
-                          <a
-                            href={items?.vedio_link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <button className="flex justify-center gap-1 cursor-pointer bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700]">
-                              <img
-                                src={NotePencilWhite}
-                                alt="NotePencilWhite"
-                                className="my-auto"
-                              />
-                              <span className="my-auto">Read More</span>
+                    {/* Action Button at Bottom */}
+                    <div className="mt-auto pt-4">
+                      {new Date(items?.end_time) < new Date() ? (
+                        // Webinar has ended → Show "Watch Recording"
+                        <button
+                          className="flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
+      w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
+                        >
+                          <img
+                            src={PlayCircleBlack}
+                            alt="PlayCircleBlack"
+                            className="my-auto"
+                          />
+                          <span className="my-auto">Watch Recording</span>
+                        </button>
+                      ) : (
+                        // Same logic for live/upcoming webinars
+                        <>
+                          {!items?.enrolled && items?.is_live ? (
+                            <a
+                              href={items?.vedio_link}
+                              target="_blank"
+                              className="flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
+        w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
+                            >
+                              <span className="my-auto">Join Now</span>
+                            </a>
+                          ) : !items?.enrolled ? (
+                            <button
+                              disabled={enrollmentLoadingIds.has(items._id)}
+                              onClick={() => handleEnrollment(items._id)}
+                              className={`flex justify-center gap-1 w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700] ${
+                                enrollmentLoadingIds.has(items._id)
+                                  ? "bg-white text-black border border-[#E8E8E8] cursor-not-allowed"
+                                  : "bg-black text-white cursor-pointer border border-[#E8E8E8]"
+                              }`}
+                            >
+                              {enrollmentLoadingIds.has(items._id) ? (
+                                <span className="my-auto animate-pulse">
+                                  Enrolling...
+                                </span>
+                              ) : (
+                                <span className="my-auto">Enroll</span>
+                              )}
                             </button>
-                          </a>
-                        )}
-                      </div>
+                          ) : items?.is_live ? (
+                            <a
+                              href={items?.vedio_link}
+                              target="_blank"
+                              className="flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
+        w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
+                            >
+                              <span className="my-auto">Join Now</span>
+                            </a>
+                          ) : (
+                            <button className="flex justify-center gap-1 bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700] border border-[#E8E8E8]">
+                              <span className="my-auto">Enrolled</span>
+                            </button>
+                          )}
+                        </>
+                      )}
                     </div>
                   </div>
-                );
-              })
-            ) : (
-              <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[500] lightgray3 text-[16px]">
-                No Webinar Found
-              </span>
-            )}
-          </>
+                </div>
+              );
+            })
+          ) : (
+            <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[500] lightgray3 text-[16px]">
+              No Webinar Found
+            </span>
+          )}
         </div>
         {/*  */}
         {WebinarsData?.length > 0 && (

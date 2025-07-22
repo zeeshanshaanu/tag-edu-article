@@ -34,6 +34,7 @@ const Articles = () => {
   const AuthToken = useSelector((state) => state?.Auth);
   const token = AuthToken?.Authtoken;
   const loadingDelayRef = useRef(null);
+  console.log("Articles Token---->>>", token);
 
   // Pagination, Search and filtersPaging
   const [Search, setSearch] = useState("");
@@ -61,9 +62,6 @@ const Articles = () => {
         setArticlesData(result?.data);
         setTotalCount(result?.totalCount || 0);
       } catch (error) {
-        if (error?.response?.status === 401) {
-          handleLogout();
-        }
         console.error("Error fetching articles:", error);
       } finally {
         // Clear delay timer and hide loader
@@ -78,7 +76,7 @@ const Articles = () => {
       // Cleanup in case component unmounts or re-renders quickly
       clearTimeout(loadingDelayRef.current);
     };
-  }, [currentPage, Search, Status, filtersPaging.limit]);
+  }, [currentPage, Search, Status, filtersPaging.limit, token]);
 
   const handlePageChange = (newPage) => {
     setFiltersPaging((prev) => ({
