@@ -10,8 +10,8 @@ import axios from "axios";
 import { BrowserRouter } from "react-router";
 // ///////////////////////////////////////
 // ///////////////////////////////////////
-// axios.defaults.baseURL = "https://tageduapi.tagmarkets.com/";
-axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.baseURL = "https://tageduapi.tagmarkets.com/";
+// axios.defaults.baseURL = "http://localhost:8000";
 
 // ///////////////////////////////////////
 // ///////////////////////////////////////
