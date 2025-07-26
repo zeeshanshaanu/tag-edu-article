@@ -22,53 +22,6 @@ import { useLocation } from "react-router-dom";
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 
-const PlyrPlayer = ({ src, onProgress }) => {
-  const playerRef = useRef(null);
-  const wrapperRef = useRef(null);
-
-  useEffect(() => {
-    if (!src || !wrapperRef.current) return;
-
-    const match = src.match(
-      /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
-    );
-    const videoId = match?.[1];
-
-    if (!videoId) return;
-
-    const el = document.createElement("div");
-    el.setAttribute("data-plyr-provider", "youtube");
-    el.setAttribute("data-plyr-embed-id", videoId);
-
-    // Clear old player (React-safe)
-    wrapperRef.current.innerHTML = "";
-    wrapperRef.current.appendChild(el);
-
-    playerRef.current = new Plyr(el, {
-      controls: [
-        "play",
-        "progress",
-        "current-time",
-        "mute",
-        "volume",
-        "fullscreen",
-      ],
-    });
-
-    playerRef.current.on("timeupdate", () => {
-      const current = playerRef.current.currentTime;
-      const duration = playerRef.current.duration;
-      onProgress?.(current, duration);
-    });
-
-    return () => {
-      playerRef.current?.destroy();
-    };
-  }, [src]);
-
-  return <div ref={wrapperRef} className="w-full rounded-lg" />;
-};
-
 const CourseDetails = () => {
   const { id } = useParams();
   const CourseID = id;
@@ -80,11 +33,20 @@ const CourseDetails = () => {
   const [selectedLessonIndex, setSelectedLessonIndex] = useState(0);
   const [expandedLesson, setExpandedLesson] = useState(false);
   const [expandedItems, setExpandedItems] = useState({});
-  const [duration, setDuration] = useState("");
   const [userProgress, setUserProgress] = useState(null);
   const [videoDurations, setVideoDurations] = useState({});
   const [videoDuration, setVideoDuration] = useState(0);
-
+  const [selectedLesson, setSelectedLesson] = useState({
+    index: "",
+    video_url: "",
+    title: "",
+    estimated_time: "",
+    current_lesson: "",
+    lession_summary: "",
+    moduleId: "",
+    lessonId: "",
+    mux_playback_id: "",
+  });
   const location = useLocation();
   const Coursedurationduration = Number(location.state?.duration);
 
@@ -160,18 +122,6 @@ const CourseDetails = () => {
     }
   };
 
-  const [selectedLesson, setSelectedLesson] = useState({
-    index: "",
-    video_url: "",
-    title: "",
-    estimated_time: "",
-    current_lesson: "",
-    lession_summary: "",
-    moduleId: "",
-    lessonId: "",
-    mux_playback_id: "",
-  });
-
   const LessonsProgress = async () => {
     try {
       const response = await axios.get(`/api/progress/${id}`, {
@@ -230,13 +180,35 @@ const CourseDetails = () => {
           estimated_time: firstLesson.estimated_time,
           current_lesson: 1,
           lession_summary: firstLesson.lession_summary,
-          _id: firstLesson._id, // 👈 add this
+          _id: firstLesson._id,
           moduleId: firstModule._id,
           lessonId: firstLesson._id,
         });
       }
     }
   }, [CourseDetail, Loading]);
+
+  const handleProgress = ({ playedSeconds }) => {
+    const totalDuration = videoDuration || selectedLesson?.estimated_time || 1;
+    const percentage = Math.floor((playedSeconds / totalDuration) * 100);
+
+    saveProgress(percentage, playedSeconds, totalDuration);
+  };
+
+  const { saveProgress } = useLessonProgress(CourseID, selectedLesson);
+
+  const getLessonProgress = (lessonId, modules) => {
+    if (!lessonId || !modules?.length) return null;
+
+    for (const mod of modules) {
+      const lesson = mod.lessons?.find((l) => {
+        const id = typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
+        return id === lessonId;
+      });
+      if (lesson) return lesson;
+    }
+    return null;
+  };
 
   const ShowMoreText = (index) => {
     setExpandedItems((prev) => ({
@@ -271,26 +243,6 @@ const CourseDetails = () => {
       const lessonObj = selectedModule.lessons[newIndex - 1];
       setSelectedLesson({ ...lessonObj, index: newIndex });
     }
-  };
-
-  const handleProgress = (state) => {
-    const { playedSeconds } = state;
-    const percentage = Math.floor((playedSeconds / duration) * 100);
-    saveProgress(percentage, playedSeconds, videoDuration);
-  };
-
-  const { saveProgress } = useLessonProgress(CourseID, selectedLesson);
-  const getLessonProgress = (lessonId, modules) => {
-    if (!lessonId || !modules?.length) return null;
-
-    for (const mod of modules) {
-      const lesson = mod.lessons?.find((l) => {
-        const id = typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
-        return id === lessonId;
-      });
-      if (lesson) return lesson;
-    }
-    return null;
   };
 
   return (

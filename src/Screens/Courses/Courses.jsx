@@ -276,21 +276,23 @@ const Courses = () => {
                         <h1 className="text-[12px] font-[700] rounded-[8px] border border-[#E8E8E8] px-2 py-1 my-auto capitalize">
                           {items?.level}
                         </h1>
-                        <h1 className="bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[8px] px-2 py-1 my-auto">
-                          {items?.tag === "vip" && (
-                            <img
-                              src={CrownBlack}
-                              alt="VIP"
-                              className="w-[20px] h-[20px] my-auto"
-                            />
-                          )}
-                          <span className="my-auto uppercase">
-                            {items?.tag}
-                          </span>
-                        </h1>
-                        <p className="text-[12px] font-[500] gray my-auto">
-                          Deposit $500 to unlock VIP
-                        </p>
+                        {items?.tag === "vip" && (
+                          <>
+                            <h1 className="bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[8px] px-2 py-1 my-auto">
+                              <img
+                                src={CrownBlack}
+                                alt="VIP"
+                                className="w-[20px] h-[20px] my-auto"
+                              />
+                              <span className="my-auto uppercase">
+                                {items?.tag}
+                              </span>
+                            </h1>
+                            <p className="text-[12px] font-[500] gray my-auto">
+                              Deposit $500 to unlock VIP
+                            </p>
+                          </>
+                        )}
                       </div>
 
                       {/* Title */}

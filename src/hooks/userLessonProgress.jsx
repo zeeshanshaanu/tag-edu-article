@@ -9,7 +9,7 @@ export const useLessonProgress = (courseId, lesson) => {
   const token = useSelector((s) => s.Auth?.Authtoken);
 
   const saveProgress = async (pct, secondsWatched, duration) => {
-    if (pct - lastSent.current < 5 && pct !== 100) return;
+    if (pct - lastSent.current < 1 && pct !== 100) return;
     lastSent.current = pct;
 
     await axios.post(
