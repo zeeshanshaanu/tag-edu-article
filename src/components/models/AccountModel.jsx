@@ -5,58 +5,13 @@ import axios from "axios";
 ///////////////////////////////////////////////////////////////
 
 const AccountModel = ({ setIsModalOpen, isModalOpen }) => {
-  if (!isModalOpen.isOpen) return null;
-
-  const [messageApi, contextHolder] = message.useMessage();
-  const authToken = useAuth();
-  const [loading, setLoading] = useState(false);
-
-  const handleOk = () => {
+   const handleOk = () => {
     setIsModalOpen(false);
   };
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-
-  const LoginData = isModalOpen.login;
-  const request_id = isModalOpen.request_id;
-
-  const endpoints = {
-    breach: `/admin/breach/${LoginData}`,
-    reactivate: `/admin/reactivate/${LoginData}`,
-    approve: `/admin/withdrawals/${request_id}/approve`,
-    reject: `/admin/withdrawals/${request_id}/reject`,
-  };
-
-  const HandleSubmit = async () => {
-    // console.log("Submiting...");
-    setLoading(true);
-    try {
-      const url = endpoints[isModalOpen.status];
-      const response = await axios.post(
-        url,
-        {},
-        {
-          headers: { Authorization: `Bearer ${authToken?.authToken}` },
-        }
-      );
-      sessionStorage.setItem("Refetch_Accounts", "true");
-
-      messageApi.success(
-        response?.data?.message || "Request processed successfully.!"
-      );
-      setLoading(false);
-      setTimeout(() => {
-        handleOk();
-      }, 1000);
-    } catch (error) {
-      console.error(error?.response);
-      messageApi.error(
-        error?.response?.data?.detail || "Failed to process request"
-      );
-      setLoading(false);
-    }
-  };
+ 
 
   return (
     <>

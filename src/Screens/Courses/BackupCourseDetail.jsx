@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import ReactPlayer from "react-player";
 import { useSelector } from "react-redux";
 
@@ -14,14 +14,98 @@ import {
 } from "../../assets/svgs/Followers/FollowersIndex";
 import { BlackLeftArrow, BlackRightArrow } from "../../assets/svgs/index";
 import VedioListImg from "../../assets/Images/VedioListImg.png";
-import { GraduationCapGray } from "../../assets/svgs/Browse/index";
 import { useLessonProgress } from "../../hooks/userLessonProgress";
 import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 
-const CourseDetails = () => {
+import Plyr from "plyr";
+import "plyr/dist/plyr.css";
+
+const PlyrPlayer = ({ src, onProgress }) => {
+  const playerRef = useRef(null);
+  const wrapperRef = useRef(null);
+  const rafRef = useRef(null);
+
+  useEffect(() => {
+    if (!src || !wrapperRef.current) return;
+
+    const wrapper = wrapperRef.current;
+    wrapper.innerHTML = ""; // Clear previous player
+
+    let player;
+
+    const isYouTube = src.includes("youtube.com") || src.includes("youtu.be");
+
+    if (isYouTube) {
+      const cleanSrc = src.split("?")[0];
+      const match = cleanSrc.match(
+        /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+      );
+      const videoId = match?.[1];
+      if (!videoId) return;
+
+      const el = document.createElement("div");
+      el.setAttribute("data-plyr-provider", "youtube");
+      el.setAttribute("data-plyr-embed-id", videoId);
+      wrapper.appendChild(el);
+
+      player = new Plyr(el, {
+        controls: [
+          "play",
+          "progress",
+          "current-time",
+          "mute",
+          "volume",
+          "fullscreen",
+        ],
+      });
+    } else {
+      const video = document.createElement("video");
+      video.src = src;
+      video.setAttribute("playsinline", "");
+      video.setAttribute("controls", "");
+      video.setAttribute("class", "w-full h-full");
+      wrapper.appendChild(video);
+
+      player = new Plyr(video, {
+        controls: [
+          "play",
+          "progress",
+          "current-time",
+          "mute",
+          "volume",
+          "fullscreen",
+        ],
+      });
+    }
+
+    playerRef.current = player;
+
+    const trackProgress = () => {
+      if (player && !player.paused) {
+        const current = player.currentTime;
+        const duration = player.duration;
+        if (!isNaN(current) && !isNaN(duration)) {
+          onProgress?.(current, duration);
+        }
+      }
+      rafRef.current = requestAnimationFrame(trackProgress);
+    };
+
+    rafRef.current = requestAnimationFrame(trackProgress);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      player?.destroy();
+    };
+  }, [src]);
+
+  return <div ref={wrapperRef} className="w-full aspect-video rounded-lg" />;
+};
+
+const BackUpCourseDetails = () => {
   const { id } = useParams();
   const CourseID = id;
   const AuthToken = useSelector((state) => state?.Auth);
@@ -30,30 +114,32 @@ const CourseDetails = () => {
   const [CourseDetail, setCourseDetail] = useState({});
   const [selectedModule, setSelectedModule] = useState(null);
   const [selectedLessonIndex, setSelectedLessonIndex] = useState(0);
-  const [selectedModuleId, setSelectedModuleId] = useState(null);
   const [expandedLesson, setExpandedLesson] = useState(false);
   const [expandedItems, setExpandedItems] = useState({});
   const [duration, setDuration] = useState("");
   const [userProgress, setUserProgress] = useState(null);
-  const [videoDuration, setVideoDuration] = useState({});
+  const [videoDurations, setVideoDurations] = useState({});
+  const [videoDuration, setVideoDuration] = useState(0);
 
-  const handlePreloadDuration = (lessonId, duration) => {
-    setVideoDuration((prev) => ({
-      ...prev,
-      [lessonId]: duration,
-    }));
+  const location = useLocation();
+  const Coursedurationduration = Number(location.state?.duration);
+
+  const formatDuration = (input) => {
+    const totalSeconds = Number(input);
+    if (!Number.isFinite(totalSeconds)) return "N/A";
+
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const parts = [];
+
+    if (hours > 0) parts.push(`${hours}h`);
+    if (minutes > 0 || hours > 0) parts.push(`${minutes}m`);
+    parts.push(`${seconds}s`);
+
+    return parts.join(" ");
   };
-
-  const handleDuration = (duration) => {
-    if (selectedLesson?.lessonId) {
-      setVideoDuration((prev) => ({
-        ...prev,
-        [selectedLesson.lessonId]: duration,
-      }));
-    }
-  };
-
-  // console.log(videoDuration);
 
   const formatVideoDuration = (milliseconds) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
@@ -70,6 +156,36 @@ const CourseDetails = () => {
     }
   };
 
+  const getModuleTotalDuration = (module) => {
+    if (!module?.lessons) return 0;
+    const totalSeconds = module.lessons.reduce((sum, lesson) => {
+      const duration = videoDurations[lesson._id] || 0;
+      return sum + duration;
+    }, 0);
+    return totalSeconds;
+  };
+
+  const handlePreloadDuration = (lessonId, duration) => {
+    setVideoDurations((prev) => ({
+      ...prev,
+      [lessonId]: duration,
+    }));
+  };
+
+  const hasStartedCourse = (moduleId) => {
+    if (!userProgress?.modules?.length) return false;
+
+    const moduleProgress = userProgress.modules.find(
+      (mod) => String(mod.moduleId) === String(moduleId)
+    );
+
+    if (!moduleProgress?.lessons?.length) return false;
+
+    return moduleProgress.lessons.some(
+      (lesson) => lesson.secondsWatched > 0 || lesson.completed
+    );
+  };
+
   const [selectedLesson, setSelectedLesson] = useState({
     index: "",
     video_url: "",
@@ -79,7 +195,87 @@ const CourseDetails = () => {
     lession_summary: "",
     moduleId: "",
     lessonId: "",
+    mux_playback_id: "",
   });
+
+  /////////// ******************** lessons Progress send
+  /////////// ******************** lessons Progress send
+
+  // const handleProgress = (state) => {
+  //   const { playedSeconds } = state;
+  //   const percentage = Math.floor((playedSeconds / duration) * 100);
+  //   saveProgress(percentage, playedSeconds, videoDuration);
+  // };
+
+  const lastSentRef = useRef(0);
+
+  const handleProgress = (current, totalDuration) => {
+    const percentage = Math.floor((current / totalDuration) * 100);
+
+    if (
+      percentage !== lastSentRef.current &&
+      (percentage % 1 === 0 || percentage === 100)
+    ) {
+      lastSentRef.current = percentage;
+      console.log(`Saving progress: ${percentage}%`);
+
+      saveProgress(percentage, current, totalDuration).then(() => {
+        LessonsProgress(); // ⏳ Optional, ensures backend immediately reflects update
+      });
+    }
+  };
+
+  const updateProgressLocally = (moduleId, lessonId, newProgress) => {
+    setUserProgress((prev) => {
+      if (!prev?.modules) return prev;
+
+      const updatedModules = prev.modules.map((mod) => {
+        if (mod._id !== moduleId) return mod;
+
+        const updatedLessons = mod.lessons.map((lesson) => {
+          const id =
+            typeof lesson.lessonId === "object"
+              ? lesson.lessonId._id
+              : lesson.lessonId;
+
+          if (id !== lessonId) return lesson;
+
+          return {
+            ...lesson,
+            ...newProgress,
+          };
+        });
+
+        return {
+          ...mod,
+          lessons: updatedLessons,
+        };
+      });
+
+      return {
+        ...prev,
+        modules: updatedModules,
+      };
+    });
+  };
+  const { saveProgress } = useLessonProgress(
+    CourseID,
+    selectedLesson,
+    updateProgressLocally
+  );
+
+  const getLessonProgress = (lessonId, modules) => {
+    if (!lessonId || !modules?.length) return null;
+
+    for (const mod of modules) {
+      const lesson = mod.lessons?.find((l) => {
+        const id = typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
+        return id === lessonId;
+      });
+      if (lesson) return lesson;
+    }
+    return null;
+  };
 
   const LessonsProgress = async () => {
     try {
@@ -134,6 +330,7 @@ const CourseDetails = () => {
         setSelectedLesson({
           index: firstLesson?.index || 1,
           video_url: firstLesson.video_url,
+          mux_playback_id: firstLesson.mux_playback_id,
           title: firstLesson.title,
           estimated_time: firstLesson.estimated_time,
           current_lesson: 1,
@@ -164,10 +361,10 @@ const CourseDetails = () => {
   };
 
   const handlePrevLesson = () => {
-    if (!selectedModule) return; // guard
+    if (!selectedModule) return;
     if (selectedLesson?.index > 1) {
-      const newIndex = selectedLesson.index - 1; // 1‑based → 1‑based
-      const lessonObj = selectedModule.lessons[newIndex - 1]; // 0‑based array
+      const newIndex = selectedLesson.index - 1;
+      const lessonObj = selectedModule.lessons[newIndex - 1];
       setSelectedLesson({ ...lessonObj, index: newIndex });
     }
   };
@@ -179,26 +376,6 @@ const CourseDetails = () => {
       const lessonObj = selectedModule.lessons[newIndex - 1];
       setSelectedLesson({ ...lessonObj, index: newIndex });
     }
-  };
-
-  const handleProgress = (state) => {
-    const { playedSeconds } = state;
-    const percentage = Math.floor((playedSeconds / duration) * 100);
-    saveProgress(percentage, playedSeconds, videoDuration);
-  };
-
-  const { saveProgress } = useLessonProgress(CourseID, selectedLesson);
-  const getLessonProgress = (lessonId, modules) => {
-    if (!lessonId || !modules?.length) return null;
-
-    for (const mod of modules) {
-      const lesson = mod.lessons?.find((l) => {
-        const id = typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
-        return id === lessonId;
-      });
-      if (lesson) return lesson;
-    }
-    return null;
   };
 
   return (
@@ -213,12 +390,9 @@ const CourseDetails = () => {
             <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black max-w-[550px] line-clamp-1">
               {CourseDetail?.title}
             </h1>
-            <p
-              className="lg:text-[15px] text-[13px] font-[500] black max-w-[500px] line-clamp-2 mb-2"
-              dangerouslySetInnerHTML={{
-                __html: CourseDetail?.content,
-              }}
-            />
+            <p className="lg:text-[15px] text-[13px] font-[500] black max-w-[500px] line-clamp-2 mt-2">
+              {CourseDetail?.preview_text}
+            </p>
           </div>
           {/*  */}
           <div
@@ -244,7 +418,9 @@ const CourseDetails = () => {
                       Duration
                     </h1>
                     <p className="white text-[14px] font-[700]">
-                      {CourseDetail?.estimated_time}
+                      {Number.isFinite(Coursedurationduration)
+                        ? formatDuration(Coursedurationduration)
+                        : "Loading..."}{" "}
                     </p>
                   </>
                 )}
@@ -284,16 +460,39 @@ const CourseDetails = () => {
         {/* Vedio Player */}
         <div className="bg_white rounded-[8px] col-span-12 md:col-span-12 lg:col-span-8 p-4">
           <div className="video-wrapper">
-            <ReactPlayer
+            {/* <ReactPlayer
               url={selectedLesson?.video_url}
+              onProgress={handleProgress}
+              onDuration={handleDuration}
+              playing={false}
               controls={true}
               width="100%"
               height="100%"
-              playing={false}
-              onProgress={handleProgress}
-              // onDuration={setVideoDuration}
-              onDuration={handleDuration}
-            />
+            /> */}
+            <div className="video-wrapper">
+              {/* <PlyrPlayer
+               src={selectedLesson.video_url}
+               onProgress={(current, duration) => {
+                 const pct = Math.floor((current / duration) * 100);
+                 console.log("Current progress:", pct + "%");
+                 handleProgress(current, duration);
+               }}
+             /> */}
+              <PlyrPlayer
+                src={selectedLesson.video_url}
+                onProgress={(current, duration) => {
+                  const pct = Math.floor((current / duration) * 100);
+                  console.log("Progress:", pct + "%");
+                  handleProgress(current, duration);
+                }}
+              />
+              {/* {selectedLesson?.video_url ? (
+              ) : (
+                <div className="text-red-500">
+                  No video URL for this lesson.
+                </div>
+              )} */}
+            </div>
           </div>
 
           {/*  */}
@@ -339,9 +538,8 @@ const CourseDetails = () => {
               <p className="flex gap-1 text-[14px] font-[500] gray">
                 <img src={Timer} alt="Timer" className=" my-auto" />{" "}
                 <span className="my-auto pr-[12px] border-r-[2px] border-[#E8E8E8]">
-                  {/* {formatVideoDuration(videoDuration * 1000)} */}
                   {formatVideoDuration(
-                    (videoDuration[selectedLesson.lessonId] || 0) * 1000
+                    (videoDurations[selectedLesson.lessonId] || 0) * 1000
                   )}
                 </span>
               </p>
@@ -421,6 +619,8 @@ const CourseDetails = () => {
                           (progress.secondsWatched / progress.duration) * 100
                         )
                       : 0;
+                    console.log("This is progress---->>>>", percentage);
+
                     return (
                       <div>
                         <div
@@ -446,6 +646,7 @@ const CourseDetails = () => {
                           <div className="my-auto  w-[100px] h-[60px] lg:w-[130px] lg:h-[80px]">
                             <img
                               src={getYouTubeThumbnail(items?.video_url)}
+                              // alt={items?.title}
                               className="w-full h-full object-cover my-auto rounded-[8px]"
                             />{" "}
                           </div>
@@ -460,9 +661,8 @@ const CourseDetails = () => {
                                 className=" my-auto"
                               />{" "}
                               <span className="my-auto">
-                                {/* {formatVideoDuration(videoDuration * 1000)} */}
                                 {formatVideoDuration(
-                                  (videoDuration[items._id] || 0) * 1000
+                                  (videoDurations[items._id] || 0) * 1000
                                 )}
                               </span>
                             </p>
@@ -559,7 +759,9 @@ const CourseDetails = () => {
                               />{" "}
                               <span className="my-auto">
                                 {" "}
-                                {items?.estimated_time}
+                                {formatVideoDuration(
+                                  getModuleTotalDuration(items) * 1000
+                                )}
                               </span>
                             </p>
                           </div>
@@ -582,21 +784,27 @@ const CourseDetails = () => {
                             onClick={() => {
                               setSelectedModule(items);
                               setSelectedLessonIndex(index + 1);
-                              setSelectedModuleId(items?._id ?? index);
+
+                              if (items?.lessons?.length > 0) {
+                                const firstLesson = items.lessons[0];
+                                setSelectedLesson({
+                                  index: 1,
+                                  video_url: firstLesson.video_url,
+                                  mux_playback_id: firstLesson.mux_playback_id,
+                                  title: firstLesson.title,
+                                  estimated_time: firstLesson.estimated_time,
+                                  current_lesson: 1,
+                                  lession_summary: firstLesson.lession_summary,
+                                  moduleId: firstLesson._id,
+                                  lessonId: firstLesson._id,
+                                });
+                              }
                             }}
-                            disabled={selectedModule?.title === items?.title}
-                            className={`flex justify-center gap-1 w-full py-2 px-5 rounded-[8px] text-[14px] font-[700]
-                       ${
-                         selectedModule?.title === items?.title
-                           ? "bg-white black border border-[#E8E8E8] cursor-not-allowed"
-                           : "bg-black text-white"
-                       }`}
+                            className="flex justify-center gap-1 w-full py-2 px-5 rounded-[8px] text-[14px] font-[700] bg-black text-white hover:shadow-md transition duration-200 cursor-pointer"
                           >
-                            {!selectedModule?.title === items?.title && (
-                              <img src={Play} alt="Play" className="my-auto" />
-                            )}
+                            <img src={Play} alt="Play" className="my-auto" />
                             <span className="my-auto">
-                              {selectedModule?.title === items?.title
+                              {hasStartedCourse(items._id)
                                 ? "Continue"
                                 : "Start"}
                             </span>
@@ -616,19 +824,22 @@ const CourseDetails = () => {
         </div>
       </div>
       {/* This container Pre calculate All video list durations */}
+
       <div style={{ display: "none" }}>
-        {selectedModule?.lessons?.map((lesson) => (
-          <ReactPlayer
-            key={lesson._id}
-            url={lesson.video_url}
-            onDuration={(duration) =>
-              handlePreloadDuration(lesson._id, duration)
-            }
-          />
-        ))}
+        {CourseDetail?.modules
+          ?.flatMap((mod) => mod.lessons || [])
+          .map((lesson) => (
+            <ReactPlayer
+              key={lesson._id}
+              url={lesson.video_url}
+              onDuration={(duration) =>
+                handlePreloadDuration(lesson._id, duration)
+              }
+            />
+          ))}
       </div>
     </div>
   );
 };
 
-export default CourseDetails;
+export default BackUpCourseDetails;

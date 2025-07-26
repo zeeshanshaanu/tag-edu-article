@@ -3,7 +3,8 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import ReactPlayer from "react-player";
 import { useSelector } from "react-redux";
-
+import Plyr from "plyr";
+import "plyr/dist/plyr.css";
 /////////////////////////   *****************   ///////////////////////
 import {
   TimerBlack,
@@ -16,9 +17,57 @@ import { BlackLeftArrow, BlackRightArrow } from "../../assets/svgs/index";
 import VedioListImg from "../../assets/Images/VedioListImg.png";
 import { useLessonProgress } from "../../hooks/userLessonProgress";
 import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
+import { useLocation } from "react-router-dom";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
+
+const PlyrPlayer = ({ src, onProgress }) => {
+  const playerRef = useRef(null);
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    if (!src || !wrapperRef.current) return;
+
+    const match = src.match(
+      /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
+    const videoId = match?.[1];
+
+    if (!videoId) return;
+
+    const el = document.createElement("div");
+    el.setAttribute("data-plyr-provider", "youtube");
+    el.setAttribute("data-plyr-embed-id", videoId);
+
+    // Clear old player (React-safe)
+    wrapperRef.current.innerHTML = "";
+    wrapperRef.current.appendChild(el);
+
+    playerRef.current = new Plyr(el, {
+      controls: [
+        "play",
+        "progress",
+        "current-time",
+        "mute",
+        "volume",
+        "fullscreen",
+      ],
+    });
+
+    playerRef.current.on("timeupdate", () => {
+      const current = playerRef.current.currentTime;
+      const duration = playerRef.current.duration;
+      onProgress?.(current, duration);
+    });
+
+    return () => {
+      playerRef.current?.destroy();
+    };
+  }, [src]);
+
+  return <div ref={wrapperRef} className="w-full rounded-lg" />;
+};
 
 const CourseDetails = () => {
   const { id } = useParams();
@@ -36,6 +85,26 @@ const CourseDetails = () => {
   const [videoDurations, setVideoDurations] = useState({});
   const [videoDuration, setVideoDuration] = useState(0);
 
+  const location = useLocation();
+  const Coursedurationduration = Number(location.state?.duration);
+
+  const formatDuration = (input) => {
+    const totalSeconds = Number(input);
+    if (!Number.isFinite(totalSeconds)) return "N/A";
+
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const parts = [];
+
+    if (hours > 0) parts.push(`${hours}h`);
+    if (minutes > 0 || hours > 0) parts.push(`${minutes}m`);
+    parts.push(`${seconds}s`);
+
+    return parts.join(" ");
+  };
+
   const formatVideoDuration = (milliseconds) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const hours = Math.floor(totalSeconds / 3600);
@@ -51,11 +120,34 @@ const CourseDetails = () => {
     }
   };
 
+  const getModuleTotalDuration = (module) => {
+    if (!module?.lessons) return 0;
+    const totalSeconds = module.lessons.reduce((sum, lesson) => {
+      const duration = videoDurations[lesson._id] || 0;
+      return sum + duration;
+    }, 0);
+    return totalSeconds;
+  };
+
   const handlePreloadDuration = (lessonId, duration) => {
     setVideoDurations((prev) => ({
       ...prev,
       [lessonId]: duration,
     }));
+  };
+
+  const hasStartedCourse = (moduleId) => {
+    if (!userProgress?.modules?.length) return false;
+
+    const moduleProgress = userProgress.modules.find(
+      (mod) => String(mod.moduleId) === String(moduleId)
+    );
+
+    if (!moduleProgress?.lessons?.length) return false;
+
+    return moduleProgress.lessons.some(
+      (lesson) => lesson.secondsWatched > 0 || lesson.completed
+    );
   };
 
   const handleDuration = (duration) => {
@@ -77,6 +169,7 @@ const CourseDetails = () => {
     lession_summary: "",
     moduleId: "",
     lessonId: "",
+    mux_playback_id: "",
   });
 
   const LessonsProgress = async () => {
@@ -132,6 +225,7 @@ const CourseDetails = () => {
         setSelectedLesson({
           index: firstLesson?.index || 1,
           video_url: firstLesson.video_url,
+          mux_playback_id: firstLesson.mux_playback_id,
           title: firstLesson.title,
           estimated_time: firstLesson.estimated_time,
           current_lesson: 1,
@@ -211,12 +305,9 @@ const CourseDetails = () => {
             <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black max-w-[550px] line-clamp-1">
               {CourseDetail?.title}
             </h1>
-            <p
-              className="lg:text-[15px] text-[13px] font-[500] black max-w-[500px] line-clamp-2 mb-2"
-              dangerouslySetInnerHTML={{
-                __html: CourseDetail?.content,
-              }}
-            />
+            <p className="lg:text-[15px] text-[13px] font-[500] black max-w-[500px] line-clamp-2 mt-2">
+              {CourseDetail?.preview_text}
+            </p>
           </div>
           {/*  */}
           <div
@@ -242,7 +333,9 @@ const CourseDetails = () => {
                       Duration
                     </h1>
                     <p className="white text-[14px] font-[700]">
-                      {CourseDetail?.estimated_time}
+                      {Number.isFinite(Coursedurationduration)
+                        ? formatDuration(Coursedurationduration)
+                        : "Loading..."}{" "}
                     </p>
                   </>
                 )}
@@ -284,13 +377,12 @@ const CourseDetails = () => {
           <div className="video-wrapper">
             <ReactPlayer
               url={selectedLesson?.video_url}
+              onProgress={handleProgress}
+              onDuration={handleDuration}
+              playing={false}
               controls={true}
               width="100%"
               height="100%"
-              playing={false}
-              onProgress={handleProgress}
-              // onDuration={setVideoDuration}
-              onDuration={handleDuration}
             />
           </div>
 
@@ -556,7 +648,9 @@ const CourseDetails = () => {
                               />{" "}
                               <span className="my-auto">
                                 {" "}
-                                {items?.estimated_time}
+                                {formatVideoDuration(
+                                  getModuleTotalDuration(items) * 1000
+                                )}
                               </span>
                             </p>
                           </div>
@@ -579,20 +673,27 @@ const CourseDetails = () => {
                             onClick={() => {
                               setSelectedModule(items);
                               setSelectedLessonIndex(index + 1);
+
+                              if (items?.lessons?.length > 0) {
+                                const firstLesson = items.lessons[0];
+                                setSelectedLesson({
+                                  index: 1,
+                                  video_url: firstLesson.video_url,
+                                  mux_playback_id: firstLesson.mux_playback_id,
+                                  title: firstLesson.title,
+                                  estimated_time: firstLesson.estimated_time,
+                                  current_lesson: 1,
+                                  lession_summary: firstLesson.lession_summary,
+                                  moduleId: firstLesson._id,
+                                  lessonId: firstLesson._id,
+                                });
+                              }
                             }}
-                            disabled={selectedModule?.title === items?.title}
-                            className={`flex justify-center gap-1 w-full py-2 px-5 rounded-[8px] text-[14px] font-[700]
-                       ${
-                         selectedModule?.title === items?.title
-                           ? "bg-white black border border-[#E8E8E8] cursor-not-allowed"
-                           : "bg-black text-white"
-                       }`}
+                            className="flex justify-center gap-1 w-full py-2 px-5 rounded-[8px] text-[14px] font-[700] bg-black text-white hover:shadow-md transition duration-200 cursor-pointer"
                           >
-                            {!selectedModule?.title === items?.title && (
-                              <img src={Play} alt="Play" className="my-auto" />
-                            )}
+                            <img src={Play} alt="Play" className="my-auto" />
                             <span className="my-auto">
-                              {selectedModule?.title === items?.title
+                              {hasStartedCourse(items._id)
                                 ? "Continue"
                                 : "Start"}
                             </span>
@@ -612,16 +713,19 @@ const CourseDetails = () => {
         </div>
       </div>
       {/* This container Pre calculate All video list durations */}
+
       <div style={{ display: "none" }}>
-        {selectedModule?.lessons?.map((lesson) => (
-          <ReactPlayer
-            key={lesson._id}
-            url={lesson.video_url}
-            onDuration={(duration) =>
-              handlePreloadDuration(lesson._id, duration)
-            }
-          />
-        ))}
+        {CourseDetail?.modules
+          ?.flatMap((mod) => mod.lessons || [])
+          .map((lesson) => (
+            <ReactPlayer
+              key={lesson._id}
+              url={lesson.video_url}
+              onDuration={(duration) =>
+                handlePreloadDuration(lesson._id, duration)
+              }
+            />
+          ))}
       </div>
     </div>
   );

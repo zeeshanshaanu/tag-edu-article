@@ -84,9 +84,12 @@ const ArticleDetails = () => {
       ) : (
         <div className="">
           <div className="my-4 HeaderGreenBGimage p-[20px] rounded-[12px]">
-            <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black max-w-[550px] line-clamp-1">
+            <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black line-clamp-3">
               {ArticleDetail?.title}
             </h1>
+            <p className="lg:text-[15px] text-[13px] font-[500] black max-w-[500px] line-clamp-2 mt-2">
+              {ArticleDetail?.preview_text}
+            </p>
           </div>
           {/*  */}
 
@@ -120,6 +123,7 @@ const ArticleDetails = () => {
                 {/*  */}
                 <div className="mt-[6px]">
                   <div
+                    className=""
                     dangerouslySetInnerHTML={{
                       __html: ArticleDetail?.content,
                     }}

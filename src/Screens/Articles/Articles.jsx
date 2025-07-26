@@ -27,15 +27,15 @@ import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
 const Articles = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  // Inside your component
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef();
   const [Status, setStatus] = useState("all");
   const [loading, setLoading] = useState(false);
   const [articlesData, setArticlesData] = useState([]);
   const AuthToken = useSelector((state) => state?.Auth);
   const token = AuthToken?.Authtoken;
   const loadingDelayRef = useRef(null);
-  console.log("Articles Token---->>>", token);
-
   // Pagination, Search and filtersPaging
   const [Search, setSearch] = useState("");
   const [totalCount, setTotalCount] = useState(0);
@@ -84,6 +84,47 @@ const Articles = () => {
       skip: (newPage - 1) * prev.limit,
     }));
   };
+
+  const [categories, setCategories] = useState([]);
+  const FetchArticlesCategory = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/api/article-category`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setCategories(response?.data?.data);
+    } catch (error) {
+      console.error("Error fetching articles:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    FetchArticlesCategory();
+  }, []);
+
+  const visibleCount = 4;
+  const visibleTabs = categories?.slice(0, visibleCount);
+  const dropdownTabs = categories?.slice(visibleCount);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+  const [expandedItems, setExpandedItems] = useState({});
+  const toggleExpand = (index) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
   return (
     <div className="p-3">
       {/* <HeaderTabs /> */}
@@ -98,7 +139,7 @@ const Articles = () => {
       </div>{" "}
       {/* Tabs and Search-input */}
       <div className="lg:flex justify-between mt-4">
-        <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
+        {/* <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
           <div
             className={`min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 ${
@@ -123,7 +164,7 @@ const Articles = () => {
               All
             </span>
           </div>
-          {/*  */}
+
           <div
             className={`min-w-[90px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 
@@ -145,7 +186,7 @@ const Articles = () => {
               Basics
             </span>
           </div>
-          {/*  */}
+
           <div
             className={`min-w-[120px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
               Status === "indicators" ? "bg_white font-[700]" : "bg_lightgray2"
@@ -166,7 +207,7 @@ const Articles = () => {
               Indicators
             </span>
           </div>
-          {/*  */}
+
           <div
             className={`min-w-[140px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
               Status === "fundamentals"
@@ -188,7 +229,7 @@ const Articles = () => {
               Fundamentals
             </span>
           </div>
-          {/*  */}
+
           <div
             className={`min-w-[130px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
               Status === "technicals" ? "bg_white font-[700]" : "bg_lightgray2"
@@ -208,7 +249,128 @@ const Articles = () => {
               Technicals
             </span>
           </div>
-        </div>
+        </div> */}
+
+        {categories?.length > 0 ? (
+          <div className="lg:flex justify-between relative">
+            {/* Tabs container (scrollable) */}
+            <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
+              {/* "All" tab */}
+              <div
+                className={`min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
+          hover:bg-[#F9F9F9] transition-colors duration-200 ${
+            Status === "all" ? "bg_white font-[700]" : "bg_lightgray2"
+          }`}
+                onClick={() => setStatus("all")}
+              >
+                <span className="my-auto">
+                  <img
+                    src={CirclesThreeColored}
+                    alt="All"
+                    className="w-[25px] h-[20px]"
+                  />
+                </span>
+                <span
+                  className={`text-[14px] my-auto ${
+                    Status === "all" ? "black" : "gray"
+                  }`}
+                >
+                  All
+                </span>
+              </div>
+
+              {/* First 4 visible tabs */}
+              {categories?.slice(0, 4).map((cat, index) => (
+                <div
+                  key={index}
+                  className={`w-fit cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
+            hover:bg-[#F9F9F9] transition-colors duration-200 ${
+              Status === cat?.category ? "bg_white font-[700]" : "bg_lightgray2"
+            }`}
+                  onClick={() => setStatus(cat?.category)}
+                >
+                  <img
+                    src={
+                      cat?.category === "basics"
+                        ? LightbulbFilament
+                        : cat?.category === "indicators"
+                        ? ChartLineUp
+                        : cat?.category === "fundamentals"
+                        ? StackSimple
+                        : GearSix
+                    }
+                    alt="Icon"
+                    className="w-[25px] h-[20px]"
+                  />
+                  <span
+                    className={`text-[14px] my-auto capitalize ${
+                      Status === cat?.category ? "black" : "gray"
+                    }`}
+                  >
+                    {cat?.category}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {categories?.length > 4 && (
+              <div ref={dropdownRef} className="relative ml-2">
+                {/* Dropdown button */}
+                <div
+                  className="w-fit mt-[2px] cursor-pointer flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] bg_lightgray2 hover:bg-[#F9F9F9] transition-colors duration-200"
+                  onClick={() => setShowDropdown((prev) => !prev)}
+                >
+                  <span className="text-[14px] my-auto gray">More</span>
+                  <svg
+                    className="w-4 h-4 my-auto"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+
+                {/* Dropdown content (conditionally rendered) */}
+                {showDropdown && (
+                  <div className="absolute z-50 flex flex-col top-full left-0 mt-2 bg-white rounded-lg shadow-md p-2 min-w-[160px] max-h-[250px] overflow-y-auto">
+                    {categories?.slice(4).map((cat, index) => (
+                      <div
+                        key={index}
+                        className={`cursor-pointer flex gap-2 items-center px-3 py-2 rounded-md hover:bg-[#f5f5f5] transition-colors duration-150 ${
+                          Status === cat?.category
+                            ? "bg_lightgray2 font-[700]"
+                            : ""
+                        }`}
+                        onClick={() => {
+                          setStatus(cat?.category);
+                          setShowDropdown(false); // close on selection
+                        }}
+                      >
+                        <img
+                          src={
+                            cat?.category === "basics"
+                              ? LightbulbFilament
+                              : cat?.category === "Indicators"
+                              ? ChartLineUp
+                              : cat?.category === "Fundamentals"
+                              ? StackSimple
+                              : GearSix
+                          }
+                          alt="Icon"
+                          className="w-[20px] h-[18px]"
+                        />
+                        <span className="text-[14px]">{cat?.category}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        ) : null}
+
         {/*  */}
 
         <div className="relative my-auto md:mt-2 lg:mt-0 w-full sm:w-[280px]">
@@ -243,7 +405,7 @@ const Articles = () => {
               articlesData?.map((items, index) => {
                 return (
                   <div
-                    onClick={() => navigate(`/ArticleDetails/${items?._id}`)}
+                    // onClick={() => navigate(`/ArticleDetails/${items?._id}`)}
                     key={index}
                     className="cursor-pointer hover:shadow-lg transition-shadow duration-200 rounded-[8px] border-[1px] border-[#E8E8E8]"
                   >
@@ -277,13 +439,37 @@ const Articles = () => {
                       <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px]">
                         {items?.title}{" "}
                       </h1>
+                      {/* <p className="mt-[6px] text-[14px] font-[500] gray line-clamp-2">
+                        {items?.preview_text}
+                      </p> */}
                       <div className="mt-[6px]">
-                        <div
-                          className={`text-[14px] font-[500] gray line-clamp-2`}
-                          dangerouslySetInnerHTML={{
-                            __html: items?.content,
-                          }}
-                        />
+                        <p
+                          className={`text-[14px] font-[500] gray ${
+                            expandedItems[index] ? "" : "line-clamp-2"
+                          }`}
+                        >
+                          {items?.preview_text}
+                        </p>
+
+                        {items?.preview_text?.length > 300 && (
+                          <button
+                            onClick={() => toggleExpand(index)}
+                            className="text-[14px] font-[700] gray mt-1 cursor-pointer hover:underline"
+                          >
+                            {expandedItems[index] ? "Show less" : "Read more"}
+                          </button>
+                        )}
+                      </div>
+                      {/* Button Always at Bottom */}
+                      <div className="mt-auto pt-4">
+                        <button
+                          onClick={() =>
+                            navigate(`/ArticleDetails/${items?._id}`)
+                          }
+                          className="flex justify-center gap-1 cursor-pointer bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700]"
+                        >
+                          <span className="my-auto">View Article</span>
+                        </button>
                       </div>
                     </div>
                   </div>

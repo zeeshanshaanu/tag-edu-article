@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { message } from "antd";
+import { message, Modal } from "antd";
 import { useSelector } from "react-redux";
 import { useRef } from "react";
 import dayjs from "dayjs";
@@ -41,6 +41,14 @@ const Webinars = () => {
   const currentPage = Math.floor(filtersPaging.skip / filtersPaging.limit) + 1;
   const loadingDelayRef = useRef(null);
   const [expandedItems, setExpandedItems] = useState({});
+  const [IsModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   const toggleExpand = (index) => {
     setExpandedItems((prev) => ({
@@ -115,8 +123,10 @@ const Webinars = () => {
         }
       );
 
-      console.log(response?.data);
-      messageApi.success(response?.data?.message);
+      // console.log(response?.data);
+      setTimeout(() => {
+        setIsModalOpen(true);
+      }, 500);
       FetchWebinars();
     } catch (error) {
       messageApi.error(error?.response?.data?.message);
@@ -320,12 +330,12 @@ const Webinars = () => {
                               href={items?.vedio_link}
                               target="_blank"
                               className="flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
-        w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
+                                              w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
                             >
                               <span className="my-auto">Join Now</span>
                             </a>
                           ) : (
-                            <button className="flex justify-center gap-1 bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700] border border-[#E8E8E8]">
+                            <button className="cursor-not-allowed flex justify-center gap-1 bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700] border border-[#E8E8E8]">
                               <span className="my-auto">Enrolled</span>
                             </button>
                           )}
@@ -352,6 +362,42 @@ const Webinars = () => {
             isLoading={loading}
           />
         )}
+      </div>
+      <div>
+        <Modal
+          footer={false}
+          centered
+          width={500}
+          height={300}
+          title={false}
+          open={IsModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <div className="">
+            <h2 className="lg:text-[28px] text-center text-[22px] font-semibold mb-[10px] w-[90%]">
+              Enrollment
+            </h2>
+            {/* desc */}
+            <div>
+              <p className="text-[16px] leading-6 font-medium text-center">
+                You have been enrolled in the upcoming live session.
+              </p>
+              <p className="text-[16px] leading-6 font-medium text-center">
+                We will send you reminder emails as the date approaches.
+              </p>
+            </div>
+
+            <div className="mt-5 w-full">
+              <button
+                onClick={() => handleCancel()}
+                className="w-full bg-[#CAFA5E] text-black font-semibold py-2 rounded-lg text-[18px] cursor-pointer"
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        </Modal>
       </div>
     </div>
   );

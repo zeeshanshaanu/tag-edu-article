@@ -24,12 +24,15 @@ import { MagnifyingGlassWhite } from "../../assets/svgs/index";
 import Pagination from "../../components/TablePagination/Pagination";
 import { useNavigate } from "react-router";
 import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
+import ReactPlayer from "react-player";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 
 const Courses = () => {
   const navigate = useNavigate();
+  const seenLessons = useRef(new Set()); // Put this at the top, outside render
+  const pendingDurations = useRef({});
   const [Status, setStatus] = useState("all");
   const [loading, setLoading] = useState(false);
   const [CoursesData, setCoursesData] = useState([]);
@@ -88,6 +91,51 @@ const Courses = () => {
       ...prev,
       [index]: !prev[index],
     }));
+  };
+
+  const [courseDurations, setCourseDurations] = useState({});
+
+  function formatDuration(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+  }
+
+  const handleLessonDuration = (courseId, lessonId, duration) => {
+    const lessonKey = `${courseId}_${lessonId}`;
+    if (seenLessons.current.has(lessonKey)) return;
+
+    seenLessons.current.add(lessonKey);
+
+    // Accumulate duration temporarily
+    if (!pendingDurations.current[courseId]) {
+      pendingDurations.current[courseId] = 0;
+    }
+    pendingDurations.current[courseId] += duration;
+
+    // Get lesson count
+    const course = CoursesData.find((c) => c._id === courseId);
+    const totalLessons = course?.modules?.reduce(
+      (acc, mod) => acc + (mod?.lessons?.length || 0),
+      0
+    );
+
+    // When all lessons for a course have reported duration
+    const seenCount = Array.from(seenLessons.current).filter((key) =>
+      key.startsWith(`${courseId}_`)
+    ).length;
+
+    if (seenCount === totalLessons) {
+      const totalDuration = pendingDurations.current[courseId]; // Get the final value
+
+      setCourseDurations((prev) => ({
+        ...prev,
+        [courseId]: totalDuration,
+      }));
+
+      // ✅ Use the same value you just computed
+      localStorage.setItem(courseId, totalDuration);
+    }
   };
 
   return (
@@ -152,54 +200,12 @@ const Courses = () => {
           </div>
           {/*  */}
           <div
-            className={` min-w-[120px] rounded-full lg:rounded-[8px] cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              Status === "indicators" ? "bg_white font-[700]" : "bg_lightgray2"
+            className={` min-w-[70px] rounded-full lg:rounded-[8px] cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+              Status === "free" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
-            onClick={() => setStatus("indicators")}
+            onClick={() => setStatus("free")}
           >
             {" "}
-            <img
-              src={Status === "all" ? ChartLineUp : ChartLineUp}
-              alt="MagnifyingGlassBlack"
-              className="w-[25px] h-[20px]"
-            />
-            <span
-              className={`text-[14px] my-auto ${
-                Status === "indicators" ? "black" : "gray"
-              }`}
-            >
-              Indicators
-            </span>
-          </div>
-          {/*  */}
-          <div
-            className={`min-w-[150px] rounded-full lg:rounded-[8px]  cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              Status === "fundamentals"
-                ? "bg_white font-[700]"
-                : "bg_lightgray2"
-            }`}
-            onClick={() => setStatus("fundamentals")}
-          >
-            <img
-              src={Status === "all" ? StackSimple : StackSimple}
-              alt="MagnifyingGlassBlack"
-              className="w-[25px] h-[20px]"
-            />
-            <span
-              className={`text-[14px] my-auto ${
-                Status === "fundamentals" ? "black" : "gray"
-              }`}
-            >
-              Fundamentals
-            </span>
-          </div>
-          {/*  */}
-          <div
-            className={`min-w-[120px] rounded-full lg:rounded-[8px]  cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              Status === "technicals" ? "bg_white font-[700]" : "bg_lightgray2"
-            }`}
-            onClick={() => setStatus("technicals")}
-          >
             <img
               src={Status === "all" ? GearSix : GearSix}
               alt="MagnifyingGlassBlack"
@@ -207,10 +213,10 @@ const Courses = () => {
             />
             <span
               className={`text-[14px] my-auto ${
-                Status === "technicals" ? "black" : "gray"
+                Status === "free" ? "black" : "gray"
               }`}
             >
-              Technicals
+              FREE
             </span>
           </div>
         </div>
@@ -295,15 +301,15 @@ const Courses = () => {
                       {/* Description with Tooltip */}
 
                       <div className="mt-[6px]">
-                        <div
-                          className={`text-[14px] font-[500] gray  ${
-                            expandedItems[index] ? "" : "line-clamp-3"
+                        <p
+                          className={`text-[14px] font-[500] gray ${
+                            expandedItems[index] ? "" : "line-clamp-2"
                           }`}
-                          dangerouslySetInnerHTML={{
-                            __html: items?.content,
-                          }}
-                        />
-                        {items?.content?.length > 290 && (
+                        >
+                          {items?.preview_text}
+                        </p>
+
+                        {items?.preview_text?.length > 300 && (
                           <button
                             onClick={() => toggleExpand(index)}
                             className="text-[14px] font-[700] gray mt-1 cursor-pointer hover:underline"
@@ -319,7 +325,13 @@ const Courses = () => {
                           <p className="flex gap-1 text-[14px] font-[500] gray">
                             <img src={Timer} alt="Timer" className="my-auto" />
                             <span className="my-auto">
-                              {items?.estimated_time}
+                              {/* {getCourseTotalDuration(items?.modules)} */}
+
+                              <p className="text-sm text-gray-600">
+                                {courseDurations[items._id] !== undefined
+                                  ? formatDuration(courseDurations[items._id])
+                                  : "Calculating..."}
+                              </p>
                             </span>
                           </p>
                         </div>
@@ -337,7 +349,11 @@ const Courses = () => {
                       <div className="mt-auto pt-4">
                         <button
                           onClick={() =>
-                            navigate(`/CourseDetails/${items?._id}`)
+                            navigate(`/CourseDetails/${items?._id}`, {
+                              state: {
+                                duration: courseDurations[items._id],
+                              },
+                            })
                           }
                           className="flex justify-center gap-1 cursor-pointer bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700]"
                         >
@@ -373,6 +389,23 @@ const Courses = () => {
             onPageChange={handlePageChange}
             isLoading={loading}
           />
+        )}
+      </div>
+      <div style={{ display: "none" }}>
+        {CoursesData?.flatMap((course) =>
+          course?.modules?.flatMap((mod) =>
+            (mod?.lessons || []).map((lesson) => (
+              <ReactPlayer
+                key={lesson._id}
+                url={lesson.video_url}
+                playing={false}
+                controls={false}
+                onDuration={(duration) =>
+                  handleLessonDuration(course._id, lesson._id, duration)
+                }
+              />
+            ))
+          )
         )}
       </div>
     </div>

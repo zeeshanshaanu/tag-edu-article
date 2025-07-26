@@ -51,31 +51,6 @@ const HeaderTabs = () => {
       {/* Web Tabs - Hidden on small screens */}
       <div className="bg_white rounded-[8px] p-[2px] sm:flex justify-between gap-[2px] w-full hidden sm:flex">
         <div className="mt-3 lg:mt-0 md:mt-0 flex gap-[2px]">
-          {/* Articles Tab */}
-          <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
-              HeaderTabValue === "Articles" && "bg_lightgreen font-[700]"
-            }`}
-            onClick={() => {
-              dispatch(HeaderTabsFtn("Articles"));
-              navigate("/");
-            }}
-          >
-            <img
-              src={
-                HeaderTabValue === "Articles" ? BookOpenBlackIcon : BookOpenGray
-              }
-              alt="Articles"
-            />
-            <span
-              className={`text-[14px] my-auto ${
-                HeaderTabValue === "Articles" ? "black" : "gray"
-              }`}
-            >
-              Articles
-            </span>
-          </div>
-
           {/* Courses Tab */}
           <div
             className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
@@ -83,7 +58,7 @@ const HeaderTabs = () => {
             }`}
             onClick={() => {
               dispatch(HeaderTabsFtn("Courses"));
-              navigate("/Courses");
+              navigate("/");
             }}
           >
             <img
@@ -103,30 +78,55 @@ const HeaderTabs = () => {
             </span>
           </div>
 
-          {/* Webinars Tab */}
+          {/* Articles Tab */}
           <div
             className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
-              HeaderTabValue === "Webinars" && "bg_lightgreen font-[700]"
+              HeaderTabValue === "Articles" && "bg_lightgreen font-[700]"
             }`}
             onClick={() => {
-              dispatch(HeaderTabsFtn("Webinars"));
-              navigate("/Webinars");
+              dispatch(HeaderTabsFtn("Articles"));
+              navigate("/Articles");
             }}
           >
             <img
               src={
-                HeaderTabValue === "Webinars"
-                  ? MonitorPlayBlack
-                  : WebinarPlayGray
+                HeaderTabValue === "Articles" ? BookOpenBlackIcon : BookOpenGray
               }
-              alt="Webinars"
+              alt="Articles"
             />
             <span
               className={`text-[14px] my-auto ${
-                HeaderTabValue === "Webinars" ? "black" : "gray"
+                HeaderTabValue === "Articles" ? "black" : "gray"
               }`}
             >
-              Webinars
+              Articles
+            </span>
+          </div>
+
+          {/* LiveSessions Tab */}
+          <div
+            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
+              HeaderTabValue === "LiveSessions" && "bg_lightgreen font-[700]"
+            }`}
+            onClick={() => {
+              dispatch(HeaderTabsFtn("LiveSessions"));
+              navigate("/LiveSessions");
+            }}
+          >
+            <img
+              src={
+                HeaderTabValue === "LiveSessions"
+                  ? MonitorPlayBlack
+                  : WebinarPlayGray
+              }
+              alt="LiveSessions"
+            />
+            <span
+              className={`text-[14px] my-auto ${
+                HeaderTabValue === "LiveSessions" ? "black" : "gray"
+              }`}
+            >
+              Live Sessions
             </span>
           </div>
         </div>
