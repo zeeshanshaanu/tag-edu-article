@@ -9,9 +9,6 @@ import {
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { HeaderTabsFtn } from "../../Store/HeaderAndBreadCrumbSlice/HeadAndBcSlice";
-import { EnglandFlag } from "../../assets/svgs/index";
-import { Dropdown } from "antd";
-import { DownOutlined } from "@ant-design/icons";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
@@ -23,7 +20,6 @@ const MobileHeaderTabs = () => {
   const HeaderTabValue = useSelector(
     (state) => state.HeadAndBreadCrumb?.HeaderTabs
   );
-  // console.log(HeaderTabValue);
 
   const navigate = useNavigate();
 
@@ -33,11 +29,36 @@ const MobileHeaderTabs = () => {
         <div className="flex gap-[2px]">
           <div
             className={`cursor-pointer inline-flex items-center gap-1 rounded-[8px] px-[10px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
+              HeaderTabValue === "Courses" && "bg_lightgreen font-[700]"
+            }`}
+            onClick={() => {
+              dispatch(HeaderTabsFtn("Courses"));
+              navigate("/");
+            }}
+          >
+            <img
+              src={
+                HeaderTabValue === "Courses"
+                  ? GraduationCapBlack
+                  : GraduationCapGray
+              }
+              alt="Courses Icon"
+            />
+            <span
+              className={`text-[14px] ${
+                HeaderTabValue === "Courses" ? "black" : "gray"
+              }`}
+            >
+              {HeaderTabValue === "Courses" && "Courses"}
+            </span>
+          </div>
+          <div
+            className={`cursor-pointer inline-flex items-center gap-1 rounded-[8px] px-[10px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
               HeaderTabValue === "Articles" && "bg_lightgreen font-[700]"
             }`}
             onClick={() => {
               dispatch(HeaderTabsFtn("Articles"));
-              navigate("/");
+              navigate("/Articles");
             }}
           >
             <img
@@ -57,53 +78,27 @@ const MobileHeaderTabs = () => {
 
           <div
             className={`cursor-pointer inline-flex items-center gap-1 rounded-[8px] px-[10px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
-              HeaderTabValue === "Courses" && "bg_lightgreen font-[700]"
+              HeaderTabValue === "LiveSessions" && "bg_lightgreen font-[700]"
             }`}
             onClick={() => {
-              dispatch(HeaderTabsFtn("Courses"));
-              navigate("/Courses");
+              dispatch(HeaderTabsFtn("LiveSessions"));
+              navigate("/LiveSessions");
             }}
           >
             <img
               src={
-                HeaderTabValue === "Courses"
-                  ? GraduationCapBlack
-                  : GraduationCapGray
-              }
-              alt="Courses Icon"
-            />
-            <span
-              className={`text-[14px] ${
-                HeaderTabValue === "Courses" ? "black" : "gray"
-              }`}
-            >
-              {HeaderTabValue === "Courses" && "Courses"}
-            </span>
-          </div>
-
-          <div
-            className={`cursor-pointer inline-flex items-center gap-1 rounded-[8px] px-[10px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
-              HeaderTabValue === "Webinars" && "bg_lightgreen font-[700]"
-            }`}
-            onClick={() => {
-              dispatch(HeaderTabsFtn("Webinars"));
-              navigate("/Webinars");
-            }}
-          >
-            <img
-              src={
-                HeaderTabValue === "Webinars"
+                HeaderTabValue === "LiveSessions"
                   ? MonitorPlayBlack
                   : WebinarPlayGray
               }
-              alt="Webinars Icon"
+              alt="LiveSessions Icon"
             />
             <span
               className={`text-[14px] ${
-                HeaderTabValue === "Webinars" ? "black" : "gray"
+                HeaderTabValue === "LiveSessions" ? "black" : "gray"
               }`}
             >
-              {HeaderTabValue === "Webinars" && "Webinars"}
+              {HeaderTabValue === "LiveSessions" && "Live Sessions"}
             </span>
           </div>
         </div>
