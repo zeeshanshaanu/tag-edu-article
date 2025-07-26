@@ -35,7 +35,6 @@ const CourseDetails = () => {
   const [expandedItems, setExpandedItems] = useState({});
   const [userProgress, setUserProgress] = useState(null);
   const [videoDurations, setVideoDurations] = useState({});
-  const [videoDuration, setVideoDuration] = useState(0);
   const [selectedLesson, setSelectedLesson] = useState({
     index: "",
     video_url: "",
@@ -45,7 +44,6 @@ const CourseDetails = () => {
     lession_summary: "",
     moduleId: "",
     lessonId: "",
-    mux_playback_id: "",
   });
   const location = useLocation();
   const Coursedurationduration = Number(location.state?.duration);
@@ -56,7 +54,7 @@ const CourseDetails = () => {
 
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
+    const seconds = Math.round(totalSeconds % 60); // ✅ Round to nearest second
 
     const parts = [];
 
@@ -111,15 +109,21 @@ const CourseDetails = () => {
       (lesson) => lesson.secondsWatched > 0 || lesson.completed
     );
   };
-
   const handleDuration = (duration) => {
     if (selectedLesson?.lessonId) {
       setVideoDurations((prev) => ({
         ...prev,
         [selectedLesson.lessonId]: duration,
       }));
-      setVideoDuration(duration);
     }
+  };
+
+  const handleProgress = ({ playedSeconds }) => {
+    const totalDuration = videoDurations[selectedLesson?.lessonId] || 1;
+
+    const percentage = Math.floor((playedSeconds / totalDuration) * 100);
+
+    saveProgress(percentage, playedSeconds, totalDuration);
   };
 
   const LessonsProgress = async () => {
@@ -140,6 +144,22 @@ const CourseDetails = () => {
     const interval = setInterval(LessonsProgress, 3000);
     return () => clearInterval(interval);
   }, []);
+
+  const { saveProgress } = useLessonProgress(CourseID, selectedLesson);
+  // console.log("This is selected selectedLesson----->>>>", selectedLesson);
+
+  const getLessonProgress = (lessonId, modules) => {
+    if (!lessonId || !modules?.length) return null;
+
+    for (const mod of modules) {
+      const lesson = mod.lessons?.find((l) => {
+        const id = typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
+        return id === lessonId;
+      });
+      if (lesson) return lesson;
+    }
+    return null;
+  };
 
   const CourseDetailDataFtn = async () => {
     setLoading(true);
@@ -166,6 +186,7 @@ const CourseDetails = () => {
   useEffect(() => {
     if (!Loading && CourseDetail?.modules?.length > 0) {
       const firstModule = CourseDetail.modules[0];
+
       setSelectedModule(firstModule);
       setSelectedLessonIndex(1);
 
@@ -175,7 +196,6 @@ const CourseDetails = () => {
         setSelectedLesson({
           index: firstLesson?.index || 1,
           video_url: firstLesson.video_url,
-          mux_playback_id: firstLesson.mux_playback_id,
           title: firstLesson.title,
           estimated_time: firstLesson.estimated_time,
           current_lesson: 1,
@@ -187,28 +207,6 @@ const CourseDetails = () => {
       }
     }
   }, [CourseDetail, Loading]);
-
-  const handleProgress = ({ playedSeconds }) => {
-    const totalDuration = videoDuration || selectedLesson?.estimated_time || 1;
-    const percentage = Math.floor((playedSeconds / totalDuration) * 100);
-
-    saveProgress(percentage, playedSeconds, totalDuration);
-  };
-
-  const { saveProgress } = useLessonProgress(CourseID, selectedLesson);
-
-  const getLessonProgress = (lessonId, modules) => {
-    if (!lessonId || !modules?.length) return null;
-
-    for (const mod of modules) {
-      const lesson = mod.lessons?.find((l) => {
-        const id = typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
-        return id === lessonId;
-      });
-      if (lesson) return lesson;
-    }
-    return null;
-  };
 
   const ShowMoreText = (index) => {
     setExpandedItems((prev) => ({
@@ -631,7 +629,6 @@ const CourseDetails = () => {
                                 setSelectedLesson({
                                   index: 1,
                                   video_url: firstLesson.video_url,
-                                  mux_playback_id: firstLesson.mux_playback_id,
                                   title: firstLesson.title,
                                   estimated_time: firstLesson.estimated_time,
                                   current_lesson: 1,

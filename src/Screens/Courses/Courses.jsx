@@ -94,11 +94,17 @@ const Courses = () => {
   };
 
   const [courseDurations, setCourseDurations] = useState({});
-
   function formatDuration(seconds) {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
-    return h > 0 ? `${h}h ${m}m` : `${m}m`;
+    const s = Math.floor(seconds % 60);
+
+    const parts = [];
+    if (h > 0) parts.push(`${h}h`);
+    if (m > 0) parts.push(`${m}m`);
+    if (h === 0 && m === 0) parts.push(`${s}s`); // only show seconds if very short
+
+    return parts.join(" ");
   }
 
   const handleLessonDuration = (courseId, lessonId, duration) => {
