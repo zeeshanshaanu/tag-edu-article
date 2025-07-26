@@ -230,7 +230,12 @@ const CourseDetails = () => {
     if (selectedLesson?.index > 1) {
       const newIndex = selectedLesson.index - 1;
       const lessonObj = selectedModule.lessons[newIndex - 1];
-      setSelectedLesson({ ...lessonObj, index: newIndex });
+      setSelectedLesson({
+        ...lessonObj,
+        index: newIndex,
+        lessonId: lessonObj?._id,
+        moduleId: selectedModule?._id,
+      });
     }
   };
 
@@ -239,7 +244,12 @@ const CourseDetails = () => {
     if (selectedLesson?.index < selectedModule.lessons.length) {
       const newIndex = selectedLesson.index + 1;
       const lessonObj = selectedModule.lessons[newIndex - 1];
-      setSelectedLesson({ ...lessonObj, index: newIndex });
+      setSelectedLesson({
+        ...lessonObj,
+        index: newIndex,
+        lessonId: lessonObj?._id,
+        moduleId: selectedModule?._id,
+      });
     }
   };
 
