@@ -34,6 +34,10 @@ const Articles = () => {
   const [loading, setLoading] = useState(false);
   const [articlesData, setArticlesData] = useState([]);
   const AuthToken = useSelector((state) => state?.Auth);
+  const Language = useSelector(
+    (state) => state?.HeadAndBreadCrumb?.selectedLanguage
+  );
+ 
   const token = AuthToken?.Authtoken;
   const loadingDelayRef = useRef(null);
   // Pagination, Search and filtersPaging
@@ -50,7 +54,8 @@ const Articles = () => {
 
       try {
         const response = await axios.get(
-          `/api/article?page=${currentPage}&limit=${filtersPaging.limit}&category=${Status}&search=${Search}`,
+          `/api/article?page=${currentPage}&limit=${filtersPaging.limit}&category=${Status}&search=${Search}&language=${Language}`,
+          // }&category=${Status}&search=${Search}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -76,7 +81,7 @@ const Articles = () => {
       // Cleanup in case component unmounts or re-renders quickly
       clearTimeout(loadingDelayRef.current);
     };
-  }, [currentPage, Search, Status, filtersPaging.limit, token]);
+  }, [currentPage, Search, Status, filtersPaging.limit, token, Language]);
 
   const handlePageChange = (newPage) => {
     setFiltersPaging((prev) => ({

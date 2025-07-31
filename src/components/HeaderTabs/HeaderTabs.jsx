@@ -8,43 +8,97 @@ import {
 } from "../../assets/svgs/Browse/index";
 import { useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
-import { HeaderTabsFtn } from "../../Store/HeaderAndBreadCrumbSlice/HeadAndBcSlice";
+import {
+  HeaderTabsFtn,
+  selectedLanguageFtn,
+} from "../../Store/HeaderAndBreadCrumbSlice/HeadAndBcSlice";
 import { EnglandFlag } from "../../assets/svgs/index";
 import { Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import MobileHeaderTabs from "./MobileHeaderTabs";
+import { useEffect, useState } from "react";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
-const items = [
-  {
-    key: "1",
-    label: (
-      <div className="flex gap-2 cursor-pointer">
-        <div className="my-auto">
-          <img
-            src={EnglandFlag}
-            alt="EnglandFlag"
-            className="w-[18px] h-[18px]"
-          />
-        </div>
-        <div className="my-auto">
-          <h1 className="gray font-[500] text-[14px]">EN</h1>
-        </div>
-      </div>
-    ),
-  },
-];
+// const items = [
+//   {
+//     key: "1",
+//     label: (
+//       <div className="flex gap-2 cursor-pointer">
+//         <div className="my-auto">
+//           <img
+//             src={EnglandFlag}
+//             alt="EnglandFlag"
+//             className="w-[18px] h-[18px]"
+//           />
+//         </div>
+//         <div className="my-auto">
+//           <h1 className="gray font-[500] text-[14px]">EN</h1>
+//         </div>
+//       </div>
+//     ),
+//   },
+// ];
+
 const HeaderTabs = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [selectedLang, setSelectedLang] = useState("EN");
+  // Persist user choice
 
+  useEffect(() => {
+    const savedLang = localStorage.getItem("preferred_language");
+    if (savedLang) {
+      setSelectedLang(savedLang);
+    }
+  }, []);
+
+  // Flag map for selected menu item
+  const languageMap = {
+    EN: { label: "EN", flag: EnglandFlag },
+    ES: { label: "ES", flag: EnglandFlag },
+    DE: { label: "DE", flag: EnglandFlag },
+  };
+
+  const handleLanguageChange = ({ key }) => {
+    setSelectedLang(key);
+    dispatch(selectedLanguageFtn(key));
+
+    localStorage.setItem("preferred_language", key);
+  };
+  const items = [
+    {
+      key: "EN",
+      label: (
+        <div className="flex gap-2">
+          <img src={EnglandFlag} alt="EN" className="w-[18px] h-[18px]" />
+          <span>EN</span>
+        </div>
+      ),
+    },
+    {
+      key: "ES",
+      label: (
+        <div className="flex gap-2">
+          <img src={EnglandFlag} alt="ES" className="w-[18px] h-[18px]" />
+          <span>ES</span>
+        </div>
+      ),
+    },
+    {
+      key: "DE",
+      label: (
+        <div className="flex gap-2">
+          <img src={EnglandFlag} alt="DE" className="w-[18px] h-[18px]" />
+          <span>DE</span>
+        </div>
+      ),
+    },
+  ];
   // HeaderTabsFtn
   const HeaderTabValue = useSelector(
     (state) => state.HeadAndBreadCrumb?.HeaderTabs
   );
-  // console.log(HeaderTabValue);
-
-  const navigate = useNavigate();
 
   return (
     <div>
@@ -134,21 +188,21 @@ const HeaderTabs = () => {
         {/* Language Dropdown */}
         <div className="my-auto pr-4">
           <Dropdown
-            menu={{ items }}
+            menu={{ items, onClick: handleLanguageChange }}
             placement="bottomRight"
             arrow
             trigger={["click"]}
           >
             <div className="flex gap-2 cursor-pointer">
-              <div className="my-auto">
-                <img src={EnglandFlag} alt="EnglandFlag" />
-              </div>
-              <div className="my-auto">
-                <h1 className="gray font-[500] text-[14px]">EN</h1>
-              </div>
-              <div className="my-auto">
-                <DownOutlined className="text-[14px] lightgray font-bold" />
-              </div>
+              <img
+                src={languageMap[selectedLang].flag}
+                alt={selectedLang}
+                className="w-[18px] h-[18px]"
+              />
+              <span className="gray font-[500] text-[14px]">
+                {languageMap[selectedLang].label}
+              </span>
+              <DownOutlined className="text-[14px] lightgray font-bold" />
             </div>
           </Dropdown>
         </div>

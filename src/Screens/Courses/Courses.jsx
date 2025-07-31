@@ -39,7 +39,9 @@ const Courses = () => {
   const AuthToken = useSelector((state) => state?.Auth);
   const token = AuthToken?.Authtoken;
   const loadingDelayRef = useRef(null);
-
+  const Language = useSelector(
+    (state) => state?.HeadAndBreadCrumb?.selectedLanguage
+  );
   // Pagination, Search and filtersPaging
   const [Search, setSearch] = useState("");
   const [totalCount, setTotalCount] = useState(0);
@@ -55,7 +57,7 @@ const Courses = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `/api/course?page=${currentPage}&limit=${filtersPaging.limit}&tag=${Status}&search=${Search}`,
+          `/api/course?page=${currentPage}&limit=${filtersPaging.limit}&tag=${Status}&search=${Search}&language=${Language}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -77,7 +79,7 @@ const Courses = () => {
     };
 
     FetchCourses();
-  }, [currentPage, Status, Search, filtersPaging.limit, token]);
+  }, [currentPage, Status, Search, filtersPaging.limit, token, Language]);
 
   const handlePageChange = (newPage) => {
     setFiltersPaging((prev) => ({
@@ -184,6 +186,27 @@ const Courses = () => {
           </div>
           {/*  */}
           <div
+            className={` min-w-[70px] rounded-full lg:rounded-[8px] cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
+              Status === "free" ? "bg_white font-[700]" : "bg_lightgray2"
+            }`}
+            onClick={() => setStatus("free")}
+          >
+            {" "}
+            <img
+              src={Status === "all" ? GearSix : GearSix}
+              alt="MagnifyingGlassBlack"
+              className="w-[25px] h-[20px]"
+            />
+            <span
+              className={`text-[14px] my-auto ${
+                Status === "free" ? "black" : "gray"
+              }`}
+            >
+              FREE
+            </span>
+          </div>
+          {/*  */}
+          <div
             className={`min-w-[80px]  rounded-full lg:rounded-[8px] cursor-pointer my-auto flex gap-1  px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 
              ${Status === "VIP" ? "bg_white font-[700]" : "bg_lightgray2"}
@@ -202,27 +225,6 @@ const Courses = () => {
               }`}
             >
               VIP
-            </span>
-          </div>
-          {/*  */}
-          <div
-            className={` min-w-[70px] rounded-full lg:rounded-[8px] cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              Status === "free" ? "bg_white font-[700]" : "bg_lightgray2"
-            }`}
-            onClick={() => setStatus("free")}
-          >
-            {" "}
-            <img
-              src={Status === "all" ? GearSix : GearSix}
-              alt="MagnifyingGlassBlack"
-              className="w-[25px] h-[20px]"
-            />
-            <span
-              className={`text-[14px] my-auto ${
-                Status === "free" ? "black" : "gray"
-              }`}
-            >
-              FREE
             </span>
           </div>
         </div>

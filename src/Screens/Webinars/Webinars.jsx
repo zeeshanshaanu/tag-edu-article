@@ -29,6 +29,10 @@ const Webinars = () => {
   const [Status, setStatus] = useState("upcoming");
   const [loading, setLoading] = useState(false);
   const [WebinarsData, setWebinarsData] = useState([]);
+  const Language = useSelector(
+    (state) => state?.HeadAndBreadCrumb?.selectedLanguage
+  );
+
   const AuthToken = useSelector((state) => state?.Auth);
   // console.log(AuthToken);
   const ValidUser = AuthToken?.UserInfo;
@@ -64,7 +68,7 @@ const Webinars = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `/api/webinar?page=${currentPage}&limit=${filtersPaging.limit}&status=${Status}`,
+        `/api/webinar?page=${currentPage}&limit=${filtersPaging.limit}&status=${Status}&Language=${Language}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -149,7 +153,7 @@ const Webinars = () => {
       <div className="mt-3 HeaderGreenBGimage sm:p-[20px] p-[12px] rounded-[12px]">
         <div className="sm:flex justify-between gap-5">
           <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black">
-            Webinars
+            Live Sessions
           </h1>
         </div>
       </div>{" "}
@@ -273,7 +277,7 @@ const Webinars = () => {
                           <p className="flex gap-1 text-[14px] font-[500] gray">
                             <img src={Timer} alt="Timer" className="my-auto" />
                             <span className="my-auto">
-                              {dayjs(items?.start_time).format(" hh:mm A")} UTC
+                              {dayjs(items?.start_time).format(" hh:mm A")}
                             </span>
                           </p>
                         </div>
@@ -285,8 +289,8 @@ const Webinars = () => {
                       {new Date(items?.end_time) < new Date() ? (
                         // Webinar has ended → Show "Watch Recording"
                         <button
-                          className="flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
-      w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
+                          className=" flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
+                                      w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
                         >
                           <img
                             src={PlayCircleBlack}
@@ -303,7 +307,7 @@ const Webinars = () => {
                               href={items?.vedio_link}
                               target="_blank"
                               className="flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
-        w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
+                                        w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
                             >
                               <span className="my-auto">Join Now</span>
                             </a>
@@ -335,9 +339,26 @@ const Webinars = () => {
                               <span className="my-auto">Join Now</span>
                             </a>
                           ) : (
-                            <button className="cursor-not-allowed flex justify-center gap-1 bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700] border border-[#E8E8E8]">
-                              <span className="my-auto">Enrolled</span>
-                            </button>
+                            <>
+                              <button className="cursor-not-allowed flex justify-center gap-1 bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700] border border-[#E8E8E8]">
+                                <span className="my-auto">Enrolled</span>
+                              </button>
+                              <div className="mt-1">
+                                <p className="flex gap-1 text-[14px] font-[500] gray">
+                                  <span className="text-[12px] my-auto">
+                                    Joining&nbsp;Link:
+                                  </span>
+
+                                  <a
+                                    href={items?.vedio_link}
+                                    target="_blank"
+                                    className="text-[12px] my-auto font-[500] gray my-auto py-[2px] px-2 rounded-[8px] border border-[#E8E8E8] line-clamp-1"
+                                  >
+                                    {items?.vedio_link}
+                                  </a>
+                                </p>
+                              </div>
+                            </>
                           )}
                         </>
                       )}
@@ -348,7 +369,7 @@ const Webinars = () => {
             })
           ) : (
             <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[500] lightgray3 text-[16px]">
-              No Webinar Found
+              No Live Session Found
             </span>
           )}
         </div>
@@ -376,7 +397,7 @@ const Webinars = () => {
         >
           <div className="">
             <h2 className="lg:text-[28px] text-center text-[22px] font-semibold mb-[10px] w-[90%]">
-              Enrollment
+              Congratulations
             </h2>
             {/* desc */}
             <div>

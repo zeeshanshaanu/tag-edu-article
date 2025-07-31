@@ -146,7 +146,6 @@ const CourseDetails = () => {
   }, []);
 
   const { saveProgress } = useLessonProgress(CourseID, selectedLesson);
-  // console.log("This is selected selectedLesson----->>>>", selectedLesson);
 
   const getLessonProgress = (lessonId, modules) => {
     if (!lessonId || !modules?.length) return null;
@@ -343,6 +342,14 @@ const CourseDetails = () => {
               controls={true}
               width="100%"
               height="100%"
+              config={{
+                file: {
+                  attributes: {
+                    controlsList: "nodownload",
+                    // disablePictureInPicture: true, // optional
+                  },
+                },
+              }}
             />
           </div>
 

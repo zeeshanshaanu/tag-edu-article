@@ -11,7 +11,9 @@ import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
 const ArticleDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const Language = useSelector(
+    (state) => state?.HeadAndBreadCrumb?.selectedLanguage
+  );
   const AuthToken = useSelector((state) => state?.Auth);
   const token = AuthToken?.Authtoken;
   const [ArticleDetail, setArticleDetail] = useState({});

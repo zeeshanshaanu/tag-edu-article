@@ -5,6 +5,7 @@ const initialState = {
   Breadcrumb3: "",
   Breadcrumb: [],
   HeaderTabs: "Articles",
+  selectedLanguage: "",
 };
 
 const HeadAndBcSlice = createSlice({
@@ -26,6 +27,9 @@ const HeadAndBcSlice = createSlice({
     setBreadcrumb: (state, action) => {
       state.Breadcrumb = action.payload;
     },
+    selectedLanguageFtn: (state, action) => {
+      state.selectedLanguage = action.payload;
+    },
   },
 });
 
@@ -35,5 +39,6 @@ export const {
   BreadcrumbFtn3,
   setBreadcrumb,
   HeaderTabsFtn,
+  selectedLanguageFtn,
 } = HeadAndBcSlice.actions;
 export default HeadAndBcSlice.reducer;
