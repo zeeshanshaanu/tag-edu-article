@@ -69,9 +69,6 @@ const Courses = () => {
         setCoursesData(result?.data);
         setTotalCount(result?.totalCount || 0);
       } catch (error) {
-        if (error?.response?.status === 401) {
-          handleLogout();
-        }
         console.error("Error fetching Courses:", error);
       } finally {
         setLoading(false);
@@ -145,6 +142,45 @@ const Courses = () => {
       localStorage.setItem(courseId, totalDuration);
     }
   };
+  const [startedCourses, setStartedCourses] = useState({});
+
+  useEffect(() => {
+    const fetchAllCoursesProgress = async () => {
+      const progressMap = {};
+
+      await Promise.all(
+        CoursesData.map(async (course) => {
+          try {
+            const response = await axios.get(`/api/progress/${course._id}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+
+            const data = response.data;
+
+            const isStarted = data.modules?.some((mod) =>
+              mod.lessons?.some((lesson) => lesson.secondsWatched > 0)
+            );
+
+            progressMap[course._id] = isStarted;
+          } catch (error) {
+            console.error(
+              `Error fetching progress for course ${course._id}:`,
+              error
+            );
+            progressMap[course._id] = false;
+          }
+        })
+      );
+
+      setStartedCourses(progressMap);
+    };
+
+    if (CoursesData.length > 0 && token) {
+      fetchAllCoursesProgress();
+    }
+  }, [CoursesData, token]);
 
   return (
     <div className="p-3">
@@ -158,6 +194,7 @@ const Courses = () => {
         </div>
       </div>{" "}
       {/* Tabs and Search-input */}
+      {CoursesData?.length > 0 &&
       <div className="lg:flex justify-between mt-4">
         <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
           <div
@@ -247,8 +284,9 @@ const Courses = () => {
           </div>
         </div>
       </div>
+}
       {/* Cards */}
-      <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">
+      <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-4">
         <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
           {/* {loading ? (
             <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[600] black text-[16px]">
@@ -332,7 +370,7 @@ const Courses = () => {
                       {/* Info Rows */}
                       <div className="flex gap-5 my-2">
                         <div className="my-auto">
-                          <p className="flex gap-1 text-[14px] font-[500] gray">
+                          <div className="flex gap-1 text-[14px] font-[500] gray">
                             <img src={Timer} alt="Timer" className="my-auto" />
                             <span className="my-auto">
                               {/* {getCourseTotalDuration(items?.modules)} */}
@@ -343,7 +381,7 @@ const Courses = () => {
                                   : "Calculating..."}
                               </p>
                             </span>
-                          </p>
+                          </div>
                         </div>
                         <div className="my-auto">
                           <p className="flex gap-1 text-[14px] font-[500] gray">
@@ -372,8 +410,11 @@ const Courses = () => {
                             alt="Play"
                             className="my-auto"
                           />
+
                           <span className="my-auto">
-                            {items?.tag === "vip"
+                            {startedCourses[items._id]
+                              ? "Resume"
+                              : items?.tag === "vip"
                               ? "Unlock VIP Course"
                               : "Begin Course"}
                           </span>

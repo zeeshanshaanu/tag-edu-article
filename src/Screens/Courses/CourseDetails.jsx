@@ -34,6 +34,7 @@ const CourseDetails = () => {
   const [expandedLesson, setExpandedLesson] = useState(false);
   const [expandedItems, setExpandedItems] = useState({});
   const [userProgress, setUserProgress] = useState(null);
+
   const [videoDurations, setVideoDurations] = useState({});
   const [selectedLesson, setSelectedLesson] = useState({
     index: "",
@@ -96,19 +97,34 @@ const CourseDetails = () => {
     }));
   };
 
-  const hasStartedCourse = (moduleId) => {
-    if (!userProgress?.modules?.length) return false;
+  const hasModuleStarted = (module) => {
+    if (!userProgress || !module?.lessons?.length) return false;
 
-    const moduleProgress = userProgress.modules.find(
-      (mod) => String(mod.moduleId) === String(moduleId)
-    );
+    const progressLessons = userProgress.modules.flatMap((mod) => mod.lessons);
 
-    if (!moduleProgress?.lessons?.length) return false;
+    // console.log("Checking module:", module._id);
 
-    return moduleProgress.lessons.some(
-      (lesson) => lesson.secondsWatched > 0 || lesson.completed
-    );
+    const result = module.lessons.some((lesson) => {
+      const match = progressLessons.find(
+        (pLesson) =>
+          pLesson.lessonId === lesson._id && pLesson.secondsWatched > 0
+      );
+
+      // if (match) {
+      //   console.log(
+      //     `✅ Lesson started in module ${module._id} → lessonId: ${lesson._id}, watched: ${match.secondsWatched}`
+      //   );
+      // } else {
+      //   console.log(`❌ Lesson NOT started → lessonId: ${lesson._id}`);
+      // }
+
+      return !!match;
+    });
+
+    // console.log(`➡️ Final decision for module ${module._id}:`, result);
+    return result;
   };
+
   const handleDuration = (duration) => {
     if (selectedLesson?.lessonId) {
       setVideoDurations((prev) => ({
@@ -346,7 +362,6 @@ const CourseDetails = () => {
                 file: {
                   attributes: {
                     controlsList: "nodownload",
-                    // disablePictureInPicture: true, // optional
                   },
                 },
               }}
@@ -659,9 +674,7 @@ const CourseDetails = () => {
                           >
                             <img src={Play} alt="Play" className="my-auto" />
                             <span className="my-auto">
-                              {hasStartedCourse(items._id)
-                                ? "Continue"
-                                : "Start"}
+                              {hasModuleStarted(items) ? "Continue" : "Start"}
                             </span>
                           </button>
                         </div>

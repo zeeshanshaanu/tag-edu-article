@@ -37,7 +37,7 @@ const Articles = () => {
   const Language = useSelector(
     (state) => state?.HeadAndBreadCrumb?.selectedLanguage
   );
- 
+
   const token = AuthToken?.Authtoken;
   const loadingDelayRef = useRef(null);
   // Pagination, Search and filtersPaging
@@ -377,24 +377,25 @@ const Articles = () => {
         ) : null}
 
         {/*  */}
-
-        <div className="relative my-auto md:mt-2 lg:mt-0 w-full sm:w-[280px]">
-          <input
-            type="text"
-            placeholder="Search"
-            value={Search}
-            onChange={(e) => setSearch(e.target.value)}
-            autoComplete="off"
-            className="w-full border border-[1.5px] border-[#E8E8E8] bg-white rounded-[8px] outline-none pl-[15px] pr-[45px] py-[7px]"
-          />
-          <div className="absolute top-[4px] right-[5px]">
-            <img
-              src={MagnifyingGlassWhite}
-              alt="MagnifyingGlass"
-              className="w-[32px] h-[31px] p-[7px] bg_black rounded-[6px]"
+        {articlesData?.length > 0 && (
+          <div className="relative my-auto md:mt-2 lg:mt-0 w-full sm:w-[280px]">
+            <input
+              type="text"
+              placeholder="Search"
+              value={Search}
+              onChange={(e) => setSearch(e.target.value)}
+              autoComplete="off"
+              className="w-full border border-[1.5px] border-[#E8E8E8] bg-white rounded-[8px] outline-none pl-[15px] pr-[45px] py-[7px]"
             />
+            <div className="absolute top-[4px] right-[5px]">
+              <img
+                src={MagnifyingGlassWhite}
+                alt="MagnifyingGlass"
+                className="w-[32px] h-[31px] p-[7px] bg_black rounded-[6px]"
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
       {/* Cards */}
       <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">
