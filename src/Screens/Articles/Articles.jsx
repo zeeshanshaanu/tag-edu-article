@@ -256,146 +256,143 @@ const Articles = () => {
           </div>
         </div> */}
 
-        {categories?.length > 0 ? (
-          <div className="lg:flex justify-between relative">
-            {/* Tabs container (scrollable) */}
-            <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
-              {/* "All" tab */}
-              <div
-                className={`min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
+        <div className="lg:flex justify-between relative">
+          {/* Tabs container (scrollable) */}
+          <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
+            {/* "All" tab */}
+            <div
+              className={`min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
           hover:bg-[#F9F9F9] transition-colors duration-200 ${
             Status === "all" ? "bg_white font-[700]" : "bg_lightgray2"
           }`}
-                onClick={() => setStatus("all")}
+              onClick={() => setStatus("all")}
+            >
+              <span className="my-auto">
+                <img
+                  src={CirclesThreeColored}
+                  alt="All"
+                  className="w-[25px] h-[20px]"
+                />
+              </span>
+              <span
+                className={`text-[14px] my-auto ${
+                  Status === "all" ? "black" : "gray"
+                }`}
               >
-                <span className="my-auto">
-                  <img
-                    src={CirclesThreeColored}
-                    alt="All"
-                    className="w-[25px] h-[20px]"
-                  />
-                </span>
-                <span
-                  className={`text-[14px] my-auto ${
-                    Status === "all" ? "black" : "gray"
-                  }`}
-                >
-                  All
-                </span>
-              </div>
+                All
+              </span>
+            </div>
 
-              {/* First 4 visible tabs */}
-              {categories?.slice(0, 4).map((cat, index) => (
-                <div
-                  key={index}
-                  className={`w-fit cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
+            {/* First 4 visible tabs */}
+            {categories?.slice(0, 4).map((cat, index) => (
+              <div
+                key={index}
+                className={`w-fit cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 ${
               Status === cat?.category ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
-                  onClick={() => setStatus(cat?.category)}
+                onClick={() => setStatus(cat?.category)}
+              >
+                <img
+                  src={
+                    cat?.category === "basics"
+                      ? LightbulbFilament
+                      : cat?.category === "indicators"
+                      ? ChartLineUp
+                      : cat?.category === "fundamentals"
+                      ? StackSimple
+                      : GearSix
+                  }
+                  alt="Icon"
+                  className="w-[25px] h-[20px]"
+                />
+                <span
+                  className={`text-[14px] my-auto capitalize ${
+                    Status === cat?.category ? "black" : "gray"
+                  }`}
                 >
-                  <img
-                    src={
-                      cat?.category === "basics"
-                        ? LightbulbFilament
-                        : cat?.category === "indicators"
-                        ? ChartLineUp
-                        : cat?.category === "fundamentals"
-                        ? StackSimple
-                        : GearSix
-                    }
-                    alt="Icon"
-                    className="w-[25px] h-[20px]"
-                  />
-                  <span
-                    className={`text-[14px] my-auto capitalize ${
-                      Status === cat?.category ? "black" : "gray"
-                    }`}
-                  >
-                    {cat?.category}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {categories?.length > 4 && (
-              <div ref={dropdownRef} className="relative ml-2">
-                {/* Dropdown button */}
-                <div
-                  className="w-fit mt-[2px] cursor-pointer flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] bg_lightgray2 hover:bg-[#F9F9F9] transition-colors duration-200"
-                  onClick={() => setShowDropdown((prev) => !prev)}
-                >
-                  <span className="text-[14px] my-auto gray">More</span>
-                  <svg
-                    className="w-4 h-4 my-auto"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-
-                {/* Dropdown content (conditionally rendered) */}
-                {showDropdown && (
-                  <div className="absolute z-50 flex flex-col top-full left-0 mt-2 bg-white rounded-lg shadow-md p-2 min-w-[160px] max-h-[250px] overflow-y-auto">
-                    {categories?.slice(4).map((cat, index) => (
-                      <div
-                        key={index}
-                        className={`cursor-pointer flex gap-2 items-center px-3 py-2 rounded-md hover:bg-[#f5f5f5] transition-colors duration-150 ${
-                          Status === cat?.category
-                            ? "bg_lightgray2 font-[700]"
-                            : ""
-                        }`}
-                        onClick={() => {
-                          setStatus(cat?.category);
-                          setShowDropdown(false); // close on selection
-                        }}
-                      >
-                        <img
-                          src={
-                            cat?.category === "basics"
-                              ? LightbulbFilament
-                              : cat?.category === "Indicators"
-                              ? ChartLineUp
-                              : cat?.category === "Fundamentals"
-                              ? StackSimple
-                              : GearSix
-                          }
-                          alt="Icon"
-                          className="w-[20px] h-[18px]"
-                        />
-                        <span className="text-[14px]">{cat?.category}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                  {cat?.category}
+                </span>
               </div>
-            )}
+            ))}
           </div>
-        ) : null}
+
+          {categories?.length > 4 && (
+            <div ref={dropdownRef} className="relative ml-2">
+              {/* Dropdown button */}
+              <div
+                className="w-fit mt-[2px] cursor-pointer flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] bg_lightgray2 hover:bg-[#F9F9F9] transition-colors duration-200"
+                onClick={() => setShowDropdown((prev) => !prev)}
+              >
+                <span className="text-[14px] my-auto gray">More</span>
+                <svg
+                  className="w-4 h-4 my-auto"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+
+              {/* Dropdown content (conditionally rendered) */}
+              {showDropdown && (
+                <div className="absolute z-50 flex flex-col top-full left-0 mt-2 bg-white rounded-lg shadow-md p-2 min-w-[160px] max-h-[250px] overflow-y-auto">
+                  {categories?.slice(4).map((cat, index) => (
+                    <div
+                      key={index}
+                      className={`cursor-pointer flex gap-2 items-center px-3 py-2 rounded-md hover:bg-[#f5f5f5] transition-colors duration-150 ${
+                        Status === cat?.category
+                          ? "bg_lightgray2 font-[700]"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        setStatus(cat?.category);
+                        setShowDropdown(false); // close on selection
+                      }}
+                    >
+                      <img
+                        src={
+                          cat?.category === "basics"
+                            ? LightbulbFilament
+                            : cat?.category === "Indicators"
+                            ? ChartLineUp
+                            : cat?.category === "Fundamentals"
+                            ? StackSimple
+                            : GearSix
+                        }
+                        alt="Icon"
+                        className="w-[20px] h-[18px]"
+                      />
+                      <span className="text-[14px]">{cat?.category}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
         {/*  */}
-        {articlesData?.length > 0 && (
-          <div className="relative my-auto md:mt-2 lg:mt-0 w-full sm:w-[280px]">
-            <input
-              type="text"
-              placeholder="Search"
-              value={Search}
-              onChange={(e) => setSearch(e.target.value)}
-              autoComplete="off"
-              className="w-full border border-[1.5px] border-[#E8E8E8] bg-white rounded-[8px] outline-none pl-[15px] pr-[45px] py-[7px]"
+
+        <div className="relative my-auto md:mt-2 lg:mt-0 w-full sm:w-[280px]">
+          <input
+            type="text"
+            placeholder="Search"
+            value={Search}
+            onChange={(e) => setSearch(e.target.value)}
+            autoComplete="off"
+            className="w-full border border-[1.5px] border-[#E8E8E8] bg-white rounded-[8px] outline-none pl-[15px] pr-[45px] py-[7px]"
+          />
+          <div className="absolute top-[4px] right-[5px]">
+            <img
+              src={MagnifyingGlassWhite}
+              alt="MagnifyingGlass"
+              className="w-[32px] h-[31px] p-[7px] bg_black rounded-[6px]"
             />
-            <div className="absolute top-[4px] right-[5px]">
-              <img
-                src={MagnifyingGlassWhite}
-                alt="MagnifyingGlass"
-                className="w-[32px] h-[31px] p-[7px] bg_black rounded-[6px]"
-              />
-            </div>
           </div>
-        )}
+        </div>
       </div>
       {/* Cards */}
       <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">

@@ -158,62 +158,58 @@ const Webinars = () => {
         </div>
       </div>{" "}
       {/* Tabs and Search-input */}
-      {WebinarsData?.length > 0 && (
-        <div className="lg:flex justify-between mt-3">
-          <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
-            <div
-              className={`min-w-[70px] rounded-full lg:rounded-[8px] cursor-pointer flex px-[16px] py-[8px] font-[500] 
+      <div className="lg:flex justify-between mt-3">
+        <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
+          <div
+            className={`min-w-[70px] rounded-full lg:rounded-[8px] cursor-pointer flex px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 ${
               Status === "upcoming" ? "bg_white font-[700]" : "bg_lightgray2"
             }`}
-              onClick={() => setStatus("upcoming")}
+            onClick={() => setStatus("upcoming")}
+          >
+            <span className="my-auto">
+              <img
+                src={
+                  Status === "upcoming" ? CalendarColored : CalendarUpcomingGray
+                }
+                alt="MagnifyingGlassBlack"
+                className="w-[25px] h-[20px]"
+              />
+            </span>
+            <span
+              className={` my-auto text-[14px] my-auto ${
+                Status === "upcoming" ? "black" : "gray"
+              }`}
             >
-              <span className="my-auto">
-                <img
-                  src={
-                    Status === "upcoming"
-                      ? CalendarColored
-                      : CalendarUpcomingGray
-                  }
-                  alt="MagnifyingGlassBlack"
-                  className="w-[25px] h-[20px]"
-                />
-              </span>
-              <span
-                className={` my-auto text-[14px] my-auto ${
-                  Status === "upcoming" ? "black" : "gray"
-                }`}
-              >
-                Upcoming
-              </span>
-            </div>
-            {/*  */}
-            <div
-              className={`min-w-[70px] rounded-full lg:rounded-[8px] cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] 
+              Upcoming
+            </span>
+          </div>
+          {/*  */}
+          <div
+            className={`min-w-[70px] rounded-full lg:rounded-[8px] cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[8px] font-[500] 
             hover:bg-[#F9F9F9] transition-colors duration-200 
              ${Status === "past" ? "bg_white font-[700]" : "bg_lightgray2"}
           `}
-              onClick={() => setStatus("past")}
-            >
-              <img
-                src={Status === "past" ? ClockCounterColored : ClockCounterGray}
-                alt="MagnifyingGlassBlack"
-                className="w-[20px] h-[20px]"
-              />
+            onClick={() => setStatus("past")}
+          >
+            <img
+              src={Status === "past" ? ClockCounterColored : ClockCounterGray}
+              alt="MagnifyingGlassBlack"
+              className="w-[20px] h-[20px]"
+            />
 
-              <span
-                className={`text-[14px] my-auto ${
-                  Status === "past" ? "black" : "gray"
-                }`}
-              >
-                Past
-              </span>
-            </div>
+            <span
+              className={`text-[14px] my-auto ${
+                Status === "past" ? "black" : "gray"
+              }`}
+            >
+              Past
+            </span>
           </div>
         </div>
-      )}
+      </div>
       {/* Cards */}
-      <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-4">
+      <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">
         <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
           {WebinarsData?.length > 0 ? (
             WebinarsData?.map((items, index) => {
