@@ -194,7 +194,6 @@ const Courses = () => {
         </div>
       </div>{" "}
       {/* Tabs and Search-input */}
-     
       <div className="lg:flex justify-between mt-4">
         <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
           <div
@@ -284,7 +283,6 @@ const Courses = () => {
           </div>
         </div>
       </div>
- 
       {/* Cards */}
       <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">
         <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
