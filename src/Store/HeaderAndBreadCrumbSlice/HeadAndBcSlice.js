@@ -5,7 +5,7 @@ const initialState = {
   Breadcrumb3: "",
   Breadcrumb: [],
   HeaderTabs: "Articles",
-  selectedLanguage: "",
+  selectedLanguage: "EN",
 };
 
 const HeadAndBcSlice = createSlice({
