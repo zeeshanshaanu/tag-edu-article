@@ -68,7 +68,7 @@ const Webinars = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `/api/webinar?page=${currentPage}&limit=${filtersPaging.limit}&status=${Status}&Language=${Language}`,
+        `/api/webinar?page=${currentPage}&limit=${filtersPaging.limit}&status=${Status}&language=${Language}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -97,7 +97,7 @@ const Webinars = () => {
     }, 1 * 60 * 1000);
 
     return () => clearInterval(interval);
-  }, [currentPage, Status, filtersPaging.limit, token]);
+  }, [currentPage, Status, filtersPaging.limit, token, Language]);
 
   const handlePageChange = (newPage) => {
     setFiltersPaging((prev) => ({
