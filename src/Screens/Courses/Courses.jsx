@@ -42,6 +42,7 @@ const Courses = () => {
   const Language = useSelector(
     (state) => state?.HeadAndBreadCrumb?.selectedLanguage
   );
+
   // Pagination, Search and filtersPaging
   const [Search, setSearch] = useState("");
   const [totalCount, setTotalCount] = useState(0);
