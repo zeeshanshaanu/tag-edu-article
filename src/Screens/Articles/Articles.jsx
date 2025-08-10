@@ -34,11 +34,11 @@ const Articles = () => {
   const [loading, setLoading] = useState(false);
   const [articlesData, setArticlesData] = useState([]);
   const AuthToken = useSelector((state) => state?.Auth);
+  const token = AuthToken?.Authtoken;
   const Language = useSelector(
     (state) => state?.HeadAndBreadCrumb?.selectedLanguage
   );
- 
-  const token = AuthToken?.Authtoken;
+
   const loadingDelayRef = useRef(null);
   // Pagination, Search and filtersPaging
   const [Search, setSearch] = useState("");
@@ -94,9 +94,12 @@ const Articles = () => {
   const FetchArticlesCategory = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`/api/article-category`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `/api/article-category?language=${Language}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setCategories(response?.data?.data);
     } catch (error) {
       console.error("Error fetching articles:", error);
@@ -107,11 +110,9 @@ const Articles = () => {
 
   useEffect(() => {
     FetchArticlesCategory();
-  }, []);
+  }, [Language]);
 
   const visibleCount = 4;
-  const visibleTabs = categories?.slice(0, visibleCount);
-  const dropdownTabs = categories?.slice(visibleCount);
 
   useEffect(() => {
     const handleClickOutside = (event) => {

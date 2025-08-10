@@ -31,7 +31,7 @@ import ReactPlayer from "react-player";
 
 const Courses = () => {
   const navigate = useNavigate();
-  const seenLessons = useRef(new Set()); // Put this at the top, outside render
+  const seenLessons = useRef(new Set());
   const pendingDurations = useRef({});
   const [Status, setStatus] = useState("all");
   const [loading, setLoading] = useState(false);

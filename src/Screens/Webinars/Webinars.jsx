@@ -287,24 +287,45 @@ const Webinars = () => {
                     {/* Action Button at Bottom */}
                     <div className="mt-auto pt-4">
                       {new Date(items?.end_time) < new Date() ? (
-                        // Webinar has ended → Show "Watch Recording"
-                        <button
-                          className=" flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
+                        <>
+                          <button
+                            className=" flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
                                       w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
-                        >
-                          <img
-                            src={PlayCircleBlack}
-                            alt="PlayCircleBlack"
-                            className="my-auto"
-                          />
-                          <span className="my-auto">Watch Recording</span>
-                        </button>
+                          >
+                            <img
+                              src={PlayCircleBlack}
+                              alt="PlayCircleBlack"
+                              className="my-auto"
+                            />
+                            <span className="my-auto">Watch Recording</span>
+                          </button>
+                          <div className="mt-1">
+                            <p className="flex gap-1 text-[14px] font-[500] gray">
+                              <span className="text-[12px] my-auto">
+                                Downlink&nbsp;Link:
+                              </span>
+
+                              <a
+                                href={
+                                  items?.download_link?.startsWith("http")
+                                    ? items.download_link
+                                    : `https://${items?.download_link}`
+                                }
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[12px] my-auto font-[500] gray my-auto py-[2px] px-2 rounded-[8px] border border-[#E8E8E8] line-clamp-1"
+                              >
+                                {items?.download_link}
+                              </a>
+                            </p>
+                          </div>
+                        </>
                       ) : (
                         // Same logic for live/upcoming webinars
                         <>
                           {!items?.enrolled && items?.is_live ? (
                             <a
-                              href={items?.vedio_link}
+                              href={items?.live_session_link}
                               target="_blank"
                               className="flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
                                         w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
@@ -331,10 +352,10 @@ const Webinars = () => {
                             </button>
                           ) : items?.is_live ? (
                             <a
-                              href={items?.vedio_link}
+                              href={items?.live_session_link}
                               target="_blank"
-                              className="flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
-                                              w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
+                              className="flex justify-center gap-1 cursor-pointer bg-white border border-[#E8E8E8]
+                                       hover:bg-[#000] hover:text-white w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
                             >
                               <span className="my-auto">Join Now</span>
                             </a>
@@ -350,11 +371,18 @@ const Webinars = () => {
                                   </span>
 
                                   <a
-                                    href={items?.vedio_link}
+                                    href={
+                                      items?.live_session_link?.startsWith(
+                                        "http"
+                                      )
+                                        ? items.live_session_link
+                                        : `https://${items?.live_session_link}`
+                                    }
                                     target="_blank"
+                                    rel="noopener noreferrer"
                                     className="text-[12px] my-auto font-[500] gray my-auto py-[2px] px-2 rounded-[8px] border border-[#E8E8E8] line-clamp-1"
                                   >
-                                    {items?.vedio_link}
+                                    {items?.live_session_link}
                                   </a>
                                 </p>
                               </div>

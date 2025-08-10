@@ -38,8 +38,7 @@ const HeaderTabAndBreadCrumb = () => {
   const navigate = useNavigate();
   const breadcrumb = useSelector((state) => state.HeadAndBreadCrumb.Breadcrumb);
 
-  // Fallback to default breadcrumbs if Redux has none
-  const breadcrumbData =
+   const breadcrumbData =
     breadcrumb && breadcrumb.length > 0
       ? breadcrumb
       : [{ label: "Articles", path: "/Articles" }, { label: "Top ROI" }];
