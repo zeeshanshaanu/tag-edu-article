@@ -2,13 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import StrategyReducer from "./StrategySlice/StrategySlice";
-import HeadAndBreadCrumbReducer from "./HeaderAndBreadCrumbSlice/HeadAndBcSlice";
+ import HeadAndBreadCrumbReducer from "./HeaderAndBreadCrumbSlice/HeadAndBcSlice";
 import AuthReducer from "./AuthSlice/AuthSlice";
+import CourseReducer from "./Course/CourseSlice";
 
 // Combine reducers
 const rootReducer = combineReducers({
-  Strategy: StrategyReducer,
+  Course: CourseReducer,
   HeadAndBreadCrumb: HeadAndBreadCrumbReducer,
   Auth: AuthReducer,
 });
@@ -16,7 +16,6 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: "root",
   storage,
-  // blacklist: ['refStore', 'websocket', 'socketPriceStore', 'pnlRoiStore'], // Do not persist these slices
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

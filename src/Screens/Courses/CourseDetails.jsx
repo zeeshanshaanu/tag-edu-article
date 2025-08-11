@@ -99,32 +99,25 @@ const CourseDetails = () => {
 
   const hasModuleStarted = (module) => {
     if (!userProgress || !module?.lessons?.length) return false;
-
     const progressLessons = userProgress.modules.flatMap((mod) => mod.lessons);
-
-    // console.log("Checking module:", module._id);
-
     const result = module.lessons.some((lesson) => {
       const match = progressLessons.find(
         (pLesson) =>
           pLesson.lessonId === lesson._id && pLesson.secondsWatched > 0
       );
-
-      // if (match) {
-      //   console.log(
-      //     `✅ Lesson started in module ${module._id} → lessonId: ${lesson._id}, watched: ${match.secondsWatched}`
-      //   );
-      // } else {
-      //   console.log(`❌ Lesson NOT started → lessonId: ${lesson._id}`);
-      // }
-
-      return !!match;
+       return !!match;
     });
 
     // console.log(`➡️ Final decision for module ${module._id}:`, result);
     return result;
   };
-
+  const getModuleButtonLabel = (module) => {
+  const moduleStarted = hasModuleStarted(module);
+  const isSelected = selectedModule?._id === module._id;
+  if (isSelected) return "In Progress";  
+  if (moduleStarted) return "Resume";    
+  return "Start";                      
+};
   const handleDuration = (duration) => {
     if (selectedLesson?.lessonId) {
       setVideoDurations((prev) => ({
@@ -134,13 +127,34 @@ const CourseDetails = () => {
     }
   };
 
+  // const handleProgress = ({ playedSeconds }) => {
+  //   const totalDuration = videoDurations[selectedLesson?.lessonId] || 1;
+  //   const percentage = Math.floor((playedSeconds / totalDuration) * 100);
+  //   saveProgress(percentage, playedSeconds, totalDuration);
+  // };
+
   const handleProgress = ({ playedSeconds }) => {
-    const totalDuration = videoDurations[selectedLesson?.lessonId] || 1;
+  const lessonId = selectedLesson?.lessonId;
+  const totalDuration = videoDurations[lessonId] || 1;
+  const percentage = Math.floor((playedSeconds / totalDuration) * 100);
 
-    const percentage = Math.floor((playedSeconds / totalDuration) * 100);
+  // Save to server
+  saveProgress(percentage, playedSeconds, totalDuration);
 
-    saveProgress(percentage, playedSeconds, totalDuration);
-  };
+  // Save locally for instant resume
+  setUserProgress((prev) => {
+    const updatedModules = prev.modules.map((mod) => ({
+      ...mod,
+      lessons: mod.lessons.map((l) =>
+        (l.lessonId === lessonId || l.lessonId?._id === lessonId)
+          ? { ...l, secondsWatched: playedSeconds, duration: totalDuration, completed: percentage === 100 }
+          : l
+      )
+    }));
+    return { ...prev, modules: updatedModules };
+  });
+};
+  const { saveProgress } = useLessonProgress(CourseID, selectedLesson);
 
   const LessonsProgress = async () => {
     try {
@@ -161,7 +175,6 @@ const CourseDetails = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const { saveProgress } = useLessonProgress(CourseID, selectedLesson);
 
   const getLessonProgress = (lessonId, modules) => {
     if (!lessonId || !modules?.length) return null;
@@ -350,7 +363,7 @@ const CourseDetails = () => {
         {/* Vedio Player */}
         <div className="bg_white rounded-[8px] col-span-12 md:col-span-12 lg:col-span-8 p-4">
           <div className="video-wrapper">
-            <ReactPlayer
+            {/* <ReactPlayer
               url={selectedLesson?.video_url}
               onProgress={handleProgress}
               onDuration={handleDuration}
@@ -361,11 +374,35 @@ const CourseDetails = () => {
               config={{
                 file: {
                   attributes: {
-                    controlsList: "nodownload",
+                      controlsList: "nodownload",
                   },
                 },
               }}
-            />
+            /> */}
+            <ReactPlayer
+  url={selectedLesson?.video_url}
+  onProgress={handleProgress}
+  onDuration={handleDuration}
+  playing={false}
+  controls={true}
+  width="100%"
+  height="100%"
+  progressInterval={1000}
+  config={{
+    file: {
+      attributes: {
+        controlsList: "nodownload",
+      },
+    },
+  }}
+  // Jump to saved resume time
+  onReady={(player) => {
+    const lessonProgress = getLessonProgress(selectedLesson.lessonId, userProgress?.modules || []);
+    if (lessonProgress?.secondsWatched > 0 && lessonProgress.secondsWatched < lessonProgress.duration) {
+      player.seekTo(lessonProgress.secondsWatched, "seconds");
+    }
+  }}
+/>
           </div>
 
           {/*  */}
@@ -627,9 +664,9 @@ const CourseDetails = () => {
                                 src={Timer}
                                 alt="Timer"
                                 className=" my-auto"
-                              />{" "}
+                              /> 
                               <span className="my-auto">
-                                {" "}
+                              
                                 {formatVideoDuration(
                                   getModuleTotalDuration(items) * 1000
                                 )}
@@ -642,7 +679,7 @@ const CourseDetails = () => {
                                 src={PlayCircleGray}
                                 alt="PlayCircleGray"
                                 className=" my-auto"
-                              />{" "}
+                              /> 
                               <span className="my-auto">
                                 {items?.lessons?.length} Lessons
                               </span>
@@ -674,7 +711,8 @@ const CourseDetails = () => {
                           >
                             <img src={Play} alt="Play" className="my-auto" />
                             <span className="my-auto">
-                              {hasModuleStarted(items) ? "Continue" : "Start"}
+                             {getModuleButtonLabel(items)}
+
                             </span>
                           </button>
                         </div>

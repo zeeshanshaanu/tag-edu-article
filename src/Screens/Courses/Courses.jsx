@@ -412,7 +412,7 @@ const Courses = () => {
 
                           <span className="my-auto">
                             {startedCourses[items._id]
-                              ? "Resume"
+                              ? "Resume Course"
                               : items?.tag === "vip"
                               ? "Unlock VIP Course"
                               : "Begin Course"}

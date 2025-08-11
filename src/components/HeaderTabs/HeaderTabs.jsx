@@ -17,30 +17,11 @@ import { Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import MobileHeaderTabs from "./MobileHeaderTabs";
 import { useEffect, useState } from "react";
-
+import SpanishFlag from "../../assets/Images/SpanishFlag.png"
+import GermanFlag from "../../assets/Images/GermanFlag.png"
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
-// const items = [
-//   {
-//     key: "1",
-//     label: (
-//       <div className="flex gap-2 cursor-pointer">
-//         <div className="my-auto">
-//           <img
-//             src={EnglandFlag}
-//             alt="EnglandFlag"
-//             className="w-[18px] h-[18px]"
-//           />
-//         </div>
-//         <div className="my-auto">
-//           <h1 className="gray font-[500] text-[14px]">EN</h1>
-//         </div>
-//       </div>
-//     ),
-//   },
-// ];
-
-const HeaderTabs = () => {
+ const HeaderTabs = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selectedLang, setSelectedLang] = useState("EN");
@@ -56,8 +37,8 @@ const HeaderTabs = () => {
   // Flag map for selected menu item
   const languageMap = {
     EN: { label: "EN", flag: EnglandFlag },
-    ES: { label: "ES", flag: EnglandFlag },
-    DE: { label: "DE", flag: EnglandFlag },
+    ES: { label: "ES", flag: SpanishFlag },
+    DE: { label: "DE", flag: GermanFlag },
   };
 
   const handleLanguageChange = ({ key }) => {
@@ -71,7 +52,7 @@ const HeaderTabs = () => {
       key: "EN",
       label: (
         <div className="flex gap-2">
-          <img src={EnglandFlag} alt="EN" className="w-[18px] h-[18px]" />
+          <img src={EnglandFlag} alt="EN" className="w-[18px] h-[18px] rounded-full" />
           <span>EN</span>
         </div>
       ),
@@ -80,7 +61,7 @@ const HeaderTabs = () => {
       key: "ES",
       label: (
         <div className="flex gap-2">
-          <img src={EnglandFlag} alt="ES" className="w-[18px] h-[18px]" />
+          <img src={SpanishFlag} alt="ES" className="w-[18px] h-[18px] rounded-full" />
           <span>ES</span>
         </div>
       ),
@@ -89,7 +70,7 @@ const HeaderTabs = () => {
       key: "DE",
       label: (
         <div className="flex gap-2">
-          <img src={EnglandFlag} alt="DE" className="w-[18px] h-[18px]" />
+          <img src={GermanFlag} alt="DE" className="w-[18px] h-[18px] rounded-full" />
           <span>DE</span>
         </div>
       ),
@@ -197,7 +178,7 @@ const HeaderTabs = () => {
               <img
                 src={languageMap[selectedLang].flag}
                 alt={selectedLang}
-                className="w-[18px] h-[18px]"
+                className="w-[18px] h-[18px] rounded-full"
               />
               <span className="gray font-[500] text-[14px]">
                 {languageMap[selectedLang].label}
