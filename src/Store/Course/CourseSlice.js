@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  lessonsProgress: {}  
+  lessonsProgress: {}
 };
 
 const CourseSlice = createSlice({
@@ -16,6 +16,8 @@ const CourseSlice = createSlice({
         percentage
       };
     },
+
+
     resetLessonProgress: (state) => {
       state.lessonsProgress = {};
     }

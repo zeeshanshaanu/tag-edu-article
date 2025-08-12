@@ -3,24 +3,19 @@ import { useEffect, useRef } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
-export const useLessonProgress = (courseId, lesson) => {
+export const useLessonProgress = (courseId, token) => {
   const lastSent = useRef(0);
-  const token = useSelector((s) => s.Auth?.Authtoken);
-  useEffect(() => {
-    lastSent.current = 0;
-  }, [lesson?.lessonId]);
 
-  //////////////// ****************** ////////////////////
-  //////////////// ****************** ////////////////////
-  const saveProgress = async (pct, secondsWatched, duration) => {
-    if (pct - lastSent.current < 1 && pct !== 100) return;
+  const saveProgress = async (lessonId, moduleId, pct, secondsWatched, duration) => {
+    if (pct - lastSent.current < 0.25 && pct !== 100) return; 
     lastSent.current = pct;
-     await axios.post(
+
+    await axios.post(
       "/api/progress",
       {
         courseId,
-        moduleId: lesson?.moduleId,
-        lessonId: lesson?.lessonId,
+        moduleId,
+        lessonId,
         secondsWatched,
         duration,
         completed: pct >= 99,
@@ -28,6 +23,7 @@ export const useLessonProgress = (courseId, lesson) => {
       { headers: { Authorization: `Bearer ${token}` } }
     );
   };
-  //
+
   return { saveProgress };
 };
+

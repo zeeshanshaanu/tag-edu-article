@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import ReactPlayer from "react-player";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Plyr from "plyr";
 import "plyr/dist/plyr.css";
 /////////////////////////   *****************   ///////////////////////
@@ -18,11 +18,14 @@ import VedioListImg from "../../assets/Images/VedioListImg.png";
 import { useLessonProgress } from "../../hooks/userLessonProgress";
 import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
 import { useLocation } from "react-router-dom";
+import { updateLessonProgress } from "../../Store/Course/CourseSlice";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 
 const CourseDetails = () => {
+  const dispatch = useDispatch();
+
   const { id } = useParams();
   const CourseID = id;
   const AuthToken = useSelector((state) => state?.Auth);
@@ -34,6 +37,8 @@ const CourseDetails = () => {
   const [expandedLesson, setExpandedLesson] = useState(false);
   const [expandedItems, setExpandedItems] = useState({});
   const [userProgress, setUserProgress] = useState(null);
+  const lessonsProgress = useSelector((state) => state.Course.lessonsProgress);
+  // console.log(lessonsProgress);
 
   const [videoDurations, setVideoDurations] = useState({});
   const [selectedLesson, setSelectedLesson] = useState({
@@ -105,19 +110,19 @@ const CourseDetails = () => {
         (pLesson) =>
           pLesson.lessonId === lesson._id && pLesson.secondsWatched > 0
       );
-       return !!match;
+      return !!match;
     });
 
     // console.log(`➡️ Final decision for module ${module._id}:`, result);
     return result;
   };
   const getModuleButtonLabel = (module) => {
-  const moduleStarted = hasModuleStarted(module);
-  const isSelected = selectedModule?._id === module._id;
-  if (isSelected) return "In Progress";  
-  if (moduleStarted) return "Resume";    
-  return "Start";                      
-};
+    const moduleStarted = hasModuleStarted(module);
+    const isSelected = selectedModule?._id === module._id;
+    if (isSelected) return "In Progress";
+    if (moduleStarted) return "Resume";
+    return "Start"; // Never started
+  };
   const handleDuration = (duration) => {
     if (selectedLesson?.lessonId) {
       setVideoDurations((prev) => ({
@@ -126,35 +131,70 @@ const CourseDetails = () => {
       }));
     }
   };
+  // ///////////////////////////////////////////////////////////////////////////////////////////////
+  function throttle(func, delay) {
+    let lastCall = 0;
+    return (...args) => {
+      const now = new Date().getTime();
+      if (now - lastCall >= delay) {
+        lastCall = now;
+        func(...args);
+      }
+    };
+  }
 
-  // const handleProgress = ({ playedSeconds }) => {
-  //   const totalDuration = videoDurations[selectedLesson?.lessonId] || 1;
-  //   const percentage = Math.floor((playedSeconds / totalDuration) * 100);
-  //   saveProgress(percentage, playedSeconds, totalDuration);
-  // };
+  const { saveProgress } = useLessonProgress(CourseID, token);
+
+  const throttledSaveProgress = useRef(
+    throttle((lessonId, moduleId, pct, secondsWatched, duration) => {
+      saveProgress(lessonId, moduleId, pct, secondsWatched, duration);
+    }, 5000)
+  ).current;
 
   const handleProgress = ({ playedSeconds }) => {
-  const lessonId = selectedLesson?.lessonId;
-  const totalDuration = videoDurations[lessonId] || 1;
-  const percentage = Math.floor((playedSeconds / totalDuration) * 100);
+    const lessonId = selectedLesson?.lessonId;
+    const moduleId = selectedLesson?.moduleId;
+    if (!lessonId || !moduleId) return;
 
-  // Save to server
-  saveProgress(percentage, playedSeconds, totalDuration);
+    const totalDuration = videoDurations[lessonId] || 1;
+    const percentage = Math.min((playedSeconds / totalDuration) * 100, 100);
 
-  // Save locally for instant resume
-  setUserProgress((prev) => {
-    const updatedModules = prev.modules.map((mod) => ({
-      ...mod,
-      lessons: mod.lessons.map((l) =>
-        (l.lessonId === lessonId || l.lessonId?._id === lessonId)
-          ? { ...l, secondsWatched: playedSeconds, duration: totalDuration, completed: percentage === 100 }
-          : l
-      )
-    }));
-    return { ...prev, modules: updatedModules };
-  });
-};
-  const { saveProgress } = useLessonProgress(CourseID, selectedLesson);
+    // update local + redux
+    setUserProgress((prev) => {
+      const updatedModules = prev.modules.map((mod) => ({
+        ...mod,
+        lessons: mod.lessons.map((l) =>
+          l.lessonId === lessonId || l.lessonId?._id === lessonId
+            ? {
+                ...l,
+                secondsWatched: playedSeconds,
+                duration: totalDuration,
+                completed: percentage >= 100,
+              }
+            : l
+        ),
+      }));
+      return { ...prev, modules: updatedModules };
+    });
+
+    dispatch(
+      updateLessonProgress({
+        lessonId,
+        secondsWatched: playedSeconds,
+        duration: totalDuration,
+        percentage,
+      })
+    );
+
+    // send to API
+    throttledSaveProgress(
+      lessonId,
+      moduleId,
+      percentage,
+      playedSeconds,
+      totalDuration
+    );
+  };
 
   const LessonsProgress = async () => {
     try {
@@ -174,7 +214,6 @@ const CourseDetails = () => {
     const interval = setInterval(LessonsProgress, 3000);
     return () => clearInterval(interval);
   }, []);
-
 
   const getLessonProgress = (lessonId, modules) => {
     if (!lessonId || !modules?.length) return null;
@@ -363,7 +402,7 @@ const CourseDetails = () => {
         {/* Vedio Player */}
         <div className="bg_white rounded-[8px] col-span-12 md:col-span-12 lg:col-span-8 p-4">
           <div className="video-wrapper">
-            {/* <ReactPlayer
+            <ReactPlayer
               url={selectedLesson?.video_url}
               onProgress={handleProgress}
               onDuration={handleDuration}
@@ -371,38 +410,28 @@ const CourseDetails = () => {
               controls={true}
               width="100%"
               height="100%"
+              progressInterval={1000}
               config={{
                 file: {
                   attributes: {
-                      controlsList: "nodownload",
+                    controlsList: "nodownload",
                   },
                 },
               }}
-            /> */}
-            <ReactPlayer
-  url={selectedLesson?.video_url}
-  onProgress={handleProgress}
-  onDuration={handleDuration}
-  playing={false}
-  controls={true}
-  width="100%"
-  height="100%"
-  progressInterval={1000}
-  config={{
-    file: {
-      attributes: {
-        controlsList: "nodownload",
-      },
-    },
-  }}
-  // Jump to saved resume time
-  onReady={(player) => {
-    const lessonProgress = getLessonProgress(selectedLesson.lessonId, userProgress?.modules || []);
-    if (lessonProgress?.secondsWatched > 0 && lessonProgress.secondsWatched < lessonProgress.duration) {
-      player.seekTo(lessonProgress.secondsWatched, "seconds");
-    }
-  }}
-/>
+              // Jump to saved resume time
+              onReady={(player) => {
+                const lessonProgress = getLessonProgress(
+                  selectedLesson.lessonId,
+                  userProgress?.modules || []
+                );
+                if (
+                  lessonProgress?.secondsWatched > 0 &&
+                  lessonProgress.secondsWatched < lessonProgress.duration
+                ) {
+                  player.seekTo(lessonProgress.secondsWatched, "seconds");
+                }
+              }}
+            />
           </div>
 
           {/*  */}
@@ -517,64 +546,71 @@ const CourseDetails = () => {
             ) : (
               <>
                 {selectedModule?.lessons?.length > 0 ? (
-                  selectedModule?.lessons?.map((items, index) => {
+                  selectedModule?.lessons?.map((lesson, index) => {
                     const progress = getLessonProgress(
-                      items._id,
+                      lesson._id,
                       userProgress?.modules || []
                     );
-                    const percentage = progress?.completed
-                      ? 100
-                      : progress?.duration > 0
-                      ? Math.floor(
-                          (progress.secondsWatched / progress.duration) * 100
-                        )
-                      : 0;
+
+                    // const percentage = progress?.completed
+                    //   ? 100
+                    //   : progress?.duration > 0
+                    //     ? Math.floor((progress.secondsWatched / progress.duration) * 100)
+                    //     : 0;
+                    //
+                    const progressData = lessonsProgress[lesson._id] || {};
+                    const percentage = progressData.percentage || 0;
+
                     return (
-                      <div>
+                      <div key={lesson._id}>
                         <div
                           onClick={() =>
                             setSelectedLesson({
                               index: index + 1,
-                              video_url: items?.video_url,
-                              title: items?.title,
-                              estimated_time: items?.estimated_time,
+                              video_url: lesson?.video_url,
+                              title: lesson?.title,
+                              estimated_time: lesson?.estimated_time,
                               current_lesson: index,
-                              lession_summary: items?.lession_summary,
-                              moduleId: items?._id,
-                              lessonId: items?._id,
+                              lession_summary: lesson?.lession_summary,
+                              moduleId: lesson?._id,
+                              lessonId: lesson?._id,
                             })
                           }
-                          key={index}
                           className={`flex gap-3 mt-3 hover:bg-[#F4F4F4] hover:rounded-[8px] cursor-pointer ${
-                            selectedLesson?.lessonId === items?._id
+                            selectedLesson?.lessonId === lesson?._id
                               ? "bg-[#F4F4F4]"
                               : ""
                           }`}
                         >
-                          <div className="my-auto  w-[100px] h-[60px] lg:w-[130px] lg:h-[80px]">
+                          {/* Thumbnail */}
+                          <div className="my-auto w-[100px] h-[60px] lg:w-[130px] lg:h-[80px]">
                             <img
-                              src={getYouTubeThumbnail(items?.video_url)}
-                              // alt={items?.title}
-                              className="w-full h-full object-cover my-auto rounded-[8px]"
-                            />{" "}
+                              src={getYouTubeThumbnail(lesson?.video_url)}
+                              className="w-full h-full object-cover rounded-[8px]"
+                            />
                           </div>
+
+                          {/* Lesson Info */}
                           <div className="my-auto">
-                            <h1 className="text-[14px] font-[500] black line-clamp-2 lg:w-[200px] md:w-[600px] w-[200px]">
-                              {index + 1}.{items?.title}
+                            <h1 className="text-[14px] font-[500] line-clamp-2 lg:w-[200px] md:w-[600px] w-[200px]">
+                              {index + 1}. {lesson?.title}
                             </h1>
+
+                            {/* Duration */}
                             <p className="flex gap-1 text-[14px] font-[500] gray mt-[5px]">
                               <img
                                 src={Timer}
                                 alt="Timer"
-                                className=" my-auto"
-                              />{" "}
+                                className="my-auto"
+                              />
                               <span className="my-auto">
                                 {formatVideoDuration(
-                                  (videoDurations[items._id] || 0) * 1000
+                                  (videoDurations[lesson._id] || 0) * 1000
                                 )}
                               </span>
                             </p>
 
+                            {/* Progress Bar */}
                             <div className="mt-2 w-full h-[6px] bg-gray-200 rounded-full overflow-hidden">
                               <div
                                 className={`h-full transition-all duration-300 ${
@@ -587,15 +623,12 @@ const CourseDetails = () => {
                             </div>
                           </div>
                         </div>
-                        {/*  */}
-
-                        {/* Optional Label */}
                       </div>
                     );
                   })
                 ) : (
-                  <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[500] lightgray3 text-[16px]">
-                    No vedio list{" "}
+                  <span className="text-center p-10 font-[500] lightgray3 text-[16px]">
+                    No video list
                   </span>
                 )}
               </>
@@ -664,9 +697,8 @@ const CourseDetails = () => {
                                 src={Timer}
                                 alt="Timer"
                                 className=" my-auto"
-                              /> 
+                              />
                               <span className="my-auto">
-                              
                                 {formatVideoDuration(
                                   getModuleTotalDuration(items) * 1000
                                 )}
@@ -679,7 +711,7 @@ const CourseDetails = () => {
                                 src={PlayCircleGray}
                                 alt="PlayCircleGray"
                                 className=" my-auto"
-                              /> 
+                              />
                               <span className="my-auto">
                                 {items?.lessons?.length} Lessons
                               </span>
@@ -711,8 +743,7 @@ const CourseDetails = () => {
                           >
                             <img src={Play} alt="Play" className="my-auto" />
                             <span className="my-auto">
-                             {getModuleButtonLabel(items)}
-
+                              {getModuleButtonLabel(items)}
                             </span>
                           </button>
                         </div>
