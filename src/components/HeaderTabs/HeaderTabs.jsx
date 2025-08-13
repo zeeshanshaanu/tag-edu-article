@@ -17,11 +17,11 @@ import { Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import MobileHeaderTabs from "./MobileHeaderTabs";
 import { useEffect, useState } from "react";
-import SpanishFlag from "../../assets/Images/SpanishFlag.png"
-import GermanFlag from "../../assets/Images/GermanFlag.png"
+import SpanishFlag from "../../assets/Images/SpanishFlag.png";
+import GermanFlag from "../../assets/Images/GermanFlag.png";
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
- const HeaderTabs = () => {
+const HeaderTabs = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [selectedLang, setSelectedLang] = useState("EN");
@@ -33,6 +33,10 @@ import GermanFlag from "../../assets/Images/GermanFlag.png"
       setSelectedLang(savedLang);
     }
   }, []);
+
+  useEffect(() => {
+    dispatch(HeaderTabsFtn("Courses"));
+  }, [dispatch]);
 
   // Flag map for selected menu item
   const languageMap = {
@@ -52,7 +56,11 @@ import GermanFlag from "../../assets/Images/GermanFlag.png"
       key: "EN",
       label: (
         <div className="flex gap-2">
-          <img src={EnglandFlag} alt="EN" className="w-[18px] h-[18px] rounded-full" />
+          <img
+            src={EnglandFlag}
+            alt="EN"
+            className="w-[18px] h-[18px] rounded-full"
+          />
           <span>EN</span>
         </div>
       ),
@@ -61,7 +69,11 @@ import GermanFlag from "../../assets/Images/GermanFlag.png"
       key: "ES",
       label: (
         <div className="flex gap-2">
-          <img src={SpanishFlag} alt="ES" className="w-[18px] h-[18px] rounded-full" />
+          <img
+            src={SpanishFlag}
+            alt="ES"
+            className="w-[18px] h-[18px] rounded-full"
+          />
           <span>ES</span>
         </div>
       ),
@@ -70,7 +82,11 @@ import GermanFlag from "../../assets/Images/GermanFlag.png"
       key: "DE",
       label: (
         <div className="flex gap-2">
-          <img src={GermanFlag} alt="DE" className="w-[18px] h-[18px] rounded-full" />
+          <img
+            src={GermanFlag}
+            alt="DE"
+            className="w-[18px] h-[18px] rounded-full"
+          />
           <span>DE</span>
         </div>
       ),
