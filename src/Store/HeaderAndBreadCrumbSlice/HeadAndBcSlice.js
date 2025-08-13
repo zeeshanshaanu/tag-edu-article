@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
-  Breadcrumb1: "Articles",
+  Breadcrumb1: "Courses",
   Breadcrumb2: "",
   Breadcrumb3: "",
   Breadcrumb: [],
-  HeaderTabs: "Articles",
+  HeaderTabs: "Courses",
   selectedLanguage: "EN",
 };
 

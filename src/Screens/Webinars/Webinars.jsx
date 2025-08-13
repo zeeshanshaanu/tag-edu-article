@@ -325,7 +325,11 @@ const Webinars = () => {
                         <>
                           {!items?.enrolled && items?.is_live ? (
                             <a
-                              href={items?.live_session_link}
+                              href={
+                                items?.live_session_link?.startsWith("http")
+                                  ? items.live_session_link
+                                  : `https://${items?.live_session_link}`
+                              }
                               target="_blank"
                               className="flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
                                         w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
@@ -352,7 +356,11 @@ const Webinars = () => {
                             </button>
                           ) : items?.is_live ? (
                             <a
-                              href={items?.live_session_link}
+                              href={
+                                items?.live_session_link?.startsWith("http")
+                                  ? items.live_session_link
+                                  : `https://${items?.live_session_link}`
+                              }
                               target="_blank"
                               className="flex justify-center gap-1 cursor-pointer bg-white border border-[#E8E8E8]
                                        hover:bg-[#000] hover:text-white w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"

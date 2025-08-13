@@ -432,7 +432,7 @@ const Articles = () => {
                           {items?.category}
                         </h1>
                         <p className="text-[12px] font-[500] gray my-auto">
-                          {new Date(items?.date).toLocaleDateString("en-US", {
+                          {new Date(items?.created_at).toLocaleDateString("en-US", {
                             year: "numeric",
                             month: "long",
                             day: "numeric",
