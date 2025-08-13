@@ -34,10 +34,6 @@ const HeaderTabs = () => {
     }
   }, []);
 
-  useEffect(() => {
-    dispatch(HeaderTabsFtn("Courses"));
-  }, [dispatch]);
-
   // Flag map for selected menu item
   const languageMap = {
     EN: { label: "EN", flag: EnglandFlag },
