@@ -25,7 +25,6 @@ import { updateLessonProgress } from "../../Store/Course/CourseSlice";
 
 const CourseDetails = () => {
   const dispatch = useDispatch();
-
   const { id } = useParams();
   const CourseID = id;
   const AuthToken = useSelector((state) => state?.Auth);
@@ -45,7 +44,6 @@ const CourseDetails = () => {
     index: "",
     video_url: "",
     title: "",
-    estimated_time: "",
     current_lesson: "",
     lession_summary: "",
     moduleId: "",
@@ -227,6 +225,7 @@ const CourseDetails = () => {
     }
     return null;
   };
+  // ///////////////////////////////////////////////////////////////////////////////////////////////
 
   const CourseDetailDataFtn = async () => {
     setLoading(true);
@@ -264,7 +263,6 @@ const CourseDetails = () => {
           index: firstLesson?.index || 1,
           video_url: firstLesson.video_url,
           title: firstLesson.title,
-          estimated_time: firstLesson.estimated_time,
           current_lesson: 1,
           lession_summary: firstLesson.lession_summary,
           _id: firstLesson._id,
@@ -569,10 +567,9 @@ const CourseDetails = () => {
                               index: index + 1,
                               video_url: lesson?.video_url,
                               title: lesson?.title,
-                              estimated_time: lesson?.estimated_time,
                               current_lesson: index,
                               lession_summary: lesson?.lession_summary,
-                              moduleId: lesson?._id,
+                              moduleId: selectedModule?._id,
                               lessonId: lesson?._id,
                             })
                           }
@@ -731,10 +728,9 @@ const CourseDetails = () => {
                                   index: 1,
                                   video_url: firstLesson.video_url,
                                   title: firstLesson.title,
-                                  estimated_time: firstLesson.estimated_time,
                                   current_lesson: 1,
                                   lession_summary: firstLesson.lession_summary,
-                                  moduleId: firstLesson._id,
+                                  moduleId: selectedModule?._id,
                                   lessonId: firstLesson._id,
                                 });
                               }
