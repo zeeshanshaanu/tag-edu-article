@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import ReactPlayer from "react-player";
@@ -130,92 +130,39 @@ const CourseDetails = () => {
     }
   };
   // ///////////////////////////////////////////////////////////////////////////////////////////////
-  function throttle(func, delay) {
-    let lastCall = 0;
+  // ///////////////////////////////////////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////////////////////////////////////////
+  // Refs to always know the latest "where am I"
+  const currentSecondsRef = useRef(0);
+  const currentLessonRef = useRef({ lessonId: null, moduleId: null });
+  function throttleTrailing(func, delay) {
+    let timeout = null;
+    let lastArgs = null;
     return (...args) => {
-      const now = new Date().getTime();
-      if (now - lastCall >= delay) {
-        lastCall = now;
-        func(...args);
+      lastArgs = args;
+      if (!timeout) {
+        timeout = setTimeout(() => {
+          func(...lastArgs);
+          timeout = null;
+        }, delay);
       }
     };
   }
 
   const { saveProgress } = useLessonProgress(CourseID, token);
 
+  // Throttled background save (every ~5s while playing)
   const throttledSaveProgress = useRef(
-    throttle((lessonId, moduleId, pct, secondsWatched, duration) => {
-      saveProgress(lessonId, moduleId, pct, secondsWatched, duration);
+    throttleTrailing((lessonId, moduleId, pct, secondsWatched, duration) => {
+      saveProgress(lessonId, moduleId, pct, secondsWatched, duration, {
+        force: false,
+      });
     }, 5000)
   ).current;
 
-  const handleProgress = ({ playedSeconds }) => {
-    const lessonId = selectedLesson?.lessonId;
-    const moduleId = selectedLesson?.moduleId;
-    if (!lessonId || !moduleId) return;
-
-    const totalDuration = videoDurations[lessonId] || 1;
-    const percentage = Math.min((playedSeconds / totalDuration) * 100, 100);
-
-    // update local + redux
-    setUserProgress((prev) => {
-      const updatedModules = prev.modules.map((mod) => ({
-        ...mod,
-        lessons: mod.lessons.map((l) =>
-          l.lessonId === lessonId || l.lessonId?._id === lessonId
-            ? {
-                ...l,
-                secondsWatched: playedSeconds,
-                duration: totalDuration,
-                completed: percentage >= 100,
-              }
-            : l
-        ),
-      }));
-      return { ...prev, modules: updatedModules };
-    });
-
-    dispatch(
-      updateLessonProgress({
-        lessonId,
-        secondsWatched: playedSeconds,
-        duration: totalDuration,
-        percentage,
-      })
-    );
-
-    // send to API
-    throttledSaveProgress(
-      lessonId,
-      moduleId,
-      percentage,
-      playedSeconds,
-      totalDuration
-    );
-  };
-
-  const LessonsProgress = async () => {
-    try {
-      const response = await axios.get(`/api/progress/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setUserProgress(response.data);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    }
-  };
-
-  useEffect(() => {
-    LessonsProgress();
-    const interval = setInterval(LessonsProgress, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
+  // Lookup saved progress for a given lesson from API state
   const getLessonProgress = (lessonId, modules) => {
     if (!lessonId || !modules?.length) return null;
-
     for (const mod of modules) {
       const lesson = mod.lessons?.find((l) => {
         const id = typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
@@ -225,6 +172,171 @@ const CourseDetails = () => {
     }
     return null;
   };
+
+  // Force save right now (pause/seek/end/unmount)
+  const saveImmediately = useCallback(() => {
+    const { lessonId, moduleId } = currentLessonRef.current;
+    if (!lessonId || !moduleId) return;
+
+    const fromApi = getLessonProgress(lessonId, userProgress?.modules || []);
+    const totalDuration =
+      videoDurations?.[lessonId] || 0 || fromApi?.duration || 0 || 1;
+
+    const secondsWatched = currentSecondsRef.current || 0;
+    const pct = Math.min((secondsWatched / totalDuration) * 100, 100);
+
+    saveProgress(lessonId, moduleId, pct, secondsWatched, totalDuration, {
+      force: true,
+    });
+  }, [saveProgress, userProgress?.modules, videoDurations]);
+
+  const handleProgress = ({ playedSeconds }) => {
+    const lessonId = selectedLesson?.lessonId;
+    const moduleId = selectedLesson?.moduleId;
+    if (!lessonId || !moduleId) return;
+
+    currentLessonRef.current = { lessonId, moduleId };
+    currentSecondsRef.current = playedSeconds;
+
+    const fromApi = getLessonProgress(lessonId, userProgress?.modules || []);
+    const totalDuration =
+      videoDurations?.[lessonId] || 0 || fromApi?.duration || 0 || 1;
+
+    const pct = Math.min((playedSeconds / totalDuration) * 100, 100);
+
+    // 1) Update local state (smooth bar)
+    setUserProgress((prev) => {
+      const updatedModules = prev.modules.map((mod) => ({
+        ...mod,
+        lessons: (mod.lessons || []).map((l) => {
+          const id =
+            typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
+          if (id !== lessonId) return l;
+          return {
+            ...l,
+            secondsWatched: playedSeconds,
+            duration: totalDuration,
+            completed: pct >= 100,
+          };
+        }),
+      }));
+      return { ...prev, modules: updatedModules };
+    });
+
+    // 2) Update Redux (if you need it elsewhere)
+    dispatch(
+      updateLessonProgress({
+        lessonId,
+        secondsWatched: playedSeconds,
+        duration: totalDuration,
+        percentage: pct,
+      })
+    );
+
+    // 3) Background save (throttled)
+    throttledSaveProgress(
+      lessonId,
+      moduleId,
+      pct,
+      playedSeconds,
+      totalDuration
+    );
+  };
+
+  const LessonsProgress = async () => {
+    try {
+      const response = await axios.get(`/api/progress/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const apiData = response.data;
+
+      setUserProgress((prev) => {
+        if (!prev) return apiData;
+
+        const mergedModules = (prev.modules || []).map((mod) => {
+          const apiMod = apiData.modules?.find((m) => m._id === mod._id) || {};
+
+          return {
+            ...mod,
+            lessons: (mod.lessons || []).map((lesson) => {
+              const id =
+                typeof lesson.lessonId === "object"
+                  ? lesson.lessonId._id
+                  : lesson.lessonId;
+
+              const apiLesson = apiMod.lessons?.find((l) => {
+                const lid =
+                  typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
+                return lid === id;
+              });
+
+              // pick whichever has more recent progress
+              if (!apiLesson) return lesson;
+
+              return {
+                ...lesson,
+                secondsWatched: Math.max(
+                  lesson.secondsWatched || 0,
+                  apiLesson.secondsWatched || 0
+                ),
+                duration: apiLesson.duration || lesson.duration || 1,
+                completed: lesson.completed || apiLesson.completed,
+              };
+            }),
+          };
+        });
+
+        return { ...prev, modules: mergedModules };
+      });
+    } catch (error) {
+      console.error("Error fetching progress:", error);
+    }
+  };
+
+  useEffect(() => {
+    LessonsProgress();
+
+    return () => {
+      saveImmediately();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const playerRef = useRef(null);
+
+  useEffect(() => {
+    if (!selectedLesson) return;
+
+    const { lessonId } = selectedLesson;
+    const fromApi = getLessonProgress(lessonId, userProgress?.modules || []);
+
+    if (fromApi && videoDurations?.[lessonId]) {
+      // 1. Seek player to saved position
+      if (fromApi.secondsWatched > 0 && playerRef.current) {
+        playerRef.current.seekTo(fromApi.secondsWatched, "seconds");
+      }
+
+      // 2. Force progress state with safe duration
+      setUserProgress((prev) => {
+        const updatedModules = (prev?.modules || []).map((mod) => ({
+          ...mod,
+          lessons: (mod.lessons || []).map((l) => {
+            const id =
+              typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
+            if (id !== lessonId) return l;
+
+            return {
+              ...l,
+              secondsWatched: fromApi.secondsWatched || 0,
+              duration: videoDurations[lessonId], // ✅ guaranteed real duration
+              completed: fromApi.completed || false,
+            };
+          }),
+        }));
+        return { ...prev, modules: updatedModules };
+      });
+    }
+  }, [selectedLesson, videoDurations]);
+
   // ///////////////////////////////////////////////////////////////////////////////////////////////
 
   const CourseDetailDataFtn = async () => {
@@ -403,30 +515,29 @@ const CourseDetails = () => {
             <ReactPlayer
               url={selectedLesson?.video_url}
               onProgress={handleProgress}
-              onDuration={handleDuration}
+              onDuration={handleDuration} // keep setting videoDurations[lessonId]
+              onPause={saveImmediately}
+              onSeek={saveImmediately}
+              onEnded={saveImmediately}
               playing={false}
-              controls={true}
+              controls
               width="100%"
               height="100%"
               progressInterval={1000}
-              config={{
-                file: {
-                  attributes: {
-                    controlsList: "nodownload",
-                  },
-                },
-              }}
-              // Jump to saved resume time
+              config={{ file: { attributes: { controlsList: "nodownload" } } }}
               onReady={(player) => {
                 const lessonProgress = getLessonProgress(
                   selectedLesson.lessonId,
                   userProgress?.modules || []
                 );
-                if (
-                  lessonProgress?.secondsWatched > 0 &&
-                  lessonProgress.secondsWatched < lessonProgress.duration
-                ) {
-                  player.seekTo(lessonProgress.secondsWatched, "seconds");
+                const resumeAt = lessonProgress?.secondsWatched || 0;
+                const dur =
+                  lessonProgress?.duration ||
+                  videoDurations?.[selectedLesson.lessonId] ||
+                  0;
+
+                if (resumeAt > 0 && (!dur || resumeAt < dur)) {
+                  player.seekTo(resumeAt, "seconds");
                 }
               }}
             />
@@ -545,19 +656,20 @@ const CourseDetails = () => {
               <>
                 {selectedModule?.lessons?.length > 0 ? (
                   selectedModule?.lessons?.map((lesson, index) => {
-                    const progress = getLessonProgress(
-                      lesson._id,
-                      userProgress?.modules || []
-                    );
+                    const progressData = lessonsProgress[lesson._id] || {};
+                    const percentage = progressData.percentage || 0;
 
+                    // const progress = getLessonProgress(
+                    //   lesson._id,
+                    //   userProgress?.modules || []
+                    // );
                     // const percentage = progress?.completed
                     //   ? 100
                     //   : progress?.duration > 0
-                    //     ? Math.floor((progress.secondsWatched / progress.duration) * 100)
-                    //     : 0;
-                    //
-                    const progressData = lessonsProgress[lesson._id] || {};
-                    const percentage = progressData.percentage || 0;
+                    //   ? Math.floor(
+                    //       (progress.secondsWatched / progress.duration) * 100
+                    //     )
+                    //   : 0;
 
                     return (
                       <div key={lesson._id}>

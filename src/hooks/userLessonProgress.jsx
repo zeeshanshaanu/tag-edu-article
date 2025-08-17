@@ -1,12 +1,13 @@
 // hooks/useLessonProgress.jsx
 import { useEffect, useRef } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 export const useLessonProgress = (courseId, token) => {
   const lastSent = useRef(0);
 
   const saveProgress = async (lessonId, moduleId, pct, secondsWatched, duration) => {
-    if (pct - lastSent.current < 0.15 && pct !== 100) return; 
+    if (pct - lastSent.current < 0.25 && pct !== 100) return; 
     lastSent.current = pct;
 
     await axios.post(
