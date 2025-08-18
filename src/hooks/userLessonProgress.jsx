@@ -1,29 +1,62 @@
-// hooks/useLessonProgress.jsx
-import { useEffect, useRef } from "react";
-import axios from "axios";
+import { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
-export const useLessonProgress = (courseId, token) => {
-  const lastSent = useRef(0);
+export const useLessonProgress = (courseId) => {
+  const AuthToken = useSelector((state) => state?.Auth);
+  const token = AuthToken?.Authtoken;
+  const intervalRef = useRef(null);
 
-  const saveProgress = async (lessonId, moduleId, pct, secondsWatched, duration) => {
-    if (pct - lastSent.current < 0.25 && pct !== 100) return; 
-    lastSent.current = pct;
+  const saveProgress = async (
+    lessonId,
+    moduleId,
+    pct,
+    secondsWatched,
+    duration
+  ) => {
+    if (!lessonId || !moduleId) return;
 
-    await axios.post(
-      "/api/progress",
-      {
-        courseId,
-        moduleId,
-        lessonId,
-        secondsWatched,
-        duration,
-        completed: pct >= 99,
-      },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+    try {
+      await axios.post(
+        "/api/progress",
+        {
+          courseId,
+          moduleId,
+          lessonId,
+          secondsWatched,
+          duration,
+          completed: pct >= 99,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } catch (err) {
+      console.error("Error saving progress:", err);
+    }
   };
 
-  return { saveProgress };
-};
+  // Auto-save every 3 seconds
+  const startAutoSave = (
+    lessonId,
+    moduleId,
+    getCurrentSeconds,
+    getDuration
+  ) => {
+    clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => {
+      const secondsWatched = getCurrentSeconds();
+      const duration = getDuration() || 1;
+      const pct = Math.floor((secondsWatched / duration) * 100);
+      saveProgress(lessonId, moduleId, pct, secondsWatched, duration);
+    }, 3000);
+  };
 
+  const stopAutoSave = () => {
+    clearInterval(intervalRef.current);
+  };
+
+  useEffect(() => {
+    return () => stopAutoSave();
+  }, []);
+
+  return { saveProgress, startAutoSave, stopAutoSave };
+};

@@ -288,40 +288,56 @@ const Webinars = () => {
                     <div className="mt-auto pt-4">
                       {new Date(items?.end_time) < new Date() ? (
                         <>
-                          <button
-                            className=" flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
+                          {items?.download_link && (
+                            <>
+                              <button
+                                className=" flex justify-center gap-1 cursor-pointer bg-white black border border-[#E8E8E8]
                                       w-full text-center py-2 px-5 rounded-[8px] text-[14px] font-[700]"
-                          >
-                            <img
-                              src={PlayCircleBlack}
-                              alt="PlayCircleBlack"
-                              className="my-auto"
-                            />
-                            <span className="my-auto">Watch Recording</span>
-                          </button>
-                          <div className="mt-1">
-                            <p className="flex gap-1 text-[14px] font-[500] gray">
-                              <span className="text-[12px] my-auto">
-                                Downlink&nbsp;Link:
-                              </span>
-
-                              <a
-                                href={
-                                  items?.download_link?.startsWith("http")
-                                    ? items.download_link
-                                    : `https://${items?.download_link}`
-                                }
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-[12px] my-auto font-[500] gray my-auto py-[2px] px-2 rounded-[8px] border border-[#E8E8E8] line-clamp-1"
                               >
-                                {items?.download_link}
-                              </a>
-                            </p>
-                          </div>
+                                <a
+                                  href={
+                                    items?.download_link?.startsWith("http")
+                                      ? items.download_link
+                                      : `https://${items?.download_link}`
+                                  }
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-[12px] my-auto font-[500] gray my-auto py-[2px] px-2 rounded-[8px] border border-[#E8E8E8] line-clamp-1"
+                                >
+                                  <img
+                                    src={PlayCircleBlack}
+                                    alt="PlayCircleBlack"
+                                    className="my-auto"
+                                  />
+                                  <span className="my-auto">
+                                    Watch Recording
+                                  </span>
+                                </a>
+                              </button>
+                              <div className="mt-1">
+                                <p className="flex gap-1 text-[14px] font-[500] gray">
+                                  <span className="text-[12px] my-auto">
+                                    Downlink&nbsp;Link:
+                                  </span>
+
+                                  <a
+                                    href={
+                                      items?.download_link?.startsWith("http")
+                                        ? items.download_link
+                                        : `https://${items?.download_link}`
+                                    }
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-[12px] my-auto font-[500] gray my-auto py-[2px] px-2 rounded-[8px] border border-[#E8E8E8] line-clamp-1"
+                                  >
+                                    {items?.download_link}
+                                  </a>
+                                </p>
+                              </div>
+                            </>
+                          )}
                         </>
                       ) : (
-                        // Same logic for live/upcoming webinars
                         <>
                           {!items?.enrolled && items?.is_live ? (
                             <a
