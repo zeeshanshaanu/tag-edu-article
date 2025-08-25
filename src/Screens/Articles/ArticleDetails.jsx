@@ -24,7 +24,7 @@ const ArticleDetails = () => {
 
   const FetchArticles = async () => {
     try {
-      const response = await axios.get(`/api/article`, {
+      const response = await axios.get(`/api/article?language=${Language}&category=all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -45,7 +45,7 @@ const ArticleDetails = () => {
 
   useEffect(() => {
     FetchArticles();
-  }, []);
+  }, [Language]);
 
   const ArticleDetailDataFtn = async () => {
     if (initialLoad) {
@@ -152,7 +152,7 @@ const ArticleDetails = () => {
                           <img
                             src={items?.image}
                             alt={items?.image}
-                            className="w-full h-full object-cover my-auto rounded-[8px]"
+                            className="w-full h-full object-cover my-auto rounded-[8px] border border-[#F4F4F4]"
                           />{" "}
                         </div>
                         <div className="my-auto">

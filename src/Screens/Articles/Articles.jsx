@@ -145,127 +145,14 @@ const Articles = () => {
       </div>{" "}
       {/* Tabs and Search-input */}
       <div className="lg:flex justify-between mt-4">
-        {/* <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
-          <div
-            className={`min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
-            hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              Status === "all" ? "bg_white font-[700]" : "bg_lightgray2"
-            }`}
-            onClick={() => setStatus("all")}
-          >
-            <span className="my-auto">
-              <img
-                src={
-                  Status === "all" ? CirclesThreeColored : CirclesThreeColored
-                }
-                alt="MagnifyingGlassBlack"
-                className="w-[25px] h-[20px]"
-              />
-            </span>
-            <span
-              className={` my-auto text-[14px] my-auto ${
-                Status === "all" ? "black" : "gray"
-              }`}
-            >
-              All
-            </span>
-          </div>
-
-          <div
-            className={`min-w-[90px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
-            hover:bg-[#F9F9F9] transition-colors duration-200 
-             ${Status === "basics" ? "bg_white font-[700]" : "bg_lightgray2"}
-          `}
-            onClick={() => setStatus("basics")}
-          >
-            <img
-              src={Status === "all" ? LightbulbFilament : LightbulbFilament}
-              alt="MagnifyingGlassBlack"
-              className="w-[25px] h-[20px]"
-            />
-
-            <span
-              className={`text-[14px] my-auto ${
-                Status === "basics" ? "black" : "gray"
-              }`}
-            >
-              Basics
-            </span>
-          </div>
-
-          <div
-            className={`min-w-[120px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              Status === "indicators" ? "bg_white font-[700]" : "bg_lightgray2"
-            }`}
-            onClick={() => setStatus("indicators")}
-          >
-            {" "}
-            <img
-              src={Status === "all" ? ChartLineUp : ChartLineUp}
-              alt="MagnifyingGlassBlack"
-              className="w-[25px] h-[20px]"
-            />
-            <span
-              className={`text-[14px] my-auto ${
-                Status === "indicators" ? "black" : "gray"
-              }`}
-            >
-              Indicators
-            </span>
-          </div>
-
-          <div
-            className={`min-w-[140px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              Status === "fundamentals"
-                ? "bg_white font-[700]"
-                : "bg_lightgray2"
-            }`}
-            onClick={() => setStatus("fundamentals")}
-          >
-            <img
-              src={Status === "all" ? StackSimple : StackSimple}
-              alt="MagnifyingGlassBlack"
-              className="w-[25px] h-[20px]"
-            />
-            <span
-              className={`text-[14px] my-auto ${
-                Status === "fundamentals" ? "black" : "gray"
-              }`}
-            >
-              Fundamentals
-            </span>
-          </div>
-
-          <div
-            className={`min-w-[130px] cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              Status === "technicals" ? "bg_white font-[700]" : "bg_lightgray2"
-            }`}
-            onClick={() => setStatus("technicals")}
-          >
-            <img
-              src={Status === "all" ? GearSix : GearSix}
-              alt="MagnifyingGlassBlack"
-              className="w-[25px] h-[20px]"
-            />
-            <span
-              className={`text-[14px] my-auto ${
-                Status === "technicals" ? "black" : "gray"
-              }`}
-            >
-              Technicals
-            </span>
-          </div>
-        </div> */}
-
         <div className="lg:flex justify-between relative">
           {/* Tabs container (scrollable) */}
           <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
             {/* "All" tab */}
             <div
               className={`min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
-          hover:bg-[#F9F9F9] transition-colors duration-200 ${
-            Status === "all" ? "bg_white font-[700]" : "bg_lightgray2"
-          }`}
+          hover:bg-[#F9F9F9] transition-colors duration-200 ${Status === "all" ? "bg_white font-[700]" : "bg_lightgray2"
+                }`}
               onClick={() => setStatus("all")}
             >
               <span className="my-auto">
@@ -276,9 +163,8 @@ const Articles = () => {
                 />
               </span>
               <span
-                className={`text-[14px] my-auto ${
-                  Status === "all" ? "black" : "gray"
-                }`}
+                className={`text-[14px] my-auto ${Status === "all" ? "black" : "gray"
+                  }`}
               >
                 All
               </span>
@@ -289,9 +175,8 @@ const Articles = () => {
               <div
                 key={index}
                 className={`w-fit cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
-            hover:bg-[#F9F9F9] transition-colors duration-200 ${
-              Status === cat?.category ? "bg_white font-[700]" : "bg_lightgray2"
-            }`}
+            hover:bg-[#F9F9F9] transition-colors duration-200 ${Status === cat?.category ? "bg_white font-[700]" : "bg_lightgray2"
+                  }`}
                 onClick={() => setStatus(cat?.category)}
               >
                 <img
@@ -299,18 +184,17 @@ const Articles = () => {
                     cat?.category === "basics"
                       ? LightbulbFilament
                       : cat?.category === "indicators"
-                      ? ChartLineUp
-                      : cat?.category === "fundamentals"
-                      ? StackSimple
-                      : GearSix
+                        ? ChartLineUp
+                        : cat?.category === "fundamentals"
+                          ? StackSimple
+                          : GearSix
                   }
                   alt="Icon"
                   className="w-[25px] h-[20px]"
                 />
                 <span
-                  className={`text-[14px] my-auto capitalize ${
-                    Status === cat?.category ? "black" : "gray"
-                  }`}
+                  className={`text-[14px] my-auto capitalize ${Status === cat?.category ? "black" : "gray"
+                    }`}
                 >
                   {cat?.category}
                 </span>
@@ -343,11 +227,10 @@ const Articles = () => {
                   {categories?.slice(4).map((cat, index) => (
                     <div
                       key={index}
-                      className={`cursor-pointer flex gap-2 items-center px-3 py-2 rounded-md hover:bg-[#f5f5f5] transition-colors duration-150 ${
-                        Status === cat?.category
-                          ? "bg_lightgray2 font-[700]"
-                          : ""
-                      }`}
+                      className={`cursor-pointer flex gap-2 items-center px-3 py-2 rounded-md hover:bg-[#f5f5f5] transition-colors duration-150 ${Status === cat?.category
+                        ? "bg_lightgray2 font-[700]"
+                        : ""
+                        }`}
                       onClick={() => {
                         setStatus(cat?.category);
                         setShowDropdown(false); // close on selection
@@ -358,10 +241,10 @@ const Articles = () => {
                           cat?.category === "basics"
                             ? LightbulbFilament
                             : cat?.category === "Indicators"
-                            ? ChartLineUp
-                            : cat?.category === "Fundamentals"
-                            ? StackSimple
-                            : GearSix
+                              ? ChartLineUp
+                              : cat?.category === "Fundamentals"
+                                ? StackSimple
+                                : GearSix
                         }
                         alt="Icon"
                         className="w-[20px] h-[18px]"
@@ -374,9 +257,7 @@ const Articles = () => {
             </div>
           )}
         </div>
-
         {/*  */}
-
         <div className="relative my-auto md:mt-2 lg:mt-0 w-full sm:w-[280px]">
           <input
             type="text"
@@ -409,26 +290,24 @@ const Articles = () => {
               articlesData?.map((items, index) => {
                 return (
                   <div
-                    // onClick={() => navigate(`/ArticleDetails/${items?._id}`)}
                     key={index}
-                    className="cursor-pointer hover:shadow-lg transition-shadow duration-200 rounded-[8px] border-[1px] border-[#E8E8E8]"
+                    className="hover:shadow-lg transition-shadow duration-200 rounded-[8px] border border-[#E8E8E8] flex flex-col"
                   >
-                    <div
-                      className=""
+                    {/* Image */}
+                    {/* <div
                       style={{
                         backgroundImage: `url(${items?.image || ProfileImage})`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
-                        width: "100%",
-                        height: "200px",
-                        borderTopLeftRadius: "8px",
-                        borderTopRightRadius: "8px",
                       }}
-                    ></div>
+                      className="w-full h-[200px] rounded-t-[8px]"
+                    ></div> */}
+                    <img src={items?.image || ProfileImage} alt="" className="w-full h-[200px] rounded-t-[8px]"
+                    />
                     {/* Detail */}
-                    <div className="p-[13px]">
+                    <div className="p-[13px] flex flex-col flex-grow">
                       <div className="flex gap-[12px]">
-                        <h1 className="text-[12px] font-[700] rounded-[8px] border-[1px] border-[#E8E8E8] px-2 py-1 my-auto capitalize">
+                        <h1 className="text-[12px] font-[700] rounded-[8px] border border-[#E8E8E8] px-2 py-1 my-auto capitalize">
                           {items?.category}
                         </h1>
                         <p className="text-[12px] font-[500] gray my-auto">
@@ -439,18 +318,15 @@ const Articles = () => {
                           })}
                         </p>
                       </div>
-                      {/*  */}
+
                       <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px]">
-                        {items?.title}{" "}
+                        {items?.title}
                       </h1>
-                      {/* <p className="mt-[6px] text-[14px] font-[500] gray line-clamp-2">
-                        {items?.preview_text}
-                      </p> */}
+
                       <div className="mt-[6px]">
                         <p
-                          className={`text-[14px] font-[500] gray ${
-                            expandedItems[index] ? "" : "line-clamp-2"
-                          }`}
+                          className={`text-[14px] font-[500] gray ${expandedItems[index] ? "" : "line-clamp-2"
+                            }`}
                         >
                           {items?.preview_text}
                         </p>
@@ -464,12 +340,11 @@ const Articles = () => {
                           </button>
                         )}
                       </div>
+
                       {/* Button Always at Bottom */}
                       <div className="mt-auto pt-4">
                         <button
-                          onClick={() =>
-                            navigate(`/ArticleDetails/${items?._id}`)
-                          }
+                          onClick={() => navigate(`/ArticleDetails/${items?._id}`)}
                           className="flex justify-center gap-1 cursor-pointer bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700]"
                         >
                           <span className="my-auto">View Article</span>
@@ -477,6 +352,7 @@ const Articles = () => {
                       </div>
                     </div>
                   </div>
+
                 );
               })
             ) : (
