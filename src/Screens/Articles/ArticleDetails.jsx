@@ -111,7 +111,7 @@ const ArticleDetails = () => {
                     {ArticleDetail?.category}
                   </h1>
                   <p className="text-[12px] font-[500] gray my-auto">
-                    {new Date(ArticleDetail?.date).toLocaleDateString("en-US", {
+                    {new Date(ArticleDetail?.created_at).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
@@ -145,9 +145,8 @@ const ArticleDetails = () => {
                           navigate(`/ArticleDetails/${items?._id}`)
                         }
                         key={index}
-                        className={`flex gap-3 mt-3 hover:bg-[#F4F4F4] hover:rounded-[8px] cursor-pointer ${
-                          id === items?._id ? "bg-[#F4F4F4]" : ""
-                        }`}
+                        className={`flex gap-3 mt-3 hover:bg-[#F4F4F4] hover:rounded-[8px] cursor-pointer ${id === items?._id ? "bg-[#F4F4F4]" : ""
+                          }`}
                       >
                         <div className="my-auto  w-[100px] h-[60px] lg:w-[130px] lg:h-[80px]">
                           <img
@@ -182,8 +181,8 @@ const ArticleDetails = () => {
                     );
                   })
                 ) : (
-                  <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[500] lightgray3 text-[16px]">
-                    No vedio list{" "}
+                  <span className="text-center p-5 grid grid-cols-1 col-span-10 font-[500] lightgray3 text-[16px]">
+                    No Article Found
                   </span>
                 )}
               </div>
