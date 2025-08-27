@@ -96,11 +96,11 @@ const ArticleDetails = () => {
 
           <div className="grid grid:cols-1 lg:grid-cols-12 md:grid-cols-12 gap-4">
             <div className="bg-white rounded-[8px] border-[1px] border-[#E8E8E8] bg_white rounded-[8px] col-span-12 md:col-span-12 lg:col-span-8 p-2 lg:p-4">
-              <div className="">
+              <div className=" h-[300px]">
                 <img
                   src={ArticleDetail?.image}
                   alt={ArticleDetail?.image}
-                  className="w-full h-[300px] rounded-[8px]"
+                  className="w-full h-full rounded-[8px]"
                 />
               </div>
               {/* Detail */}
@@ -147,11 +147,11 @@ const ArticleDetails = () => {
                         className={`flex gap-3 mt-3 hover:bg-[#F4F4F4] hover:rounded-[8px] cursor-pointer ${id === items?._id ? "bg-[#F4F4F4]" : ""
                           }`}
                       >
-                        <div className="my-auto  w-[100px] h-[60px] lg:w-[130px] lg:h-[80px]">
+                        <div className="my-auto w-[100px] h-[60px] lg:w-[130px] lg:h-[80px]">
                           <img
                             src={items?.image}
                             alt={items?.image}
-                            className="w-full h-full object-cover my-auto rounded-[8px] border border-[#F4F4F4]"
+                            className="w-full h-full my-auto rounded-[8px] border border-[#F4F4F4]"
                           />{" "}
                         </div>
                         <div className="my-auto">
