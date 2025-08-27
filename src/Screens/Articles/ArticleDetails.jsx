@@ -100,7 +100,7 @@ const ArticleDetails = () => {
                 <img
                   src={ArticleDetail?.image}
                   alt={ArticleDetail?.image}
-                  className="w-full h-[300px] object-cover rounded-[8px]"
+                  className="w-full h-[300px] rounded-[8px]"
                 />
               </div>
               {/* Detail */}

@@ -26,11 +26,13 @@ import { useNavigate } from "react-router";
 import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
 import ReactPlayer from "react-player";
 import Loader from "../../components/Loader/Loader";
+import { HeaderTabsFtn } from "../../Store/HeaderAndBreadCrumbSlice/HeadAndBcSlice";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 
 const Courses = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const seenLessons = useRef(new Set());
   const pendingDurations = useRef({});
@@ -52,6 +54,7 @@ const Courses = () => {
   const currentPage = Math.floor(filtersPaging.skip / filtersPaging.limit) + 1;
 
   useEffect(() => {
+    dispatch(HeaderTabsFtn("Courses"));
     const FetchCourses = async () => {
       if (initialLoading) {
         setInitialLoading(true);

@@ -21,6 +21,7 @@ import { useRef } from "react";
 import { useNavigate } from "react-router";
 import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
 import Loader from "../../components/Loader/Loader";
+import { HeaderTabsFtn } from "../../Store/HeaderAndBreadCrumbSlice/HeadAndBcSlice";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
@@ -92,6 +93,7 @@ const Articles = () => {
   };
 
   const [categories, setCategories] = useState([]);
+
   const FetchArticlesCategory = async () => {
     setLoading(true);
     try {
@@ -113,7 +115,6 @@ const Articles = () => {
     FetchArticlesCategory();
   }, [Language]);
 
-  const visibleCount = 4;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -132,6 +133,40 @@ const Articles = () => {
       [index]: !prev[index],
     }));
   };
+
+  const containerRef = useRef(null);
+  const [visibleCount, setVisibleCount] = useState(categories.length);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (!containerRef.current) return;
+
+      const containerWidth = containerRef.current.offsetWidth;
+      let usedWidth = 0;
+      let count = categories.length;
+
+      // select only category children (skip "All" which is first child)
+      const children = Array.from(containerRef.current.children).slice(1);
+
+      for (let i = 0; i < children.length; i++) {
+        const childWidth = children[i].offsetWidth + 8; // include gap
+        if (usedWidth + childWidth < containerWidth - 60) {
+          // leave ~60px for "More" button
+          usedWidth += childWidth;
+        } else {
+          count = i;
+          break;
+        }
+      }
+
+      setVisibleCount(count);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [categories]);
+
   return (
     <div className="p-3">
       {/* <HeaderTabs /> */}
@@ -148,69 +183,68 @@ const Articles = () => {
             </div>
           </div>{" "}
           {/*  */}
-          <div className="lg:flex justify-between mt-4">
-            <div className="lg:flex justify-between relative">
-              {/* Tabs container (scrollable) */}
-              <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
+          <div className="lg:flex justify-between mt-4 gap-10">
+            {/* Tabs container */}
+            <div className="flex justify-between items-center relative">
+              <div
+                ref={containerRef}
+                className="flex gap-[8px] my-auto max-w-[100%] overflow-x-hidden pb-2 sm:pb-0 flex-nowrap"
+              >
                 {/* "All" tab */}
                 <div
-                  className={`min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
-          hover:bg-[#F9F9F9] transition-colors duration-200 ${Status === "all" ? "bg_white font-[700]" : "bg_lightgray2"
+                  className={`my-auto min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[12px] py-[8px] font-[500] 
+              hover:bg-[#F9F9F9] transition-colors duration-200 ${Status === "all" ? "bg_white font-[700]" : "bg_lightgray2"
                     }`}
                   onClick={() => setStatus("all")}
                 >
-                  <span className="my-auto">
-                    <img
-                      src={CirclesThreeColored}
-                      alt="All"
-                      className="w-[25px] h-[20px]"
-                    />
-                  </span>
+                  <img src={CirclesThreeColored} alt="All" className="w-[25px] h-[20px]" />
                   <span
-                    className={`text-[14px] my-auto ${Status === "all" ? "black" : "gray"
-                      }`}
+                    className={`text-[14px] my-auto ${Status === "all" ? "black" : "gray"}`}
                   >
                     All
                   </span>
                 </div>
 
-                {/* First 4 visible tabs */}
-                {categories?.slice(0, 4).map((cat, index) => (
+                {/* Visible tabs */}
+                {categories?.slice(0, visibleCount).map((cat, index) => (
                   <div
                     key={index}
-                    className={`w-fit cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
-            hover:bg-[#F9F9F9] transition-colors duration-200 ${Status === cat?.category ? "bg_white font-[700]" : "bg_lightgray2"
+                    className={`my-auto w-fit cursor-pointer flex items-center gap-2 rounded-full lg:rounded-[8px] px-[12px] py-[8px] font-[500] 
+      hover:bg-[#F9F9F9] transition-colors duration-200 ${Status === cat?.category ? "bg_white font-[700]" : "bg_lightgray2"
                       }`}
                     onClick={() => setStatus(cat?.category)}
                   >
                     <img
                       src={
-                        cat?.category === "basics"
+                        cat?.category === "Basics"
                           ? LightbulbFilament
-                          : cat?.category === "indicators"
+                          : cat?.category === "Indicators"
                             ? ChartLineUp
-                            : cat?.category === "fundamentals"
+                            : cat?.category === "Fundamentals"
                               ? StackSimple
                               : GearSix
                       }
                       alt="Icon"
-                      className="w-[25px] h-[20px]"
+                      className="w-[20px] h-[20px] shrink-0"
                     />
-                    <span
-                      className={`text-[14px] my-auto capitalize ${Status === cat?.category ? "black" : "gray"
+
+                    <p
+                      className={`text-[14px] capitalize whitespace-nowrap ${Status === cat?.category ? "black" : "gray"
                         }`}
                     >
                       {cat?.category}
-                    </span>
+                    </p>
                   </div>
                 ))}
+
+
               </div>
 
-              {categories?.length > 4 && (
-                <div ref={dropdownRef} className="relative ml-2">
-                  {/* Dropdown button */}
+              {/* Dropdown for overflow */}
+              {visibleCount < categories.length && (
+                <div className="my-auto relative ml-2">
                   <div
-                    className="w-fit mt-[2px] cursor-pointer flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] bg_lightgray2 hover:bg-[#F9F9F9] transition-colors duration-200"
+                    className="my-auto w-fit cursor-pointer flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] bg_lightgray2 hover:bg-[#F9F9F9] transition-colors duration-200"
                     onClick={() => setShowDropdown((prev) => !prev)}
                   >
                     <span className="text-[14px] my-auto gray">More</span>
@@ -225,10 +259,9 @@ const Articles = () => {
                     </svg>
                   </div>
 
-                  {/* Dropdown content (conditionally rendered) */}
                   {showDropdown && (
-                    <div className="absolute z-50 flex flex-col top-full left-0 mt-2 bg-white rounded-lg shadow-md p-2 min-w-[160px] max-h-[250px] overflow-y-auto">
-                      {categories?.slice(4).map((cat, index) => (
+                    <div className="absolute z-50 flex flex-col top-full left-[-80px] mt-2 bg-white rounded-lg shadow-md p-2 min-w-[160px] max-h-[250px] overflow-y-auto">
+                      {categories?.slice(visibleCount).map((cat, index) => (
                         <div
                           key={index}
                           className={`cursor-pointer flex gap-2 items-center px-3 py-2 rounded-md hover:bg-[#f5f5f5] transition-colors duration-150 ${Status === cat?.category
@@ -237,7 +270,7 @@ const Articles = () => {
                             }`}
                           onClick={() => {
                             setStatus(cat?.category);
-                            setShowDropdown(false); // close on selection
+                            setShowDropdown(false);
                           }}
                         >
                           <img
@@ -261,22 +294,16 @@ const Articles = () => {
                 </div>
               )}
             </div>
-            {/*  */}
-            <div className="relative my-auto md:mt-2 lg:mt-0 w-full sm:w-[280px]">
-              <input
-                type="text"
+            {/* Search Input */}
+            <div className="relative my-auto sm:mt-2 lg:mt-0 w-full sm:w-[280px]">
+              <input type="text"
                 placeholder="Search"
                 value={Search}
                 onChange={(e) => setSearch(e.target.value)}
                 autoComplete="off"
-                className="w-full border border-[1.5px] border-[#E8E8E8] bg-white rounded-[8px] outline-none pl-[15px] pr-[45px] py-[7px]"
-              />
+                className="w-full border border-[1.5px] border-[#E8E8E8] bg-white rounded-[8px] outline-none pl-[15px] pr-[45px] py-[7px]" />
               <div className="absolute top-[4px] right-[5px]">
-                <img
-                  src={MagnifyingGlassWhite}
-                  alt="MagnifyingGlass"
-                  className="w-[32px] h-[31px] p-[7px] bg_black rounded-[6px]"
-                />
+                <img src={MagnifyingGlassWhite} alt="MagnifyingGlass" className="w-[32px] h-[31px] p-[7px] bg_black rounded-[6px]" />
               </div>
             </div>
           </div>
