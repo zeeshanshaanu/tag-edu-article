@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 /////////////////////////   *****************   ///////////////////////
 import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
+import Loader from "../../components/Loader/Loader";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
@@ -78,10 +79,8 @@ const ArticleDetails = () => {
       <HeaderTabs />
       {/* Followers Hub header */}
       {loading ? (
-        <div className="flex justify-center items-center min-h-[200px]">
-          <span className="text-center font-[500] text-[16px] text-gray-400">
-            Loading...
-          </span>
+        <div className="flex justify-center items-center h-screen">
+          <Loader />
         </div>
       ) : (
         <div className="">

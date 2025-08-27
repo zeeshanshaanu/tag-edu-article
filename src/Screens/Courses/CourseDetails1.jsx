@@ -3,7 +3,6 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import ReactPlayer from "react-player";
 import { useDispatch, useSelector } from "react-redux";
-import Plyr from "plyr";
 import "plyr/dist/plyr.css";
 /////////////////////////   *****************   ///////////////////////
 import {
@@ -19,6 +18,7 @@ import { useLessonProgress } from "../../hooks/userLessonProgress";
 import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
 import { useLocation } from "react-router-dom";
 import { updateLessonProgress } from "../../Store/Course/CourseSlice";
+import Loader from "../../components/Loader/Loader";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
@@ -37,7 +37,6 @@ const CourseDetails = () => {
   const [expandedItems, setExpandedItems] = useState({});
   const [userProgress, setUserProgress] = useState(null);
   const lessonsProgress = useSelector((state) => state.Course.lessonsProgress);
-
   const [videoDurations, setVideoDurations] = useState({});
   const [selectedLesson, setSelectedLesson] = useState({
     index: "",
@@ -50,7 +49,6 @@ const CourseDetails = () => {
   });
   const location = useLocation();
   const Coursedurationduration = Number(location.state?.duration);
-
   const formatDuration = (input) => {
     const totalSeconds = Number(input);
     if (!Number.isFinite(totalSeconds)) return "N/A";
@@ -67,7 +65,6 @@ const CourseDetails = () => {
 
     return parts.join(" ");
   };
-
   const formatVideoDuration = (milliseconds) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const hours = Math.floor(totalSeconds / 3600);
@@ -137,13 +134,11 @@ const CourseDetails = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      // console.log(response?.data);
       setCourseDetail(response?.data?.data);
-      setLoading(false);
     } catch (error) {
-      setLoading(false);
-
       console.error("Error fetching profile:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -313,11 +308,11 @@ const CourseDetails = () => {
           return id !== lessonId
             ? l
             : {
-                ...l,
-                secondsWatched: playedSeconds,
-                duration: totalDuration,
-                completed: pct >= 100,
-              };
+              ...l,
+              secondsWatched: playedSeconds,
+              duration: totalDuration,
+              completed: pct >= 100,
+            };
         }),
       })),
     }));
@@ -332,7 +327,7 @@ const CourseDetails = () => {
       })
     );
 
-     throttledSaveProgress(
+    throttledSaveProgress(
       lessonId,
       moduleId,
       pct,
@@ -423,11 +418,11 @@ const CourseDetails = () => {
             return id !== lessonId
               ? l
               : {
-                  ...l,
-                  secondsWatched: fromApi.secondsWatched || 0,
-                  duration: videoDurations[lessonId],
-                  completed: fromApi.completed || false,
-                };
+                ...l,
+                secondsWatched: fromApi.secondsWatched || 0,
+                duration: videoDurations[lessonId],
+                completed: fromApi.completed || false,
+              };
           }),
         })),
       }));
@@ -441,441 +436,433 @@ const CourseDetails = () => {
       <div className="">
         <HeaderTabs />
       </div>
-      {/* Followers Hub header */}
-      <div className="my-4 HeaderGreenBGimage p-[20px] rounded-[12px]">
-        <div className="md:flex justify-between gap-5">
-          <div className="my-auto">
-            <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black max-w-[550px] line-clamp-1">
-              {CourseDetail?.title}
-            </h1>
-            <p className="lg:text-[15px] text-[13px] font-[500] black max-w-[500px] line-clamp-2 mt-2">
-              {CourseDetail?.preview_text}
-            </p>
-          </div>
-          {/*  */}
-          <div
-            className="max-h-[90px] my-auto bg_black flex gap-[20px]
+      {Loading ? (
+        <span className="lightgray3 text-center py-10 grid grid-cols-1 col-span-10 black text-[20px]">
+          <Loader />
+        </span>
+      ) : (
+        <>
+          <div className="my-4 HeaderGreenBGimage p-[20px] rounded-[12px]">
+            <div className="md:flex justify-between gap-5">
+              <div className="my-auto">
+                <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black max-w-[550px] line-clamp-1">
+                  {CourseDetail?.title}
+                </h1>
+                <p className="lg:text-[15px] text-[13px] font-[500] black max-w-[500px] line-clamp-2 mt-2">
+                  {CourseDetail?.preview_text}
+                </p>
+              </div>
+              {/*  */}
+              <div
+                className="max-h-[90px] my-auto bg_black flex gap-[20px]
            rounded-[12px] border-[2.5px] border-[#666666] p-[20px]"
-          >
-            <div className="flex gap-[16px]">
-              <div className="lightgreenBoxShahdow my-auto bg_primaryGreen rounded-[8px] flex items-center justidfy-center pl-[14px] w-[55px] h-[45px]">
-                <img
-                  src={TimerBlack}
-                  alt="TimerBlack"
-                  className="w-[24px] h-[24px]"
+              >
+                <div className="flex gap-[16px]">
+                  <div className="lightgreenBoxShahdow my-auto bg_primaryGreen rounded-[8px] flex items-center justidfy-center pl-[14px] w-[55px] h-[45px]">
+                    <img
+                      src={TimerBlack}
+                      alt="TimerBlack"
+                      className="w-[24px] h-[24px]"
+                    />
+                  </div>
+                  <div className="my-auto  gap-2">
+                    {Loading ? (
+                      <span className="white my-auto text-[12px] font-[600]">
+                        Loading...
+                      </span>
+                    ) : (
+                      <>
+                        <h1 className="my-auto text-[14px] lightgray font-[500]">
+                          Duration
+                        </h1>
+                        <p className="white text-[14px] font-[700]">
+                          {Number.isFinite(Coursedurationduration)
+                            ? formatDuration(Coursedurationduration)
+                            : "Loading..."}{" "}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="flex gap-[16px]">
+                  <div className="lightgreenBoxShahdow my-auto bg_primaryGreen rounded-[8px] flex items-center justidfy-center pl-[14px] w-[55px] h-[45px]">
+                    <img
+                      src={RowsBlack}
+                      alt="RowsBlack"
+                      className="w-[24px] h-[24px]"
+                    />
+                  </div>
+                  <div className="my-auto  gap-2">
+                    {Loading ? (
+                      <span className="white my-auto text-[12px] font-[600]">
+                        Loading...
+                      </span>
+                    ) : (
+                      <>
+                        <h1 className="my-auto text-[14px] lightgray font-[500]">
+                          Modules
+                        </h1>
+                        <p className="white text-[14px] font-[700]">
+                          {" "}
+                          {CourseDetail?.modules?.length}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Vedio and List  */}
+          <div className="grid grid:cols-1 lg:grid-cols-12 md:grid-cols-12 gap-4">
+            {/* Vedio Player */}
+            <div className="bg_white rounded-[8px] col-span-12 md:col-span-12 lg:col-span-8 p-4">
+              <div className="video-wrapper">
+                <ReactPlayer
+                  useRef={playerRef}
+                  url={selectedLesson?.video_url}
+                  onProgress={handleProgress}
+                  onDuration={handleDuration}
+                  onPause={saveImmediately}
+                  onSeek={saveImmediately}
+                  onEnded={saveImmediately}
+                  playing={false}
+                  controls
+                  width="100%"
+                  height="100%"
+                  progressInterval={1000}
+                  config={{ file: { attributes: { controlsList: "nodownload" } } }}
+                  onReady={(player) => {
+                    const lessonProgress = getLessonProgress(
+                      selectedLesson.lessonId,
+                      userProgress?.modules || []
+                    );
+                    const resumeAt = lessonProgress?.secondsWatched || 0;
+                    const dur =
+                      lessonProgress?.duration ||
+                      videoDurations?.[selectedLesson.lessonId] ||
+                      0;
+
+                    if (resumeAt > 0 && (!dur || resumeAt < dur)) {
+                      player.seekTo(resumeAt, "seconds");
+                    }
+                  }}
                 />
               </div>
-              <div className="my-auto  gap-2">
-                {Loading ? (
-                  <span className="white my-auto text-[12px] font-[600]">
-                    Loading...
-                  </span>
-                ) : (
-                  <>
-                    <h1 className="my-auto text-[14px] lightgray font-[500]">
-                      Duration
-                    </h1>
-                    <p className="white text-[14px] font-[700]">
-                      {Number.isFinite(Coursedurationduration)
-                        ? formatDuration(Coursedurationduration)
-                        : "Loading..."}{" "}
-                    </p>
-                  </>
-                )}
-              </div>
-            </div>
-            <div className="flex gap-[16px]">
-              <div className="lightgreenBoxShahdow my-auto bg_primaryGreen rounded-[8px] flex items-center justidfy-center pl-[14px] w-[55px] h-[45px]">
-                <img
-                  src={RowsBlack}
-                  alt="RowsBlack"
-                  className="w-[24px] h-[24px]"
-                />
-              </div>
-              <div className="my-auto  gap-2">
-                {Loading ? (
-                  <span className="white my-auto text-[12px] font-[600]">
-                    Loading...
-                  </span>
-                ) : (
-                  <>
-                    <h1 className="my-auto text-[14px] lightgray font-[500]">
-                      Modules
-                    </h1>
-                    <p className="white text-[14px] font-[700]">
-                      {" "}
-                      {CourseDetail?.modules?.length}
-                    </p>
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* Vedio and List  */}
-      <div className="grid grid:cols-1 lg:grid-cols-12 md:grid-cols-12 gap-4">
-        {/* Vedio Player */}
-        <div className="bg_white rounded-[8px] col-span-12 md:col-span-12 lg:col-span-8 p-4">
-          <div className="video-wrapper">
-            <ReactPlayer
-              useRef={playerRef}
-              url={selectedLesson?.video_url}
-              onProgress={handleProgress}
-              onDuration={handleDuration}
-              onPause={saveImmediately}
-              onSeek={saveImmediately}
-              onEnded={saveImmediately}
-              playing={false}
-              controls
-              width="100%"
-              height="100%"
-              progressInterval={1000}
-              config={{ file: { attributes: { controlsList: "nodownload" } } }}
-              onReady={(player) => {
-                const lessonProgress = getLessonProgress(
-                  selectedLesson.lessonId,
-                  userProgress?.modules || []
-                );
-                const resumeAt = lessonProgress?.secondsWatched || 0;
-                const dur =
-                  lessonProgress?.duration ||
-                  videoDurations?.[selectedLesson.lessonId] ||
-                  0;
 
-                if (resumeAt > 0 && (!dur || resumeAt < dur)) {
-                  player.seekTo(resumeAt, "seconds");
-                }
-              }}
-            />
-          </div>
+              {/*  */}
+              <div className="flex justify-between mt-3 gap-5">
+                <h1 className="text-[20px] font-[700] black line-clamp-2 max-w-[600px]">
+                  {selectedLesson?.title}.{selectedLesson?.index}
+                </h1>
+                <div className="flex gap-2">
+                  {/* PREV */}
+                  <button
+                    onClick={handlePrevLesson}
+                    disabled={selectedLesson?.index <= 1}
+                    className={`h-[40px] px-3 py-3 border border-[#E8E8E8] rounded-[8px] transition duration-300
+                ${selectedLesson?.index <= 1
+                        ? "cursor-not-allowed bg-gray-100 hover:shadow-none"
+                        : "cursor-pointer hover:shadow-sm"
+                      }`}
+                  >
+                    <img src={BlackLeftArrow} alt="Prev" />
+                  </button>
 
-          {/*  */}
-          <div className="flex justify-between mt-3 gap-5">
-            <h1 className="text-[20px] font-[700] black line-clamp-2 max-w-[600px]">
-              {selectedLesson?.title}.{selectedLesson?.index}
-            </h1>
-            <div className="flex gap-2">
-              {/* PREV */}
-              <button
-                onClick={handlePrevLesson}
-                disabled={selectedLesson?.index <= 1}
-                className={`h-[40px] px-3 py-3 border border-[#E8E8E8] rounded-[8px] transition duration-300
-                ${
-                  selectedLesson?.index <= 1
-                    ? "cursor-not-allowed bg-gray-100 hover:shadow-none"
-                    : "cursor-pointer hover:shadow-sm"
-                }`}
-              >
-                <img src={BlackLeftArrow} alt="Prev" />
-              </button>
-
-              {/* NEXT */}
-              <button
-                onClick={handleNextLesson}
-                disabled={
-                  selectedLesson?.index >= selectedModule?.lessons?.length
-                }
-                className={`h-[40px] px-3 py-3 border border-[#E8E8E8] rounded-[8px] transition duration-300
-                ${
-                  selectedLesson?.index >= selectedModule?.lessons?.length
-                    ? "cursor-not-allowed bg-gray-100 hover:shadow-none"
-                    : "cursor-pointer hover:shadow-sm"
-                }`}
-              >
-                <img src={BlackRightArrow} alt="Next" />
-              </button>
-            </div>
-          </div>
-          {/* Time and lessons */}
-          <div className="flex gap-[12px]">
-            <div className="my-auto">
-              <p className="flex gap-1 text-[14px] font-[500] gray">
-                <img src={Timer} alt="Timer" className=" my-auto" />{" "}
-                <span className="my-auto pr-[12px] border-r-[2px] border-[#E8E8E8]">
-                  {formatVideoDuration(
-                    (videoDurations[selectedLesson.lessonId] || 0) * 1000
-                  )}
-                </span>
-              </p>
-            </div>
-            <div className="my-auto">
-              <p className="flex gap-1 text-[14px] font-[500] gray">
-                <img
-                  src={PlayCircleGray}
-                  alt="PlayCircleGray"
-                  className=" my-auto"
-                />{" "}
-                <span className="my-auto">
-                  {selectedLesson?.index || 1}/{selectedModule?.lessons?.length}{" "}
-                  Lessons
-                </span>
-              </p>
-            </div>
-          </div>
-          {/* Desc */}
-          <p className="text-[14px] font-[500] gray mt-[6px] ">
-            {/* <p
+                  {/* NEXT */}
+                  <button
+                    onClick={handleNextLesson}
+                    disabled={
+                      selectedLesson?.index >= selectedModule?.lessons?.length
+                    }
+                    className={`h-[40px] px-3 py-3 border border-[#E8E8E8] rounded-[8px] transition duration-300
+                ${selectedLesson?.index >= selectedModule?.lessons?.length
+                        ? "cursor-not-allowed bg-gray-100 hover:shadow-none"
+                        : "cursor-pointer hover:shadow-sm"
+                      }`}
+                  >
+                    <img src={BlackRightArrow} alt="Next" />
+                  </button>
+                </div>
+              </div>
+              {/* Time and lessons */}
+              <div className="flex gap-[12px]">
+                <div className="my-auto">
+                  <p className="flex gap-1 text-[14px] font-[500] gray">
+                    <img src={Timer} alt="Timer" className=" my-auto" />{" "}
+                    <span className="my-auto pr-[12px] border-r-[2px] border-[#E8E8E8]">
+                      {formatVideoDuration(
+                        (videoDurations[selectedLesson.lessonId] || 0) * 1000
+                      )}
+                    </span>
+                  </p>
+                </div>
+                <div className="my-auto">
+                  <p className="flex gap-1 text-[14px] font-[500] gray">
+                    <img
+                      src={PlayCircleGray}
+                      alt="PlayCircleGray"
+                      className=" my-auto"
+                    />{" "}
+                    <span className="my-auto">
+                      {selectedLesson?.index || 1}/{selectedModule?.lessons?.length}{" "}
+                      Lessons
+                    </span>
+                  </p>
+                </div>
+              </div>
+              {/* Desc */}
+              <p className="text-[14px] font-[500] gray mt-[6px] ">
+                {/* <p
               dangerouslySetInnerHTML={{
                 __html: selectedLesson?.lession_summary,
               }}
             /> */}
-            <div className="mt-[6px]">
-              <div
-                className={`text-[14px] font-[500] gray  ${
-                  expandedLesson ? "" : "line-clamp-4"
-                }`}
-                dangerouslySetInnerHTML={{
-                  __html: selectedLesson?.lession_summary,
-                }}
-              />
-              {selectedLesson?.lession_summary?.length > 400 && (
-                <button
-                  onClick={() => setExpandedLesson(!expandedLesson)}
-                  className="text-[14px] font-[700] gray mt-1 cursor-pointer hover:underline"
-                >
-                  {expandedLesson ? "Show less" : "Read more"}
-                </button>
-              )}
+                <div className="mt-[6px]">
+                  <div
+                    className={`text-[14px] font-[500] gray  ${expandedLesson ? "" : "line-clamp-4"
+                      }`}
+                    dangerouslySetInnerHTML={{
+                      __html: selectedLesson?.lession_summary,
+                    }}
+                  />
+                  {selectedLesson?.lession_summary?.length > 400 && (
+                    <button
+                      onClick={() => setExpandedLesson(!expandedLesson)}
+                      className="text-[14px] font-[700] gray mt-1 cursor-pointer hover:underline"
+                    >
+                      {expandedLesson ? "Show less" : "Read more"}
+                    </button>
+                  )}
+                </div>
+              </p>
             </div>
-          </p>
-        </div>
-        {/* Vedio List */}
-        <div className="bg_white rounded-[8px] col-span-12 md:col-span-12 lg:col-span-4 p-4">
-          <h1 className="inline-block bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[6px] px-2 py-[3px]">
-            Module {selectedLessonIndex}
-          </h1>
-          <h1 className="text-[20px] font-[700] black mt-3">
-            {selectedModule?.title}
-          </h1>
-          <p
-            dangerouslySetInnerHTML={{
-              __html: selectedModule?.module_summary,
-            }}
-            className="text-[14px] font-[500] gray mt-[6px] line-clamp-2"
-          ></p>
-          <div className="VedioList mt-4 max-h-[620px] overflow-y-scroll">
-            {Loading ? (
-              <span className="text-center p-5 grid grid-cols-1 col-span-10 font-[500] lightgray3 text-[16px]">
-                Loading...
-              </span>
-            ) : (
+            {/* Vedio List */}
+            <div className="bg_white rounded-[8px] col-span-12 md:col-span-12 lg:col-span-4 p-4">
+              <h1 className="inline-block bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[6px] px-2 py-[3px]">
+                Module {selectedLessonIndex}
+              </h1>
+              <h1 className="text-[20px] font-[700] black mt-3">
+                {selectedModule?.title}
+              </h1>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: selectedModule?.module_summary,
+                }}
+                className="text-[14px] font-[500] gray mt-[6px] line-clamp-2"
+              ></p>
+              <div className="VedioList mt-4 max-h-[620px] overflow-y-scroll">
+                {Loading ? (
+                  <span className="text-center p-5 grid grid-cols-1 col-span-10 font-[500] lightgray3 text-[16px]">
+                    Loading...
+                  </span>
+                ) : (
+                  <>
+                    {selectedModule?.lessons?.length > 0 ? (
+                      selectedModule?.lessons?.map((lesson, index) => {
+                        const progressData = lessonsProgress[lesson._id] || {};
+                        const percentage = progressData.percentage || 0;
+
+                        // const progress = getLessonProgress(
+                        //   lesson._id,
+                        //   userProgress?.modules || []
+                        // );
+                        // const percentage = progress?.completed
+                        //   ? 100
+                        //   : progress?.duration > 0
+                        //   ? Math.floor(
+                        //       (progress.secondsWatched / progress.duration) * 100
+                        //     )
+                        //   : 0;
+
+                        return (
+                          <div key={lesson._id}>
+                            <div
+                              onClick={() =>
+                                setSelectedLesson({
+                                  index: index + 1,
+                                  video_url: lesson?.video_url,
+                                  title: lesson?.title,
+                                  current_lesson: index,
+                                  lession_summary: lesson?.lession_summary,
+                                  moduleId: selectedModule?._id,
+                                  lessonId: lesson?._id,
+                                })
+                              }
+                              className={`flex gap-3 mt-3 hover:bg-[#F4F4F4] hover:rounded-[8px] cursor-pointer ${selectedLesson?.lessonId === lesson?._id
+                                ? "bg-[#F4F4F4]"
+                                : ""
+                                }`}
+                            >
+                              {/* Thumbnail */}
+                              <div className="my-auto w-[100px] h-[60px] lg:w-[130px] lg:h-[80px]">
+                                <img
+                                  src={getYouTubeThumbnail(lesson?.video_url)}
+                                  className="w-full h-full object-cover rounded-[8px]"
+                                />
+                              </div>
+
+                              {/* Lesson Info */}
+                              <div className="my-auto">
+                                <h1 className="text-[14px] font-[500] line-clamp-2 lg:w-[200px] md:w-[600px] w-[200px]">
+                                  {index + 1}. {lesson?.title}
+                                </h1>
+
+                                {/* Duration */}
+                                <p className="flex gap-1 text-[14px] font-[500] gray mt-[5px]">
+                                  <img
+                                    src={Timer}
+                                    alt="Timer"
+                                    className="my-auto"
+                                  />
+                                  <span className="my-auto">
+                                    {formatVideoDuration(
+                                      (videoDurations[lesson._id] || 0) * 1000
+                                    )}
+                                  </span>
+                                </p>
+
+                                {/* Progress Bar */}
+                                <div className="mt-2 w-full h-[6px] bg-gray-200 rounded-full overflow-hidden">
+                                  <div
+                                    className={`h-full transition-all duration-300 ${percentage === 100
+                                      ? "bg-green-600"
+                                      : "bg-[#FF1033]"
+                                      }`}
+                                    style={{ width: `${percentage}%` }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <span className="text-center p-10 font-[500] lightgray3 text-[16px]">
+                        No video list
+                      </span>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+          {/* Course Modules */}
+          <div className="my-4 bg_white rounded-[8px]  sm:p-5 p-3">
+            <h1 className="text-[20px] font-[700] black mb-4 ">Course Modules</h1>
+            <div className="Cards grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
               <>
-                {selectedModule?.lessons?.length > 0 ? (
-                  selectedModule?.lessons?.map((lesson, index) => {
-                    const progressData = lessonsProgress[lesson._id] || {};
-                    const percentage = progressData.percentage || 0;
-
-                    // const progress = getLessonProgress(
-                    //   lesson._id,
-                    //   userProgress?.modules || []
-                    // );
-                    // const percentage = progress?.completed
-                    //   ? 100
-                    //   : progress?.duration > 0
-                    //   ? Math.floor(
-                    //       (progress.secondsWatched / progress.duration) * 100
-                    //     )
-                    //   : 0;
-
+                {CourseDetail?.modules?.length > 0 ? (
+                  CourseDetail?.modules?.map((items, index) => {
                     return (
-                      <div key={lesson._id}>
-                        <div
-                          onClick={() =>
-                            setSelectedLesson({
-                              index: index + 1,
-                              video_url: lesson?.video_url,
-                              title: lesson?.title,
-                              current_lesson: index,
-                              lession_summary: lesson?.lession_summary,
-                              moduleId: selectedModule?._id,
-                              lessonId: lesson?._id,
-                            })
-                          }
-                          className={`flex gap-3 mt-3 hover:bg-[#F4F4F4] hover:rounded-[8px] cursor-pointer ${
-                            selectedLesson?.lessonId === lesson?._id
-                              ? "bg-[#F4F4F4]"
-                              : ""
+                      <div
+                        key={index}
+                        className={`rounded-[8px] border-[1px] border-[#E8E8E8] flex flex-col ${selectedModule?.title === items?.title
+                          ? "bg-[#F4F4F4]"
+                          : ""
                           }`}
-                        >
-                          {/* Thumbnail */}
-                          <div className="my-auto w-[100px] h-[60px] lg:w-[130px] lg:h-[80px]">
-                            <img
-                              src={getYouTubeThumbnail(lesson?.video_url)}
-                              className="w-full h-full object-cover rounded-[8px]"
-                            />
+                      >
+                        {/* Detail */}
+                        <div className="p-[13px] flex flex-col flex-1">
+                          <div className="">
+                            <h1 className="inline-block bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[6px] px-2 py-[3px]">
+                              Module {index + 1}
+                            </h1>
                           </div>
 
-                          {/* Lesson Info */}
-                          <div className="my-auto">
-                            <h1 className="text-[14px] font-[500] line-clamp-2 lg:w-[200px] md:w-[600px] w-[200px]">
-                              {index + 1}. {lesson?.title}
-                            </h1>
-
-                            {/* Duration */}
-                            <p className="flex gap-1 text-[14px] font-[500] gray mt-[5px]">
-                              <img
-                                src={Timer}
-                                alt="Timer"
-                                className="my-auto"
-                              />
-                              <span className="my-auto">
-                                {formatVideoDuration(
-                                  (videoDurations[lesson._id] || 0) * 1000
-                                )}
-                              </span>
-                            </p>
-
-                            {/* Progress Bar */}
-                            <div className="mt-2 w-full h-[6px] bg-gray-200 rounded-full overflow-hidden">
-                              <div
-                                className={`h-full transition-all duration-300 ${
-                                  percentage === 100
-                                    ? "bg-green-600"
-                                    : "bg-[#FF1033]"
+                          {/*  */}
+                          <h1 className="text-[20px] font-[700] mt-[12px] line-clamp-1">
+                            {items?.title}
+                            {/* __html: items?.module_summary, */}
+                          </h1>
+                          {/*  */}
+                          <div className="mt-[6px]">
+                            <div
+                              className={`text-[14px] font-[500] gray  ${expandedItems[index] ? "" : "line-clamp-3"
                                 }`}
-                                style={{ width: `${percentage}%` }}
-                              />
+                              dangerouslySetInnerHTML={{
+                                __html: items?.module_summary,
+                              }}
+                            />
+                            {items?.module_summary?.length > 290 && (
+                              <button
+                                onClick={() => ShowMoreText(index)}
+                                className="text-[14px] font-[700] gray mt-1 cursor-pointer hover:underline"
+                              >
+                                {expandedItems[index] ? "Show less" : "Read more"}
+                              </button>
+                            )}
+                          </div>
+                          {/*  */}
+                          <div className="flex gap-5 my-2">
+                            <div className="my-auto">
+                              <p className="flex gap-1 text-[14px] font-[500] gray">
+                                <img
+                                  src={Timer}
+                                  alt="Timer"
+                                  className=" my-auto"
+                                />
+                                <span className="my-auto">
+                                  {formatVideoDuration(
+                                    getModuleTotalDuration(items) * 1000
+                                  )}
+                                </span>
+                              </p>
                             </div>
+                            <div className="my-auto">
+                              <p className="flex gap-1 text-[14px] font-[500] gray">
+                                <img
+                                  src={PlayCircleGray}
+                                  alt="PlayCircleGray"
+                                  className=" my-auto"
+                                />
+                                <span className="my-auto">
+                                  {items?.lessons?.length} Lessons
+                                </span>
+                              </p>
+                            </div>
+                          </div>
+                          {/*  */}
+                          <div className="mt-auto pt-3">
+                            <button
+                              onClick={() => {
+                                setSelectedModule(items);
+                                setSelectedLessonIndex(index + 1);
+
+                                if (items?.lessons?.length > 0) {
+                                  const firstLesson = items.lessons[0];
+                                  setSelectedLesson({
+                                    index: 1,
+                                    video_url: firstLesson.video_url,
+                                    title: firstLesson.title,
+                                    current_lesson: 1,
+                                    lession_summary: firstLesson.lession_summary,
+                                    moduleId: selectedModule?._id,
+                                    lessonId: firstLesson._id,
+                                  });
+                                }
+                              }}
+                              className="flex justify-center gap-1 w-full py-2 px-5 rounded-[8px] text-[14px] font-[700] bg-black text-white hover:shadow-md transition duration-200 cursor-pointer"
+                            >
+                              <img src={Play} alt="Play" className="my-auto" />
+                              <span className="my-auto">
+                                {getModuleButtonLabel(items)}
+                              </span>
+                            </button>
                           </div>
                         </div>
                       </div>
                     );
                   })
                 ) : (
-                  <span className="text-center p-10 font-[500] lightgray3 text-[16px]">
-                    No video list
+                  <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[500] lightgray3 text-[16px]">
+                    No Module Found
                   </span>
                 )}
               </>
-            )}
+            </div>
           </div>
-        </div>
-      </div>
-      {/* Course Modules */}
-      <div className="my-4 bg_white rounded-[8px]  sm:p-5 p-3">
-        <h1 className="text-[20px] font-[700] black mb-4 ">Course Modules</h1>
-        <div className="Cards grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
-          {Loading ? (
-            <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[500] black text-[16px]">
-              Loading...
-            </span>
-          ) : (
-            <>
-              {CourseDetail?.modules?.length > 0 ? (
-                CourseDetail?.modules?.map((items, index) => {
-                  return (
-                    <div
-                      key={index}
-                      className={`rounded-[8px] border-[1px] border-[#E8E8E8] flex flex-col ${
-                        selectedModule?.title === items?.title
-                          ? "bg-[#F4F4F4]"
-                          : ""
-                      }`}
-                    >
-                      {/* Detail */}
-                      <div className="p-[13px] flex flex-col flex-1">
-                        <div className="">
-                          <h1 className="inline-block bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[6px] px-2 py-[3px]">
-                            Module {index + 1}
-                          </h1>
-                        </div>
-
-                        {/*  */}
-                        <h1 className="text-[20px] font-[700] mt-[12px] line-clamp-1">
-                          {items?.title}
-                          {/* __html: items?.module_summary, */}
-                        </h1>
-                        {/*  */}
-                        <div className="mt-[6px]">
-                          <div
-                            className={`text-[14px] font-[500] gray  ${
-                              expandedItems[index] ? "" : "line-clamp-3"
-                            }`}
-                            dangerouslySetInnerHTML={{
-                              __html: items?.module_summary,
-                            }}
-                          />
-                          {items?.module_summary?.length > 290 && (
-                            <button
-                              onClick={() => ShowMoreText(index)}
-                              className="text-[14px] font-[700] gray mt-1 cursor-pointer hover:underline"
-                            >
-                              {expandedItems[index] ? "Show less" : "Read more"}
-                            </button>
-                          )}
-                        </div>
-                        {/*  */}
-                        <div className="flex gap-5 my-2">
-                          <div className="my-auto">
-                            <p className="flex gap-1 text-[14px] font-[500] gray">
-                              <img
-                                src={Timer}
-                                alt="Timer"
-                                className=" my-auto"
-                              />
-                              <span className="my-auto">
-                                {formatVideoDuration(
-                                  getModuleTotalDuration(items) * 1000
-                                )}
-                              </span>
-                            </p>
-                          </div>
-                          <div className="my-auto">
-                            <p className="flex gap-1 text-[14px] font-[500] gray">
-                              <img
-                                src={PlayCircleGray}
-                                alt="PlayCircleGray"
-                                className=" my-auto"
-                              />
-                              <span className="my-auto">
-                                {items?.lessons?.length} Lessons
-                              </span>
-                            </p>
-                          </div>
-                        </div>
-                        {/*  */}
-                        <div className="mt-auto pt-3">
-                          <button
-                            onClick={() => {
-                              setSelectedModule(items);
-                              setSelectedLessonIndex(index + 1);
-
-                              if (items?.lessons?.length > 0) {
-                                const firstLesson = items.lessons[0];
-                                setSelectedLesson({
-                                  index: 1,
-                                  video_url: firstLesson.video_url,
-                                  title: firstLesson.title,
-                                  current_lesson: 1,
-                                  lession_summary: firstLesson.lession_summary,
-                                  moduleId: selectedModule?._id,
-                                  lessonId: firstLesson._id,
-                                });
-                              }
-                            }}
-                            className="flex justify-center gap-1 w-full py-2 px-5 rounded-[8px] text-[14px] font-[700] bg-black text-white hover:shadow-md transition duration-200 cursor-pointer"
-                          >
-                            <img src={Play} alt="Play" className="my-auto" />
-                            <span className="my-auto">
-                              {getModuleButtonLabel(items)}
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[500] lightgray3 text-[16px]">
-                  No Module Found
-                </span>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-      {/* This container Pre calculate All video list durations */}
+        </>)}
 
       <div style={{ display: "none" }}>
         {CourseDetail?.modules
