@@ -34,7 +34,7 @@ const Articles = () => {
   const dropdownRef = useRef();
   const [Status, setStatus] = useState("all");
   const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true); // ✅ New
+  const [initialLoading, setInitialLoading] = useState(true);
   const [articlesData, setArticlesData] = useState([]);
   const AuthToken = useSelector((state) => state?.Auth);
   const token = AuthToken?.Authtoken;
@@ -79,9 +79,7 @@ const Articles = () => {
         setLoading(false);
       }
     };
-
     FetchArticles();
-
     return () => clearTimeout(loadingDelayRef.current);
   }, [currentPage, Search, Status, filtersPaging.limit, token, Language]);
 
@@ -134,42 +132,36 @@ const Articles = () => {
     }));
   };
 
+  const [visibleCount, setVisibleCount] = useState(0);
   const containerRef = useRef(null);
-  const [visibleCount, setVisibleCount] = useState(categories.length);
+  const tabsRefs = useRef([]);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (!containerRef.current) return;
+    if (!categories || categories.length === 0) return;
 
-      const containerWidth = containerRef.current.offsetWidth;
-      let usedWidth = 0;
-      let count = categories.length;
+    const container = containerRef.current;
+    if (!container) return;
 
-      // select only category children (skip "All" which is first child)
-      const children = Array.from(containerRef.current.children).slice(1);
+    let availableWidth = container.offsetWidth - 60; // leave space for dropdown button
+    let usedWidth = 0;
+    let count = 0;
 
-      for (let i = 0; i < children.length; i++) {
-        const childWidth = children[i].offsetWidth + 8; // include gap
-        if (usedWidth + childWidth < containerWidth - 60) {
-          // leave ~60px for "More" button
-          usedWidth += childWidth;
-        } else {
-          count = i;
-          break;
-        }
+    for (let i = 0; i < categories.length; i++) {
+      const tabWidth = tabsRefs.current[i]?.offsetWidth || 0;
+      if (usedWidth + tabWidth <= availableWidth) {
+        usedWidth += tabWidth;
+        count++;
+      } else {
+        break;
       }
+    }
 
-      setVisibleCount(count);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [categories]);
+    setVisibleCount(count);
+  }, [categories, Status]);
 
   return (
     <div className="p-3">
-      {/* <HeaderTabs /> */}
+      {/* <HeaderTabs />  whitespace-nowrap */}
       <HeaderTabs />
       {initialLoading ? (
         <Loader />
@@ -185,114 +177,119 @@ const Articles = () => {
           {/*  */}
           <div className="lg:flex justify-between mt-4 gap-10">
             {/* Tabs container */}
-            <div className="flex justify-between items-center relative">
-              <div
-                ref={containerRef}
-                className="flex gap-[8px] my-auto max-w-[100%] overflow-x-hidden pb-2 sm:pb-0 flex-nowrap"
-              >
+            <div className="lg:flex justify-between relative">
+              {/* Tabs container (scrollable) */}
+              <div className="flex gap-[8px] my-auto max-w-[100%] overflow-x-auto pb-2 sm:pb-0">
                 {/* "All" tab */}
                 <div
-                  className={`my-auto min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[12px] py-[8px] font-[500] 
-              hover:bg-[#F9F9F9] transition-colors duration-200 ${Status === "all" ? "bg_white font-[700]" : "bg_lightgray2"
+                  className={`min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
+          hover:bg-[#F9F9F9] transition-colors duration-200 ${Status === "all" ? "bg_white font-[700]" : "bg_lightgray2"
                     }`}
                   onClick={() => setStatus("all")}
                 >
-                  <img src={CirclesThreeColored} alt="All" className="w-[25px] h-[20px]" />
+                  <span className="my-auto">
+                    <img
+                      src={CirclesThreeColored}
+                      alt="All"
+                      className="w-[25px] h-[20px]"
+                    />
+                  </span>
                   <span
-                    className={`text-[14px] my-auto ${Status === "all" ? "black" : "gray"}`}
+                    className={`text-[14px] my-auto ${Status === "all" ? "black" : "gray"
+                      }`}
                   >
                     All
                   </span>
                 </div>
-
-                {/* Visible tabs */}
-                {categories?.slice(0, visibleCount).map((cat, index) => (
-                  <div
-                    key={index}
-                    className={`my-auto w-fit cursor-pointer flex items-center gap-2 rounded-full lg:rounded-[8px] px-[12px] py-[8px] font-[500] 
-      hover:bg-[#F9F9F9] transition-colors duration-200 ${Status === cat?.category ? "bg_white font-[700]" : "bg_lightgray2"
-                      }`}
-                    onClick={() => setStatus(cat?.category)}
-                  >
-                    <img
-                      src={
-                        cat?.category === "Basics"
-                          ? LightbulbFilament
-                          : cat?.category === "Indicators"
-                            ? ChartLineUp
-                            : cat?.category === "Fundamentals"
-                              ? StackSimple
-                              : GearSix
-                      }
-                      alt="Icon"
-                      className="w-[20px] h-[20px] shrink-0"
-                    />
-
-                    <p
-                      className={`text-[14px] capitalize whitespace-nowrap ${Status === cat?.category ? "black" : "gray"
+                <div className="flex gap-[8px]">
+                  {categories?.slice(0, 6).map((cat, index) => (
+                    <div
+                      key={index}
+                      className={`w-fit cursor-pointer my-auto flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
+            hover:bg-[#F9F9F9] transition-colors duration-200 ${Status === cat?.category ? "bg_white font-[700]" : "bg_lightgray2"
                         }`}
+                      onClick={() => setStatus(cat?.category)}
                     >
-                      {cat?.category}
-                    </p>
-                  </div>
-                ))}
-
-
+                      <img
+                        src={
+                          cat?.category === "basics" || cat?.category === "Basics"
+                            ? LightbulbFilament
+                            : cat?.category === "indicators" || cat?.category === "Indicators"
+                              ? ChartLineUp
+                              : cat?.category === "fundamentals" || cat?.category === "Fundamentals"
+                                ? StackSimple
+                                : GearSix
+                        }
+                        alt="Icon"
+                        className="w-[25px] h-[20px]"
+                      />
+                      <span
+                        className={`text-[14px] my-auto capitalize whitespace-nowrap ${Status === cat?.category ? "black" : "gray"
+                          }`}
+                      >
+                        {cat?.category}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              {/* Dropdown for overflow */}
-              {visibleCount < categories.length && (
-                <div className="my-auto relative ml-2">
-                  <div
-                    className="my-auto w-fit cursor-pointer flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] bg_lightgray2 hover:bg-[#F9F9F9] transition-colors duration-200"
-                    onClick={() => setShowDropdown((prev) => !prev)}
-                  >
-                    <span className="text-[14px] my-auto gray">More</span>
-                    <svg
-                      className="w-4 h-4 my-auto"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
+              <div>
+                {categories?.length > 6 && (
+                  <div ref={dropdownRef} className="relative ml-2">
+                    {/* Dropdown button */}
+                    <div
+                      className="w-fit mt-[2px] cursor-pointer flex gap-1 rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] bg_lightgray2 hover:bg-[#F9F9F9] transition-colors duration-200"
+                      onClick={() => setShowDropdown((prev) => !prev)}
                     >
-                      <path d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </div>
-
-                  {showDropdown && (
-                    <div className="absolute z-50 flex flex-col top-full left-[-80px] mt-2 bg-white rounded-lg shadow-md p-2 min-w-[160px] max-h-[250px] overflow-y-auto">
-                      {categories?.slice(visibleCount).map((cat, index) => (
-                        <div
-                          key={index}
-                          className={`cursor-pointer flex gap-2 items-center px-3 py-2 rounded-md hover:bg-[#f5f5f5] transition-colors duration-150 ${Status === cat?.category
-                            ? "bg_lightgray2 font-[700]"
-                            : ""
-                            }`}
-                          onClick={() => {
-                            setStatus(cat?.category);
-                            setShowDropdown(false);
-                          }}
-                        >
-                          <img
-                            src={
-                              cat?.category === "basics"
-                                ? LightbulbFilament
-                                : cat?.category === "Indicators"
-                                  ? ChartLineUp
-                                  : cat?.category === "Fundamentals"
-                                    ? StackSimple
-                                    : GearSix
-                            }
-                            alt="Icon"
-                            className="w-[20px] h-[18px]"
-                          />
-                          <span className="text-[14px]">{cat?.category}</span>
-                        </div>
-                      ))}
+                      <span className="text-[14px] my-auto gray">More</span>
+                      <svg
+                        className="w-4 h-4 my-auto"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M19 9l-7 7-7-7" />
+                      </svg>
                     </div>
-                  )}
-                </div>
-              )}
+
+                    {/* Dropdown content (conditionally rendered) */}
+                    {showDropdown && (
+                      <div className="absolute z-50 flex flex-col top-full left-0 mt-2 bg-white rounded-lg shadow-md p-2 min-w-[160px] max-h-[250px] overflow-y-auto">
+                        {categories?.slice(6).map((cat, index) => (
+                          <div
+                            key={index}
+                            className={`cursor-pointer flex gap-2 items-center px-3 py-2 rounded-md hover:bg-[#f5f5f5] transition-colors duration-150 min-w-[160px] ${Status === cat?.category
+                              ? "bg_lightgray2 font-[700]"
+                              : ""
+                              }`}
+                            onClick={() => {
+                              setStatus(cat?.category);
+                              setShowDropdown(false); // close on selection
+                            }}
+                          >
+                            <img
+                              src={
+                                cat?.category === "basics"
+                                  ? LightbulbFilament
+                                  : cat?.category === "Indicators"
+                                    ? ChartLineUp
+                                    : cat?.category === "Fundamentals"
+                                      ? StackSimple
+                                      : GearSix
+                              }
+                              alt="Icon"
+                              className="w-[20px] h-[18px]"
+                            />
+                            <span className="text-[14px] capitalize">{cat?.category}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
             {/* Search Input */}
             <div className="relative my-auto sm:mt-2 lg:mt-0 w-full sm:w-[280px]">

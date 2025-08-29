@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import ReactPlayer from "react-player";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import "plyr/dist/plyr.css";
 /////////////////////////   *****************   ///////////////////////
 import {
@@ -17,14 +17,12 @@ import VedioListImg from "../../assets/Images/VedioListImg.png";
 import { useLessonProgress } from "../../hooks/userLessonProgress";
 import HeaderTabs from "../../components/HeaderTabs/HeaderTabs";
 import { useLocation } from "react-router-dom";
-import { updateLessonProgress } from "../../Store/Course/CourseSlice";
 import Loader from "../../components/Loader/Loader";
 
 // ///////////////////////   *****************   ///////////////////////
 // ///////////////////////   *****************   ///////////////////////
 
 const CourseDetails = () => {
-  const dispatch = useDispatch();
   const { id } = useParams();
   const CourseID = id;
   const AuthToken = useSelector((state) => state?.Auth);
@@ -36,12 +34,13 @@ const CourseDetails = () => {
   const [expandedLesson, setExpandedLesson] = useState(false);
   const [expandedItems, setExpandedItems] = useState({});
   const [userProgress, setUserProgress] = useState(null);
-  const lessonsProgress = useSelector((state) => state.Course.lessonsProgress);
+
   const [videoDurations, setVideoDurations] = useState({});
   const [selectedLesson, setSelectedLesson] = useState({
     index: "",
     video_url: "",
     title: "",
+    estimated_time: "",
     current_lesson: "",
     lession_summary: "",
     moduleId: "",
@@ -49,6 +48,7 @@ const CourseDetails = () => {
   });
   const location = useLocation();
   const Coursedurationduration = Number(location.state?.duration);
+
   const formatDuration = (input) => {
     const totalSeconds = Number(input);
     if (!Number.isFinite(totalSeconds)) return "N/A";
@@ -65,6 +65,7 @@ const CourseDetails = () => {
 
     return parts.join(" ");
   };
+
   const formatVideoDuration = (milliseconds) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const hours = Math.floor(totalSeconds / 3600);
@@ -115,7 +116,7 @@ const CourseDetails = () => {
     const isSelected = selectedModule?._id === module._id;
     if (isSelected) return "In Progress";
     if (moduleStarted) return "Resume";
-    return "Start"; // Never started
+    return "Start";
   };
   const handleDuration = (duration) => {
     if (selectedLesson?.lessonId) {
@@ -124,6 +125,67 @@ const CourseDetails = () => {
         [selectedLesson.lessonId]: duration,
       }));
     }
+  };
+  const { saveProgress } = useLessonProgress(CourseID);
+
+  const handleProgress = ({ playedSeconds }) => {
+    const lessonId = selectedLesson?.lessonId;
+    const moduleId = selectedLesson?.moduleId;
+    const totalDuration = videoDurations[lessonId];
+    if (!totalDuration || totalDuration <= 0) return;
+
+    const percentage = Math.floor((playedSeconds / totalDuration) * 100);
+
+    saveProgress(lessonId, moduleId, percentage, playedSeconds, totalDuration);
+
+    setUserProgress((prev) => {
+      const updatedModules = prev.modules.map((mod) => ({
+        ...mod,
+        lessons: mod.lessons.map((l) =>
+          l.lessonId === lessonId || l.lessonId?._id === lessonId
+            ? {
+              ...l,
+              secondsWatched: playedSeconds,
+              duration: totalDuration,
+              completed: percentage === 100,
+            }
+            : l
+        ),
+      }));
+      return { ...prev, modules: updatedModules };
+    });
+  };
+
+  const LessonsProgress = async () => {
+    try {
+      const response = await axios.get(`/api/progress/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUserProgress(response.data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
+
+  useEffect(() => {
+    LessonsProgress();
+    const interval = setInterval(LessonsProgress, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const getLessonProgress = (lessonId, modules) => {
+    if (!lessonId || !modules?.length) return null;
+
+    for (const mod of modules) {
+      const lesson = mod.lessons?.find((l) => {
+        const id = typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
+        return id === lessonId;
+      });
+      if (lesson) return lesson;
+    }
+    return null;
   };
 
   const CourseDetailDataFtn = async () => {
@@ -134,6 +196,7 @@ const CourseDetails = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      // console.log(response?.data);
       setCourseDetail(response?.data?.data);
     } catch (error) {
       console.error("Error fetching profile:", error);
@@ -160,6 +223,7 @@ const CourseDetails = () => {
           index: firstLesson?.index || 1,
           video_url: firstLesson.video_url,
           title: firstLesson.title,
+          estimated_time: firstLesson.estimated_time,
           current_lesson: 1,
           lession_summary: firstLesson.lession_summary,
           _id: firstLesson._id,
@@ -188,7 +252,6 @@ const CourseDetails = () => {
   };
 
   const handlePrevLesson = () => {
-    saveImmediately();
     if (!selectedModule) return;
     if (selectedLesson?.index > 1) {
       const newIndex = selectedLesson.index - 1;
@@ -203,8 +266,6 @@ const CourseDetails = () => {
   };
 
   const handleNextLesson = () => {
-    saveImmediately();
-
     if (!selectedModule) return;
     if (selectedLesson?.index < selectedModule.lessons.length) {
       const newIndex = selectedLesson.index + 1;
@@ -218,226 +279,13 @@ const CourseDetails = () => {
     }
   };
 
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
-  // Refs to always know the latest "where am I"
-  const currentSecondsRef = useRef(0);
-  const currentLessonRef = useRef({ lessonId: null, moduleId: null });
-  const playerRef = useRef(null);
-
-  const { saveProgress } = useLessonProgress(CourseID, token);
-
-  function throttleTrailing(func, delay) {
-    let timeout = null;
-    let lastArgs = null;
-    return (...args) => {
-      lastArgs = args;
-      if (!timeout) {
-        timeout = setTimeout(() => {
-          func(...lastArgs);
-          timeout = null;
-        }, delay);
-      }
-    };
-  }
-
-  const getLessonProgress = (lessonId, modules) => {
-    if (!lessonId || !modules?.length) return null;
-    for (const mod of modules) {
-      const lesson = mod.lessons?.find((l) => {
-        const id = typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
-        return id === lessonId;
-      });
-      if (lesson) return lesson;
-    }
-    return null;
-  };
-
-  const calcDuration = (lessonId, videoDurations, fromApi) =>
-    videoDurations?.[lessonId] || fromApi?.duration || 1;
-
-  // ---------------------------------------------
-  // Throttled + immediate save
-  // ---------------------------------------------
-  const throttledSaveProgress = useRef(
-    throttleTrailing((lessonId, moduleId, pct, secondsWatched, duration) => {
-      saveProgress(lessonId, moduleId, pct, secondsWatched, duration, {
-        force: false,
-      });
-    }, 3000)
-  ).current;
-
-  const saveImmediately = useCallback(() => {
-    const { lessonId, moduleId } = currentLessonRef.current;
-    if (!lessonId || !moduleId) return;
-
-    const fromApi = getLessonProgress(lessonId, userProgress?.modules);
-    const totalDuration = calcDuration(lessonId, videoDurations, fromApi);
-
-    const secondsWatched = currentSecondsRef.current || 0;
-    const pct = Math.min((secondsWatched / totalDuration) * 100, 100);
-
-    saveProgress(lessonId, moduleId, pct, secondsWatched, totalDuration, {
-      force: true,
-    });
-  }, [saveProgress, userProgress?.modules, videoDurations]);
-
-  // ---------------------------------------------
-  // Handle player progress
-  // ---------------------------------------------
-  const handleProgress = ({ playedSeconds }) => {
-    const lessonId = selectedLesson?.lessonId;
-    const moduleId = selectedLesson?.moduleId;
-    if (!lessonId || !moduleId) return;
-
-    currentLessonRef.current = { lessonId, moduleId };
-    currentSecondsRef.current = playedSeconds;
-
-    const fromApi = getLessonProgress(lessonId, userProgress?.modules);
-    const totalDuration = calcDuration(lessonId, videoDurations, fromApi);
-    const pct = Math.min((playedSeconds / totalDuration) * 100, 100);
-
-    // 1) Update local state (smooth bar)
-    setUserProgress((prev) => ({
-      ...prev,
-      modules: prev.modules.map((mod) => ({
-        ...mod,
-        lessons: (mod.lessons || []).map((l) => {
-          const id =
-            typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
-          return id !== lessonId
-            ? l
-            : {
-              ...l,
-              secondsWatched: playedSeconds,
-              duration: totalDuration,
-              completed: pct >= 100,
-            };
-        }),
-      })),
-    }));
-
-    // 2) Update Redux
-    dispatch(
-      updateLessonProgress({
-        lessonId,
-        secondsWatched: playedSeconds,
-        duration: totalDuration,
-        percentage: pct,
-      })
-    );
-
-    throttledSaveProgress(
-      lessonId,
-      moduleId,
-      pct,
-      playedSeconds,
-      totalDuration
-    );
-  };
-
-  // ---------------------------------------------
-  // Sync lessons with API
-  // ---------------------------------------------
-  const LessonsProgress = async () => {
-    try {
-      const { data: apiData } = await axios.get(`/api/progress/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      setUserProgress((prev) => {
-        if (!prev) return apiData;
-
-        const mergedModules = (prev.modules || []).map((mod) => {
-          const apiMod = apiData.modules?.find((m) => m._id === mod._id) || {};
-          return {
-            ...mod,
-            lessons: (mod.lessons || []).map((lesson) => {
-              const id =
-                typeof lesson.lessonId === "object"
-                  ? lesson.lessonId._id
-                  : lesson.lessonId;
-
-              const apiLesson = apiMod.lessons?.find((l) => {
-                const lid =
-                  typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
-                return lid === id;
-              });
-
-              if (!apiLesson) return lesson;
-
-              return {
-                ...lesson,
-                secondsWatched: Math.max(
-                  lesson.secondsWatched || 0,
-                  apiLesson.secondsWatched || 0
-                ),
-                duration: apiLesson.duration || lesson.duration || 1,
-                completed: lesson.completed || apiLesson.completed,
-              };
-            }),
-          };
-        });
-
-        return { ...prev, modules: mergedModules };
-      });
-    } catch (error) {
-      console.error("Error fetching progress:", error);
-    }
-  };
-
-  // ---------------------------------------------
-  // Effects
-  // ---------------------------------------------
-  useEffect(() => {
-    LessonsProgress();
-    return () => saveImmediately();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (!selectedLesson) return;
-
-    const { lessonId } = selectedLesson;
-    const fromApi = getLessonProgress(lessonId, userProgress?.modules);
-
-    if (fromApi && videoDurations?.[lessonId]) {
-      // Seek player to saved position
-      if (fromApi.secondsWatched > 0 && playerRef.current) {
-        playerRef.current.seekTo(fromApi.secondsWatched, "seconds");
-      }
-
-      // Sync state with safe duration
-      setUserProgress((prev) => ({
-        ...prev,
-        modules: (prev?.modules || []).map((mod) => ({
-          ...mod,
-          lessons: (mod.lessons || []).map((l) => {
-            const id =
-              typeof l.lessonId === "object" ? l.lessonId._id : l.lessonId;
-            return id !== lessonId
-              ? l
-              : {
-                ...l,
-                secondsWatched: fromApi.secondsWatched || 0,
-                duration: videoDurations[lessonId],
-                completed: fromApi.completed || false,
-              };
-          }),
-        })),
-      }));
-    }
-  }, [selectedLesson, videoDurations, userProgress]);
-
-  // ///////////////////////////////////////////////////////////////////////////////////////////////
-
   return (
     <div className="p-3">
       <div className="">
         <HeaderTabs />
       </div>
       {Loading ? (
-        <span className="lightgray3 text-center py-10 grid grid-cols-1 col-span-10 black text-[20px]">
+        <span className="lightgray3 text-center py-10 grid grid-cols-1 col-span-10 black text-[20px] h-screen">
           <Loader />
         </span>
       ) : (
@@ -519,32 +367,32 @@ const CourseDetails = () => {
             <div className="bg_white rounded-[8px] col-span-12 md:col-span-12 lg:col-span-8 p-4">
               <div className="video-wrapper">
                 <ReactPlayer
-                  useRef={playerRef}
                   url={selectedLesson?.video_url}
                   onProgress={handleProgress}
                   onDuration={handleDuration}
-                  onPause={saveImmediately}
-                  onSeek={saveImmediately}
-                  onEnded={saveImmediately}
                   playing={false}
-                  controls
+                  controls={true}
                   width="100%"
                   height="100%"
                   progressInterval={1000}
-                  config={{ file: { attributes: { controlsList: "nodownload" } } }}
+                  config={{
+                    file: {
+                      attributes: {
+                        controlsList: "nodownload",
+                      },
+                    },
+                  }}
+                  // Jump to saved resume time
                   onReady={(player) => {
                     const lessonProgress = getLessonProgress(
                       selectedLesson.lessonId,
                       userProgress?.modules || []
                     );
-                    const resumeAt = lessonProgress?.secondsWatched || 0;
-                    const dur =
-                      lessonProgress?.duration ||
-                      videoDurations?.[selectedLesson.lessonId] ||
-                      0;
-
-                    if (resumeAt > 0 && (!dur || resumeAt < dur)) {
-                      player.seekTo(resumeAt, "seconds");
+                    if (
+                      lessonProgress?.secondsWatched > 0 &&
+                      lessonProgress.secondsWatched < lessonProgress.duration
+                    ) {
+                      player.seekTo(lessonProgress.secondsWatched, "seconds");
                     }
                   }}
                 />
@@ -659,70 +507,63 @@ const CourseDetails = () => {
                 ) : (
                   <>
                     {selectedModule?.lessons?.length > 0 ? (
-                      selectedModule?.lessons?.map((lesson, index) => {
-                        const progressData = lessonsProgress[lesson._id] || {};
-                        const percentage = progressData.percentage || 0;
-
-                        // const progress = getLessonProgress(
-                        //   lesson._id,
-                        //   userProgress?.modules || []
-                        // );
-                        // const percentage = progress?.completed
-                        //   ? 100
-                        //   : progress?.duration > 0
-                        //   ? Math.floor(
-                        //       (progress.secondsWatched / progress.duration) * 100
-                        //     )
-                        //   : 0;
-
+                      selectedModule?.lessons?.map((items, index) => {
+                        const progress = getLessonProgress(
+                          items._id,
+                          userProgress?.modules || []
+                        );
+                        const percentage = progress?.completed
+                          ? 100
+                          : progress?.duration > 0
+                            ? Math.floor(
+                              (progress.secondsWatched / progress.duration) * 100
+                            )
+                            : 0;
                         return (
-                          <div key={lesson._id}>
+                          <div>
                             <div
                               onClick={() =>
                                 setSelectedLesson({
                                   index: index + 1,
-                                  video_url: lesson?.video_url,
-                                  title: lesson?.title,
+                                  video_url: items?.video_url,
+                                  title: items?.title,
+                                  estimated_time: items?.estimated_time,
                                   current_lesson: index,
-                                  lession_summary: lesson?.lession_summary,
-                                  moduleId: selectedModule?._id,
-                                  lessonId: lesson?._id,
+                                  lession_summary: items?.lession_summary,
+                                  moduleId: items?._id,
+                                  lessonId: items?._id,
                                 })
                               }
-                              className={`flex gap-3 mt-3 hover:bg-[#F4F4F4] hover:rounded-[8px] cursor-pointer ${selectedLesson?.lessonId === lesson?._id
+                              key={index}
+                              className={`flex gap-3 mt-3 hover:bg-[#F4F4F4] hover:rounded-[8px] cursor-pointer ${selectedLesson?.lessonId === items?._id
                                 ? "bg-[#F4F4F4]"
                                 : ""
                                 }`}
                             >
-                              {/* Thumbnail */}
-                              <div className="my-auto w-[100px] h-[60px] lg:w-[130px] lg:h-[80px]">
+                              <div className="my-auto  w-[100px] h-[60px] lg:w-[130px] lg:h-[80px]">
                                 <img
-                                  src={getYouTubeThumbnail(lesson?.video_url)}
-                                  className="w-full h-full object-cover rounded-[8px]"
-                                />
+                                  src={getYouTubeThumbnail(items?.video_url)}
+                                  // alt={items?.title}
+                                  className="w-full h-full object-cover my-auto rounded-[8px]"
+                                />{" "}
                               </div>
-
-                              {/* Lesson Info */}
                               <div className="my-auto">
-                                <h1 className="text-[14px] font-[500] line-clamp-2 lg:w-[200px] md:w-[600px] w-[200px]">
-                                  {index + 1}. {lesson?.title}
+                                <h1 className="text-[14px] font-[500] black line-clamp-2 lg:w-[200px] md:w-[600px] w-[200px]">
+                                  {index + 1}.{items?.title}
                                 </h1>
-
-                                {/* Duration */}
                                 <p className="flex gap-1 text-[14px] font-[500] gray mt-[5px]">
                                   <img
                                     src={Timer}
                                     alt="Timer"
-                                    className="my-auto"
-                                  />
+                                    className=" my-auto"
+                                  />{" "}
                                   <span className="my-auto">
                                     {formatVideoDuration(
-                                      (videoDurations[lesson._id] || 0) * 1000
+                                      (videoDurations[items._id] || 0) * 1000
                                     )}
                                   </span>
                                 </p>
 
-                                {/* Progress Bar */}
                                 <div className="mt-2 w-full h-[6px] bg-gray-200 rounded-full overflow-hidden">
                                   <div
                                     className={`h-full transition-all duration-300 ${percentage === 100
@@ -734,12 +575,15 @@ const CourseDetails = () => {
                                 </div>
                               </div>
                             </div>
+                            {/*  */}
+
+                            {/* Optional Label */}
                           </div>
                         );
                       })
                     ) : (
-                      <span className="text-center p-10 font-[500] lightgray3 text-[16px]">
-                        No video list
+                      <span className="text-center p-10 grid grid-cols-1 col-span-10 font-[500] lightgray3 text-[16px]">
+                        No vedio list{" "}
                       </span>
                     )}
                   </>
@@ -835,9 +679,10 @@ const CourseDetails = () => {
                                     index: 1,
                                     video_url: firstLesson.video_url,
                                     title: firstLesson.title,
+                                    estimated_time: firstLesson.estimated_time,
                                     current_lesson: 1,
                                     lession_summary: firstLesson.lession_summary,
-                                    moduleId: selectedModule?._id,
+                                    moduleId: firstLesson._id,
                                     lessonId: firstLesson._id,
                                   });
                                 }
@@ -862,7 +707,8 @@ const CourseDetails = () => {
               </>
             </div>
           </div>
-        </>)}
+        </>
+      )}
 
       <div style={{ display: "none" }}>
         {CourseDetail?.modules

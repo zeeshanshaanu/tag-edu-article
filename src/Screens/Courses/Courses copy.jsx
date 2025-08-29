@@ -34,9 +34,11 @@ import { HeaderTabsFtn } from "../../Store/HeaderAndBreadCrumbSlice/HeadAndBcSli
 const Courses = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const seenLessons = useRef(new Set());
+  const pendingDurations = useRef({});
   const [Status, setStatus] = useState("all");
   const [loading, setLoading] = useState(false);
-  const [initialLoading, setInitialLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true); // ✅ New
   const [CoursesData, setCoursesData] = useState([]);
   const AuthToken = useSelector((state) => state?.Auth);
   const token = AuthToken?.Authtoken;
@@ -53,7 +55,6 @@ const Courses = () => {
 
   useEffect(() => {
     dispatch(HeaderTabsFtn("Courses"));
-
     const FetchCourses = async () => {
       if (initialLoading) {
         setInitialLoading(true);
@@ -73,6 +74,8 @@ const Courses = () => {
         );
 
         const result = response?.data;
+        // console.log(result);
+
         setCoursesData(result?.data);
         setTotalCount(result?.totalCount || 0);
       } catch (error) {
@@ -88,19 +91,6 @@ const Courses = () => {
     return () => clearTimeout(loadingDelayRef.current);
   }, [currentPage, Status, Search, filtersPaging.limit, token, Language]);
 
-  function formatDuration(seconds) {
-    if (!seconds) return "0";
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-
-    let result = "";
-    if (h > 0) result += `${h}h `;
-    if (m > 0) result += `${m}m `;
-    if (s > 0) result += `${s}s`;
-    return result.trim();
-  }
-
   const handlePageChange = (newPage) => {
     setFiltersPaging((prev) => ({
       ...prev,
@@ -115,13 +105,62 @@ const Courses = () => {
     }));
   };
 
+  const [courseDurations, setCourseDurations] = useState({});
+  function formatDuration(seconds) {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
 
+    const parts = [];
+    if (h > 0) parts.push(`${h}h`);
+    if (m > 0) parts.push(`${m}m`);
+    if (h === 0 && m === 0) parts.push(`${s}s`); // only show seconds if very short
 
+    return parts.join(" ");
+  }
+
+  const handleLessonDuration = (courseId, lessonId, duration) => {
+    const lessonKey = `${courseId}_${lessonId}`;
+    if (seenLessons.current.has(lessonKey)) return;
+
+    seenLessons.current.add(lessonKey);
+
+    // Accumulate duration temporarily
+    if (!pendingDurations.current[courseId]) {
+      pendingDurations.current[courseId] = 0;
+    }
+    pendingDurations.current[courseId] += duration;
+
+    // Get lesson count
+    const course = CoursesData.find((c) => c._id === courseId);
+    const totalLessons = course?.modules?.reduce(
+      (acc, mod) => acc + (mod?.lessons?.length || 0),
+      0
+    );
+
+    // When all lessons for a course have reported duration
+    const seenCount = Array.from(seenLessons.current).filter((key) =>
+      key.startsWith(`${courseId}_`)
+    ).length;
+
+    if (seenCount === totalLessons) {
+      const totalDuration = pendingDurations.current[courseId]; // Get the final value
+
+      setCourseDurations((prev) => ({
+        ...prev,
+        [courseId]: totalDuration,
+      }));
+
+      // ✅ Use the same value you just computed
+      localStorage.setItem(courseId, totalDuration);
+    }
+  };
   const [startedCourses, setStartedCourses] = useState({});
 
   useEffect(() => {
     const fetchAllCoursesProgress = async () => {
       const progressMap = {};
+
       await Promise.all(
         CoursesData.map(async (course) => {
           try {
@@ -134,7 +173,7 @@ const Courses = () => {
             const data = response.data;
 
             const isStarted = data.modules?.some((mod) =>
-              mod?.lessons?.some((lesson) => lesson?.secondsWatched > 0)
+              mod.lessons?.some((lesson) => lesson.secondsWatched > 0)
             );
 
             progressMap[course._id] = isStarted;
@@ -269,7 +308,16 @@ const Courses = () => {
                         className="rounded-[8px] border border-[#E8E8E8] flex flex-col h-full"
                       >
                         {/* Top Image Section */}
-                        <img src={items?.image || ProfileImage} alt="" className="w-full h-[200px] rounded-t-[8px]"
+                        <div
+                          style={{
+                            backgroundImage: `url(${items?.image || ProfileImage})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            width: "100%",
+                            height: "200px",
+                            borderTopLeftRadius: "8px",
+                            borderTopRightRadius: "8px",
+                          }}
                         />
 
                         {/* Detail Section */}
@@ -299,7 +347,7 @@ const Courses = () => {
                           </div>
 
                           {/* Title */}
-                          <h1 className="capitalize lg:text-[20px] text-[16px] font-[700] mt-[12px]">
+                          <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px]">
                             {items?.title}
                           </h1>
 
@@ -307,7 +355,7 @@ const Courses = () => {
 
                           <div className="mt-[6px]">
                             <p
-                              className={`capitalize text-[14px] font-[500] gray ${expandedItems[index] ? "" : "line-clamp-2"
+                              className={`text-[14px] font-[500] gray ${expandedItems[index] ? "" : "line-clamp-2"
                                 }`}
                             >
                               {items?.preview_text}
@@ -329,7 +377,13 @@ const Courses = () => {
                               <div className="flex gap-1 text-[14px] font-[500] gray">
                                 <img src={Timer} alt="Timer" className="my-auto" />
                                 <span className="my-auto">
-                                  {formatDuration(items?.course_duration)}
+                                  {/* {getCourseTotalDuration(items?.modules)} */}
+
+                                  <p className="text-sm text-gray-600">
+                                    {courseDurations[items._id] !== undefined
+                                      ? formatDuration(courseDurations[items._id])
+                                      : "Calculating..."}
+                                  </p>
                                 </span>
                               </div>
                             </div>
@@ -337,7 +391,7 @@ const Courses = () => {
                               <p className="flex gap-1 text-[14px] font-[500] gray">
                                 <img src={Rows} alt="Modules" className="my-auto" />
                                 <span className="my-auto">
-                                  {items?.modules?.length} {items?.modules?.length > 1 ? "modules" : "module"}
+                                  {items?.modules?.length} modules
                                 </span>
                               </p>
                             </div>
@@ -346,7 +400,12 @@ const Courses = () => {
                           {/* Button Always at Bottom */}
                           <div className="mt-auto pt-4">
                             <button
-                              onClick={() => navigate(`/CourseDetails/${items?._id}`)
+                              onClick={() =>
+                                navigate(`/CourseDetails/${items?._id}`, {
+                                  state: {
+                                    duration: courseDurations[items._id],
+                                  },
+                                })
                               }
                               className="flex justify-center gap-1 cursor-pointer bg-black w-full text-center py-2 px-5 rounded-[8px] text-white text-[14px] font-[700]"
                             >
@@ -389,7 +448,23 @@ const Courses = () => {
           </div>
         </>
       )}
-
+      <div style={{ display: "none" }}>
+        {CoursesData?.flatMap((course) =>
+          course?.modules?.flatMap((mod) =>
+            (mod?.lessons || []).map((lesson) => (
+              <ReactPlayer
+                key={lesson._id}
+                url={lesson.video_url}
+                playing={false}
+                controls={false}
+                onDuration={(duration) =>
+                  handleLessonDuration(course._id, lesson._id, duration)
+                }
+              />
+            ))
+          )
+        )}
+      </div>
     </div>
   );
 };

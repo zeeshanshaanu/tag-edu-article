@@ -33,7 +33,9 @@ const CourseDetails = () => {
   const [selectedLessonIndex, setSelectedLessonIndex] = useState(0);
   const [expandedLesson, setExpandedLesson] = useState(false);
   const [expandedItems, setExpandedItems] = useState({});
-  const [userProgress, setUserProgress] = useState(null);
+  const [userProgress, setUserProgress] = useState({
+    modules: [], // default empty array
+  });
 
   const [videoDurations, setVideoDurations] = useState({});
   const [selectedLesson, setSelectedLesson] = useState({
@@ -48,23 +50,6 @@ const CourseDetails = () => {
   });
   const location = useLocation();
   const Coursedurationduration = Number(location.state?.duration);
-
-  const formatDuration = (input) => {
-    const totalSeconds = Number(input);
-    if (!Number.isFinite(totalSeconds)) return "N/A";
-
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = Math.round(totalSeconds % 60); // ✅ Round to nearest second
-
-    const parts = [];
-
-    if (hours > 0) parts.push(`${hours}h`);
-    if (minutes > 0 || hours > 0) parts.push(`${minutes}m`);
-    parts.push(`${seconds}s`);
-
-    return parts.join(" ");
-  };
 
   const formatVideoDuration = (milliseconds) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
@@ -81,21 +66,21 @@ const CourseDetails = () => {
     }
   };
 
-  const getModuleTotalDuration = (module) => {
-    if (!module?.lessons) return 0;
-    const totalSeconds = module.lessons.reduce((sum, lesson) => {
-      const duration = videoDurations[lesson._id] || 0;
-      return sum + duration;
-    }, 0);
-    return totalSeconds;
-  };
+  // const getModuleTotalDuration = (module) => {
+  //   if (!module?.lessons) return 0;
+  //   const totalSeconds = module.lessons.reduce((sum, lesson) => {
+  //     const duration = videoDurations[lesson._id] || 0;
+  //     return sum + duration;
+  //   }, 0);
+  //   return totalSeconds;
+  // };
 
-  const handlePreloadDuration = (lessonId, duration) => {
-    setVideoDurations((prev) => ({
-      ...prev,
-      [lessonId]: duration,
-    }));
-  };
+  // const handlePreloadDuration = (lessonId, duration) => {
+  //   setVideoDurations((prev) => ({
+  //     ...prev,
+  //     [lessonId]: duration,
+  //   }));
+  // };
 
   const hasModuleStarted = (module) => {
     if (!userProgress || !module?.lessons?.length) return false;
@@ -118,6 +103,7 @@ const CourseDetails = () => {
     if (moduleStarted) return "Resume";
     return "Start";
   };
+
   const handleDuration = (duration) => {
     if (selectedLesson?.lessonId) {
       setVideoDurations((prev) => ({
@@ -139,7 +125,7 @@ const CourseDetails = () => {
     saveProgress(lessonId, moduleId, percentage, playedSeconds, totalDuration);
 
     setUserProgress((prev) => {
-      const updatedModules = prev.modules.map((mod) => ({
+      const updatedModules = prev.modules?.map((mod) => ({
         ...mod,
         lessons: mod.lessons.map((l) =>
           l.lessonId === lessonId || l.lessonId?._id === lessonId
@@ -208,6 +194,19 @@ const CourseDetails = () => {
   useEffect(() => {
     CourseDetailDataFtn();
   }, []);
+
+  function formatDuration(seconds) {
+    if (!seconds) return "0s";
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+
+    let result = "";
+    if (h > 0) result += `${h}h `;
+    if (m > 0) result += `${m}m `;
+    if (s > 0) result += `${s}s`;
+    return result.trim();
+  }
 
   useEffect(() => {
     if (!Loading && CourseDetail?.modules?.length > 0) {
@@ -293,10 +292,10 @@ const CourseDetails = () => {
           <div className="my-4 HeaderGreenBGimage p-[20px] rounded-[12px]">
             <div className="md:flex justify-between gap-5">
               <div className="my-auto">
-                <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black max-w-[550px] line-clamp-1">
+                <h1 className="capitalize satoshi_italic lg:text-[40px] text-[20px] font-[900] black max-w-[550px] line-clamp-1">
                   {CourseDetail?.title}
                 </h1>
-                <p className="lg:text-[15px] text-[13px] font-[500] black max-w-[500px] line-clamp-2 mt-2">
+                <p className="capitalize lg:text-[15px] text-[13px] font-[500] black max-w-[500px] line-clamp-2 mt-2">
                   {CourseDetail?.preview_text}
                 </p>
               </div>
@@ -324,9 +323,7 @@ const CourseDetails = () => {
                           Duration
                         </h1>
                         <p className="white text-[14px] font-[700]">
-                          {Number.isFinite(Coursedurationduration)
-                            ? formatDuration(Coursedurationduration)
-                            : "Loading..."}{" "}
+                          {formatDuration(CourseDetail?.course_duration)}
                         </p>
                       </>
                     )}
@@ -400,7 +397,7 @@ const CourseDetails = () => {
 
               {/*  */}
               <div className="flex justify-between mt-3 gap-5">
-                <h1 className="text-[20px] font-[700] black line-clamp-2 max-w-[600px]">
+                <h1 className="capitalize text-[20px] font-[700] black line-clamp-2 max-w-[600px]">
                   {selectedLesson?.title}.{selectedLesson?.index}
                 </h1>
                 <div className="flex gap-2">
@@ -461,14 +458,10 @@ const CourseDetails = () => {
               </div>
               {/* Desc */}
               <p className="text-[14px] font-[500] gray mt-[6px] ">
-                {/* <p
-              dangerouslySetInnerHTML={{
-                __html: selectedLesson?.lession_summary,
-              }}
-            /> */}
+
                 <div className="mt-[6px]">
                   <div
-                    className={`text-[14px] font-[500] gray  ${expandedLesson ? "" : "line-clamp-4"
+                    className={`capitalize text-[14px] font-[500] gray  ${expandedLesson ? "" : "line-clamp-4"
                       }`}
                     dangerouslySetInnerHTML={{
                       __html: selectedLesson?.lession_summary,
@@ -490,14 +483,14 @@ const CourseDetails = () => {
               <h1 className="inline-block bg_lightgreen flex gap-[2px] text-[12px] font-[700] rounded-[6px] px-2 py-[3px]">
                 Module {selectedLessonIndex}
               </h1>
-              <h1 className="text-[20px] font-[700] black mt-3">
+              <h1 className="capitalize text-[20px] font-[700] black mt-3">
                 {selectedModule?.title}
               </h1>
               <p
                 dangerouslySetInnerHTML={{
                   __html: selectedModule?.module_summary,
                 }}
-                className="text-[14px] font-[500] gray mt-[6px] line-clamp-2"
+                className="capitalize text-[14px] font-[500] gray mt-[6px] line-clamp-2"
               ></p>
               <div className="VedioList mt-4 max-h-[620px] overflow-y-scroll">
                 {Loading ? (
@@ -543,12 +536,11 @@ const CourseDetails = () => {
                               <div className="my-auto  w-[100px] h-[60px] lg:w-[130px] lg:h-[80px]">
                                 <img
                                   src={getYouTubeThumbnail(items?.video_url)}
-                                  // alt={items?.title}
                                   className="w-full h-full object-cover my-auto rounded-[8px]"
                                 />{" "}
                               </div>
                               <div className="my-auto">
-                                <h1 className="text-[14px] font-[500] black line-clamp-2 lg:w-[200px] md:w-[600px] w-[200px]">
+                                <h1 className=" capitalize text-[14px] font-[500] black line-clamp-2 lg:w-[200px] md:w-[600px] w-[200px]">
                                   {index + 1}.{items?.title}
                                 </h1>
                                 <p className="flex gap-1 text-[14px] font-[500] gray mt-[5px]">
@@ -558,9 +550,7 @@ const CourseDetails = () => {
                                     className=" my-auto"
                                   />{" "}
                                   <span className="my-auto">
-                                    {formatVideoDuration(
-                                      (videoDurations[items._id] || 0) * 1000
-                                    )}
+                                    {formatDuration(items?.lesson_duration)}
                                   </span>
                                 </p>
 
@@ -615,14 +605,14 @@ const CourseDetails = () => {
                           </div>
 
                           {/*  */}
-                          <h1 className="text-[20px] font-[700] mt-[12px] line-clamp-1">
+                          <h1 className="capitalize text-[20px] font-[700] mt-[12px] line-clamp-1">
                             {items?.title}
                             {/* __html: items?.module_summary, */}
                           </h1>
                           {/*  */}
                           <div className="mt-[6px]">
                             <div
-                              className={`text-[14px] font-[500] gray  ${expandedItems[index] ? "" : "line-clamp-3"
+                              className={`capitalize text-[14px] font-[500] gray  ${expandedItems[index] ? "" : "line-clamp-3"
                                 }`}
                               dangerouslySetInnerHTML={{
                                 __html: items?.module_summary,
@@ -644,12 +634,10 @@ const CourseDetails = () => {
                                 <img
                                   src={Timer}
                                   alt="Timer"
-                                  className=" my-auto"
+                                  className="my-auto"
                                 />
                                 <span className="my-auto">
-                                  {formatVideoDuration(
-                                    getModuleTotalDuration(items) * 1000
-                                  )}
+                                  {formatDuration(items?.module_duration)}
                                 </span>
                               </p>
                             </div>
@@ -658,7 +646,7 @@ const CourseDetails = () => {
                                 <img
                                   src={PlayCircleGray}
                                   alt="PlayCircleGray"
-                                  className=" my-auto"
+                                  className="my-auto"
                                 />
                                 <span className="my-auto">
                                   {items?.lessons?.length} Lessons
@@ -710,7 +698,7 @@ const CourseDetails = () => {
         </>
       )}
 
-      <div style={{ display: "none" }}>
+      {/* <div style={{ display: "none" }}>
         {CourseDetail?.modules
           ?.flatMap((mod) => mod.lessons || [])
           .map((lesson) => (
@@ -722,7 +710,7 @@ const CourseDetails = () => {
               }
             />
           ))}
-      </div>
+      </div> */}
     </div>
   );
 };

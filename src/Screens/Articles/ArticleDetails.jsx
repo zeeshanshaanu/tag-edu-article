@@ -24,19 +24,27 @@ const ArticleDetails = () => {
   const [articlesData, setArticlesData] = useState([]);
 
   const FetchArticles = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(`/api/article?language=${Language}&category=all`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       const result = response?.data;
-      console.log(result);
+      // console.log(result);
       setArticlesData(result?.data);
     } catch (error) {
       console.error("Error fetching articles:", error);
     }
+    finally {
+      setLoading(false);
+    }
   };
 
+
+  useEffect(() => {
+    FetchArticles();
+  }, [Language]);
   useEffect(() => {
     if (id) {
       ArticleDetailDataFtn();
@@ -44,14 +52,9 @@ const ArticleDetails = () => {
     }
   }, [id]);
 
-  useEffect(() => {
-    FetchArticles();
-  }, [Language]);
-
   const ArticleDetailDataFtn = async () => {
-    if (initialLoad) {
-      setLoading(true);
-    }
+    setLoading(true);
+
     try {
       const response = await axios.get(`/api/article/${id}`, {
         headers: {
@@ -60,13 +63,11 @@ const ArticleDetails = () => {
       });
       // console.log(response?.data);
       setArticleDetail(response?.data?.data);
-      setLoading(false);
-      setInitialLoad(false);
     } catch (error) {
-      setLoading(false);
-      setInitialLoad(false);
-
       console.error("Error fetching profile:", error);
+    }
+    finally {
+      setLoading(false);
     }
   };
 
@@ -83,7 +84,7 @@ const ArticleDetails = () => {
           <Loader />
         </div>
       ) : (
-        <div className="">
+        <div>
           <div className="my-4 HeaderGreenBGimage p-[20px] rounded-[12px]">
             <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black line-clamp-3">
               {ArticleDetail?.title}
@@ -137,7 +138,7 @@ const ArticleDetails = () => {
 
               <div className="mt-4">
                 {articlesData?.length > 0 ? (
-                  articlesData?.slice(0, 5)?.map((items, index) => {
+                  articlesData?.slice(0, 10)?.map((items, index) => {
                     return (
                       <div
                         onClick={() =>
@@ -164,7 +165,7 @@ const ArticleDetails = () => {
                                 {items?.category}
                               </h1>
                               <p className="text-[12px] font-[500] gray my-auto">
-                                {new Date(items?.date).toLocaleDateString(
+                                {new Date(items?.created_at).toLocaleDateString(
                                   "en-US",
                                   {
                                     year: "numeric",
