@@ -53,6 +53,9 @@ const Courses = () => {
 
   useEffect(() => {
     dispatch(HeaderTabsFtn("Courses"));
+  }, [])
+
+  useEffect(() => {
 
     const FetchCourses = async () => {
       if (initialLoading) {
@@ -155,6 +158,8 @@ const Courses = () => {
       fetchAllCoursesProgress();
     }
   }, [CoursesData, token]);
+
+
 
   return (
     <div className="p-3">
@@ -268,9 +273,13 @@ const Courses = () => {
                         key={index}
                         className="rounded-[8px] border border-[#E8E8E8] flex flex-col h-full"
                       >
-                        {/* Top Image Section */}
-                        <img src={items?.image || ProfileImage} alt="" className="w-full h-[200px] rounded-t-[8px]"
-                        />
+                        <div className="w-full aspect-[16/9] overflow-hidden rounded-t-[8px]">
+                          <img
+                            src={items?.image || ProfileImage}
+                            alt=""
+                            className="w-full h-full object-cover object-center"
+                          />
+                        </div>
 
                         {/* Detail Section */}
                         <div className="p-[13px] flex flex-col flex-1">

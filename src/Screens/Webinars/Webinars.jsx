@@ -222,28 +222,23 @@ const Webinars = () => {
                       key={index}
                       className="rounded-[8px] border border-[#E8E8E8] flex flex-col h-full"
                     >
-                      {/* Top Image Section */}
-                      <div
-                        style={{
-                          backgroundImage: `url(${items?.image || ProfileImage})`,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                          width: "100%",
-                          height: "200px",
-                          borderTopLeftRadius: "8px",
-                          borderTopRightRadius: "8px",
-                        }}
-                      />
-
+                      {/* <img src={items?.image || ProfileImage} alt="" className="w-full h-[200px] rounded-t-[8px]" /> */}
+                      <div className="w-full aspect-[16/9] overflow-hidden rounded-t-[8px]">
+                        <img
+                          src={items?.image || ProfileImage}
+                          alt=""
+                          className="w-full h-full object-cover object-center"
+                        />
+                      </div>
                       {/* Content Section */}
                       <div className="flex flex-col p-[13px] flex-grow">
-                        <h1 className="lg:text-[20px] text-[16px] font-[700]">
+                        <h1 className="lg:text-[20px] text-[16px] font-[700] capitalize">
                           {items?.title}
                         </h1>
 
                         <div className="mt-[6px]">
                           <div
-                            className={`text-[14px] font-[500] gray  ${expandedItems[index] ? "" : "line-clamp-3"
+                            className={`text-[14px] font-[500] gray capitalize ${expandedItems[index] ? "" : "line-clamp-3"
                               }`}
                             dangerouslySetInnerHTML={{
                               __html: items?.content,

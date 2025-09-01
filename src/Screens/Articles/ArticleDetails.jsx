@@ -97,11 +97,18 @@ const ArticleDetails = () => {
 
           <div className="grid grid:cols-1 lg:grid-cols-12 md:grid-cols-12 gap-4">
             <div className="bg-white rounded-[8px] border-[1px] border-[#E8E8E8] bg_white rounded-[8px] col-span-12 md:col-span-12 lg:col-span-8 p-2 lg:p-4">
-              <div className=" h-[300px]">
+              {/* <div className="">
                 <img
                   src={ArticleDetail?.image}
                   alt={ArticleDetail?.image}
-                  className="w-full h-full rounded-[8px]"
+                  className="w-full h-[450px] rounded-[8px]"
+                />
+              </div> */}
+              <div className="w-full aspect-[16/9] overflow-hidden rounded-t-[8px]">
+                <img
+                  src={ArticleDetail?.image}
+                  alt={ArticleDetail?.image}
+                  className="w-full h-full object-cover object-center"
                 />
               </div>
               {/* Detail */}

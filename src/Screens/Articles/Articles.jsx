@@ -183,7 +183,7 @@ const Articles = () => {
                 {/* "All" tab */}
                 <div
                   className={`min-w-[70px] cursor-pointer flex rounded-full lg:rounded-[8px] px-[16px] py-[8px] font-[500] 
-          hover:bg-[#F9F9F9] transition-colors duration-200 ${Status === "all" ? "bg_white font-[700]" : "bg_lightgray2"
+                              hover:bg-[#F9F9F9] transition-colors duration-200 ${Status === "all" ? "bg_white font-[700]" : "bg_lightgray2"
                     }`}
                   onClick={() => setStatus("all")}
                 >
@@ -306,8 +306,7 @@ const Articles = () => {
           </div>
           {/* Cards */}
           <div className="bg-white rounded-[12px] sm:p-5 p-3 mt-1">
-            <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-[15px]">
-
+            <div className="Cards max-h-[100vh] overflow-y-scroll grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[15px]">
               <>
                 {articlesData?.length > 0 ? (
                   articlesData?.map((items, index) => {
@@ -316,8 +315,14 @@ const Articles = () => {
                         key={index}
                         className="hover:shadow-lg transition-shadow duration-200 rounded-[8px] border border-[#E8E8E8] flex flex-col"
                       >
-                        <img src={items?.image || ProfileImage} alt="" className="w-full h-[200px] rounded-t-[8px]"
-                        />
+                        <div className="w-full aspect-[16/9] overflow-hidden rounded-t-[8px]">
+                          <img
+                            src={items?.image || ProfileImage}
+                            alt=""
+                            className="w-full h-full object-cover object-center"
+                          />
+                        </div>
+
                         {/* Detail */}
                         <div className="p-[13px] flex flex-col flex-grow">
                           <div className="flex gap-[12px]">
@@ -333,13 +338,13 @@ const Articles = () => {
                             </p>
                           </div>
 
-                          <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px]">
+                          <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px] capitalize">
                             {items?.title}
                           </h1>
 
                           <div className="mt-[6px]">
                             <p
-                              className={`text-[14px] font-[500] gray ${expandedItems[index] ? "" : "line-clamp-2"
+                              className={`capitalize text-[14px] font-[500] gray ${expandedItems[index] ? "" : "line-clamp-2"
                                 }`}
                             >
                               {items?.preview_text}
