@@ -322,7 +322,6 @@ const Articles = () => {
                             className="w-full h-full object-cover object-center"
                           />
                         </div>
-
                         {/* Detail */}
                         <div className="p-[13px] flex flex-col flex-grow">
                           <div className="flex gap-[12px]">

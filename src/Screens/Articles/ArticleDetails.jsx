@@ -86,10 +86,10 @@ const ArticleDetails = () => {
       ) : (
         <div>
           <div className="my-4 HeaderGreenBGimage p-[20px] rounded-[12px]">
-            <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black line-clamp-3">
+            <h1 className="satoshi_italic lg:text-[40px] text-[20px] font-[900] black line-clamp-3 capitalize">
               {ArticleDetail?.title}
             </h1>
-            <p className="lg:text-[15px] text-[13px] font-[500] black max-w-[500px] line-clamp-2 mt-2">
+            <p className="lg:text-[15px] text-[13px] font-[500] black max-w-[500px] line-clamp-2 mt-2 capitalize">
               {ArticleDetail?.preview_text}
             </p>
           </div>
@@ -126,13 +126,13 @@ const ArticleDetails = () => {
                   </p>
                 </div>
                 {/*  */}
-                <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px]">
+                <h1 className="lg:text-[20px] text-[16px] font-[700] mt-[12px] capitalize">
                   {ArticleDetail?.title}{" "}
                 </h1>
                 {/*  */}
                 <div className="mt-[6px]">
                   <div
-                    className=""
+                    className="capitalize"
                     dangerouslySetInnerHTML={{
                       __html: ArticleDetail?.content,
                     }}
@@ -163,12 +163,12 @@ const ArticleDetails = () => {
                           />{" "}
                         </div>
                         <div className="my-auto">
-                          <h1 className="text-[14px] font-[500] black line-clamp-2 lg:w-[200px] md:w-[600px] w-[200px]">
+                          <h1 className="text-[14px] font-[500] black line-clamp-2 lg:w-[200px] md:w-[600px] w-[200px] capitalize">
                             {index + 1}.{items?.title}
                           </h1>
                           <p className="flex gap-1 text-[14px] font-[500] gray mt-[5px]">
                             <div className="flex gap-[12px]">
-                              <h1 className="text-[10px] font-[700] rounded-[8px] border-[1px] border-[#E8E8E8] px-2 py-[5px] my-auto capitalize">
+                              <h1 className="capitalize text-[10px] font-[700] rounded-[8px] border-[1px] border-[#E8E8E8] px-2 py-[5px] my-auto capitalize">
                                 {items?.category}
                               </h1>
                               <p className="text-[12px] font-[500] gray my-auto">
