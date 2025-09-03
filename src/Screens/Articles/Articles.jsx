@@ -61,7 +61,9 @@ const Articles = () => {
 
       try {
         const response = await axios.get(
-          `/api/article?page=${currentPage}&limit=${filtersPaging.limit}&category=${Status}&search=${Search}&language=${Language}`,
+          `/api/article?page=${currentPage}&limit=${filtersPaging.limit}&category=${Status}&search=${Search}&language=${Language}&mode=without-content`,
+          // `/api/article?page=${currentPage}&limit=${filtersPaging.limit}&status=${Status}&search=${Search}&language=${Language}&mode=without-content`, {
+
           {
             headers: { Authorization: `Bearer ${token}` },
           }

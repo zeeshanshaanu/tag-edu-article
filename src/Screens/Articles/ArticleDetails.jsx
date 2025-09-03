@@ -19,14 +19,13 @@ const ArticleDetails = () => {
   const token = AuthToken?.Authtoken;
   const [ArticleDetail, setArticleDetail] = useState({});
   const [loading, setLoading] = useState(true);
-  const [initialLoad, setInitialLoad] = useState(true);
-
+  const [AllArticlesloading, setAllArticlesLoading] = useState(true);
   const [articlesData, setArticlesData] = useState([]);
 
   const FetchArticles = async () => {
-    setLoading(true);
+    setAllArticlesLoading(true);
     try {
-      const response = await axios.get(`/api/article?language=${Language}&category=all`, {
+      const response = await axios.get(`/api/article?language=${Language}&category=all&mode=without-content`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -37,7 +36,7 @@ const ArticleDetails = () => {
       console.error("Error fetching articles:", error);
     }
     finally {
-      setLoading(false);
+      setAllArticlesLoading(false);
     }
   };
 
@@ -79,7 +78,7 @@ const ArticleDetails = () => {
     <div className="p-3">
       <HeaderTabs />
       {/* Followers Hub header */}
-      {loading ? (
+      {loading || AllArticlesloading ? (
         <div className="flex justify-center items-center h-screen">
           <Loader />
         </div>
