@@ -300,7 +300,7 @@ const Webinars = () => {
                                       }
                                       target="_blank"
                                       rel="noopener noreferrer"
-                                      className="text-[12px] my-auto font-[500] gray my-auto py-[2px] px-2 rounded-[8px] border border-[#E8E8E8] line-clamp-1"
+                                      className=" flex gap-3 text-[12px] my-auto font-[500] line-clamp-1"
                                     >
                                       <img
                                         src={PlayCircleBlack}

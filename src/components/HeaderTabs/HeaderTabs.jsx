@@ -193,6 +193,7 @@ const HeaderTabs = () => {
             </div>
           </Dropdown>
         </div>
+
       </div>
       {/* Language Dropdown */}
       <div className="flex justify-end gap-2 w-full sm:hidden flex block sm:hidden">
