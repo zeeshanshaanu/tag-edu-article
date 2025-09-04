@@ -100,9 +100,8 @@ const HeaderTabs = () => {
         <div className="mt-3 lg:mt-0 md:mt-0 flex gap-[2px]">
           {/* Courses Tab */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
-              HeaderTabValue === "Courses" && "bg_lightgreen font-[700]"
-            }`}
+            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${HeaderTabValue === "Courses" && "bg_lightgreen font-[700]"
+              }`}
             onClick={() => {
               dispatch(HeaderTabsFtn("Courses"));
               navigate("/");
@@ -117,9 +116,8 @@ const HeaderTabs = () => {
               alt="Courses"
             />
             <span
-              className={`text-[14px] my-auto ${
-                HeaderTabValue === "Courses" ? "black" : "gray"
-              }`}
+              className={`text-[14px] my-auto ${HeaderTabValue === "Courses" ? "black" : "gray"
+                }`}
             >
               Courses
             </span>
@@ -127,9 +125,8 @@ const HeaderTabs = () => {
 
           {/* Articles Tab */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
-              HeaderTabValue === "Articles" && "bg_lightgreen font-[700]"
-            }`}
+            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${HeaderTabValue === "Articles" && "bg_lightgreen font-[700]"
+              }`}
             onClick={() => {
               dispatch(HeaderTabsFtn("Articles"));
               navigate("/Articles");
@@ -142,9 +139,8 @@ const HeaderTabs = () => {
               alt="Articles"
             />
             <span
-              className={`text-[14px] my-auto ${
-                HeaderTabValue === "Articles" ? "black" : "gray"
-              }`}
+              className={`text-[14px] my-auto ${HeaderTabValue === "Articles" ? "black" : "gray"
+                }`}
             >
               Articles
             </span>
@@ -152,9 +148,8 @@ const HeaderTabs = () => {
 
           {/* LiveSessions Tab */}
           <div
-            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${
-              HeaderTabValue === "LiveSessions" && "bg_lightgreen font-[700]"
-            }`}
+            className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${HeaderTabValue === "LiveSessions" && "bg_lightgreen font-[700]"
+              }`}
             onClick={() => {
               dispatch(HeaderTabsFtn("LiveSessions"));
               navigate("/LiveSessions");
@@ -169,9 +164,8 @@ const HeaderTabs = () => {
               alt="LiveSessions"
             />
             <span
-              className={`text-[14px] my-auto ${
-                HeaderTabValue === "LiveSessions" ? "black" : "gray"
-              }`}
+              className={`text-[14px] my-auto ${HeaderTabValue === "LiveSessions" ? "black" : "gray"
+                }`}
             >
               Live Sessions
             </span>
@@ -199,6 +193,27 @@ const HeaderTabs = () => {
             </div>
           </Dropdown>
         </div>
+      </div>
+      {/* Language Dropdown */}
+      <div className="flex justify-end gap-2 w-full sm:hidden flex block sm:hidden">
+        <Dropdown
+          menu={{ items, onClick: handleLanguageChange }}
+          placement="bottomRight"
+          arrow
+          trigger={["click"]}
+        >
+          <div className="flex gap-2 cursor-pointer bg_white p-2 rounded-[8px]">
+            <img
+              src={languageMap[selectedLang].flag}
+              alt={selectedLang}
+              className="w-[18px] h-[18px] rounded-full"
+            />
+            <span className="gray font-[500] text-[14px]">
+              {languageMap[selectedLang].label}
+            </span>
+            <DownOutlined className="text-[14px] lightgray font-bold" />
+          </div>
+        </Dropdown>
       </div>
 
       {/* Mobile Tabs - Only visible on small screens */}
