@@ -69,7 +69,7 @@ const Courses = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `/api/course?page=${currentPage}&limit=${filtersPaging.limit}&tag=${Status}&search=${Search}&language=${Language}`,
+          `/api/course?page=${currentPage}&limit=${filtersPaging.limit}&tag=${Status}&search=${Search}&language=${Language || "EN"}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

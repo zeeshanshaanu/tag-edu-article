@@ -25,7 +25,7 @@ const MobileHeaderTabs = () => {
 
   return (
     <div>
-      <div className="bg_white rounded-[8px] p-[2px] flex gap-5 inline-block mt-5">
+      <div className="bg_white rounded-[8px] p-[2px] flex gap-5 inline-block">
         <div className="flex gap-[2px]">
           <div
             className={`cursor-pointer inline-flex items-center gap-1 rounded-[8px] px-[10px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${

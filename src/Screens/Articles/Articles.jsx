@@ -61,7 +61,7 @@ const Articles = () => {
 
       try {
         const response = await axios.get(
-          `/api/article?page=${currentPage}&limit=${filtersPaging.limit}&category=${Status}&search=${Search}&language=${Language}&mode=without-content`,
+          `/api/article?page=${currentPage}&limit=${filtersPaging.limit}&category=${Status}&search=${Search}&language=${Language || "EN"}&mode=without-content`,
           // `/api/article?page=${currentPage}&limit=${filtersPaging.limit}&status=${Status}&search=${Search}&language=${Language}&mode=without-content`, {
 
           {
@@ -98,7 +98,7 @@ const Articles = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `/api/article-category?language=${Language}`,
+        `/api/article-category?language=${Language || "EN"}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

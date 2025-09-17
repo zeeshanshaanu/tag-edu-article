@@ -96,8 +96,8 @@ const HeaderTabs = () => {
   return (
     <div>
       {/* Web Tabs - Hidden on small screens */}
-      <div className="bg_white rounded-[8px] p-[2px] sm:flex justify-between gap-[2px] w-full hidden sm:flex">
-        <div className="mt-3 lg:mt-0 md:mt-0 flex gap-[2px]">
+      <div className="bg_white rounded-[8px] p-[2px] sm:flex justify-between w-full hidden sm:flex">
+        <div className="lg:mt-0 md:mt-0 flex gap-[2px]">
           {/* Courses Tab */}
           <div
             className={`cursor-pointer my-auto flex gap-1 rounded-[8px] px-[16px] py-[7px] font-[500] hover:bg-[#CAFD5D] transition-colors duration-200 ${HeaderTabValue === "Courses" && "bg_lightgreen font-[700]"
@@ -195,34 +195,37 @@ const HeaderTabs = () => {
         </div>
 
       </div>
-      {/* Language Dropdown */}
-      <div className="flex justify-end gap-2 w-full sm:hidden flex block sm:hidden">
-        <Dropdown
-          menu={{ items, onClick: handleLanguageChange }}
-          placement="bottomRight"
-          arrow
-          trigger={["click"]}
-        >
-          <div className="flex gap-2 cursor-pointer bg_white p-2 rounded-[8px]">
-            <img
-              src={languageMap[selectedLang].flag}
-              alt={selectedLang}
-              className="w-[18px] h-[18px] rounded-full"
-            />
-            <span className="gray font-[500] text-[14px]">
-              {languageMap[selectedLang].label}
-            </span>
-            <DownOutlined className="text-[14px] lightgray font-bold" />
+      {/* Language Dropdown For Mobile */}
+      <div className="flex justify-between w-full">
+        {/* Mobile Tabs - Only visible on small screens */}
+        {/* <div className="block sm:hidden fixed bottom-5 left-0 right-0 w-full z-50"> */}
+        <div className="block sm:hidden z-50">
+          <div className="flex justify-center">
+            <div className="">
+              <MobileHeaderTabs />
+            </div>
           </div>
-        </Dropdown>
-      </div>
+        </div>
 
-      {/* Mobile Tabs - Only visible on small screens */}
-      <div className="block sm:hidden fixed bottom-5 left-0 right-0 w-full z-50">
-        <div className="flex justify-center">
-          <div className="w-fit">
-            <MobileHeaderTabs />
-          </div>
+        <div className="sm:hidden sm:hidden">
+          <Dropdown
+            menu={{ items, onClick: handleLanguageChange }}
+            placement="bottomRight"
+            arrow
+            trigger={["click"]}
+          >
+            <div className="flex gap-2 cursor-pointer bg_white p-2 rounded-[8px]">
+              <img
+                src={languageMap[selectedLang].flag}
+                alt={selectedLang}
+                className="w-[18px] h-[18px] rounded-full"
+              />
+              <span className="gray font-[500] text-[14px]">
+                {languageMap[selectedLang].label}
+              </span>
+              <DownOutlined className="text-[14px] lightgray font-bold" />
+            </div>
+          </Dropdown>
         </div>
       </div>
     </div>

@@ -73,7 +73,7 @@ const Webinars = () => {
     }
     try {
       const response = await axios.get(
-        `/api/webinar?page=${currentPage}&limit=${filtersPaging.limit}&status=${Status}&language=${Language}`,
+        `/api/webinar?page=${currentPage}&limit=${filtersPaging.limit}&status=${Status}&language=${Language || "EN"}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
